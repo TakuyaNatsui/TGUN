@@ -1,0 +1,2691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TGUN User Manual (Version 3)</title>
+<style>
+:root { --ink: #1e293b; --muted: #64748b; --line: #dbe3ec; --paper: #ffffff; --ground: #f3f6fa;
+        --accent: #1d4ed8; --accent-soft: #e8efff; --side: 300px; }
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; }
+body { margin: 0; background: var(--ground); color: var(--ink);
+       font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif; line-height: 1.8; }
+a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+
+/* ---- 左の目次 */
+#toc { position: fixed; inset: 0 auto 0 0; width: var(--side); overflow-y: auto; background: #0f1b33; color: #cbd5e1;
+       padding: 0 0 32px; font-size: .92em; line-height: 1.5; }
+#toc .brand { padding: 20px 20px 14px; border-bottom: 1px solid #23335a; margin-bottom: 8px; }
+#toc .brand b { display: block; color: #ffffff; font-size: 1.25em; letter-spacing: .02em; }
+#toc .brand span { color: #94a3b8; font-size: .9em; }
+#toc ul { list-style: none; margin: 0; padding: 0; }
+#toc a { display: block; padding: 5px 20px; color: inherit; border-left: 3px solid transparent; }
+#toc a:hover { background: #1b2a4d; text-decoration: none; color: #ffffff; }
+#toc li.h3 a { padding-left: 36px; font-size: .93em; color: #94a3b8; display: none; }
+#toc li.open.h3 a { display: block; }
+#toc a.current { border-left-color: #60a5fa; background: #1b2a4d; color: #ffffff; }
+#menu { display: none; }
+
+/* ---- 本文 */
+main { margin-left: var(--side); }
+article { max-width: 1020px; margin: 0 auto; padding: 28px 48px 56px; background: var(--paper); min-height: 100vh;
+          box-shadow: 0 0 0 1px var(--line); }
+h1 { font-size: 2em; margin: .2em 0 .6em; padding-bottom: .35em; border-bottom: 3px solid var(--accent); }
+h2 { font-size: 1.5em; margin: 2.6em 0 .8em; padding: .35em .6em; background: var(--accent-soft);
+     border-left: 6px solid var(--accent); border-radius: 0 4px 4px 0; }
+h3 { font-size: 1.18em; margin: 2em 0 .6em; padding-bottom: .2em; border-bottom: 1px solid var(--line); }
+p, li { overflow-wrap: anywhere; }
+table { border-collapse: collapse; margin: 1em 0; font-size: .96em; }
+th, td { border: 1px solid var(--line); padding: .4em .75em; vertical-align: top; }
+th { background: #eef2f8; text-align: left; white-space: nowrap; }
+tr:nth-child(even) td { background: #fafbfd; }
+code { font-family: Consolas, "BIZ UDGothic", monospace; background: #eef2f8; padding: .1em .35em; border-radius: 3px;
+       font-size: .95em; }
+pre { background: #0f1b33; color: #e2e8f0; padding: .9em 1.1em; border-radius: 6px; overflow-x: auto; line-height: 1.55; }
+pre code { background: none; color: inherit; padding: 0; }
+hr { border: none; border-top: 1px solid var(--line); margin: 2.4em 0; }
+blockquote { margin: 1.1em 0; padding: .5em 1em; border-left: 5px solid #93c5fd; background: #eff6ff; border-radius: 0 4px 4px 0; }
+blockquote.warn { border-left-color: #f59e0b; background: #fffbeb; }
+blockquote.tip { border-left-color: #22c55e; background: #f0fdf4; }
+blockquote p { margin: .3em 0; }
+figure { margin: 1.3em 0; text-align: center; }
+figure img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; cursor: zoom-in;
+             box-shadow: 0 2px 8px rgba(15, 27, 51, .08); }
+figcaption { color: var(--muted); font-size: .9em; margin-top: .4em; }
+footer { color: var(--muted); font-size: .85em; margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--line); }
+#top { position: fixed; right: 22px; bottom: 22px; width: 44px; height: 44px; border-radius: 50%; border: none;
+       background: var(--accent); color: #fff; font-size: 20px; cursor: pointer; opacity: 0; pointer-events: none;
+       transition: opacity .2s; box-shadow: 0 2px 8px rgba(0, 0, 0, .25); }
+#top.show { opacity: .9; pointer-events: auto; }
+
+/* ---- 図の拡大 */
+#zoom { position: fixed; inset: 0; background: rgba(8, 15, 30, .88); display: none; align-items: center;
+        justify-content: center; z-index: 10; cursor: zoom-out; padding: 24px; }
+#zoom.show { display: flex; }
+#zoom img { max-width: 100%; max-height: 100%; border-radius: 4px; background: #fff; }
+
+/* ---- 狭い画面・印刷 */
+@media (max-width: 900px) {
+  #toc { transform: translateX(-100%); transition: transform .2s; z-index: 5; }
+  body.menu #toc { transform: none; }
+  main { margin-left: 0; }
+  article { padding: 56px 18px 40px; }
+  #menu { display: block; position: fixed; left: 10px; top: 10px; z-index: 6; border: none; border-radius: 4px;
+          background: #0f1b33; color: #fff; padding: 6px 12px; font-size: 1em; }
+}
+@media print {
+  #toc, #menu, #top, #zoom { display: none !important; }
+  main { margin-left: 0; } article { box-shadow: none; max-width: none; padding: 0; }
+  body { background: #fff; } h2 { break-after: avoid; } figure, table, pre { break-inside: avoid; }
+  a { color: inherit; }
+}
+</style>
+</head>
+<body>
+<button id="menu" type="button">☰ Contents</button>
+<nav id="toc">
+<div class="brand"><b>TGUN</b><span>User Manual / Version 3.0.0b2</span></div>
+<ul>
+<li class="h2" data-chapter="1-what-tgun-can-do"><a href="#1-what-tgun-can-do">1. What TGUN can do</a></li>
+<li class="h3" data-chapter="1-what-tgun-can-do"><a href="#axial-symmetry-and-coordinates">Axial symmetry and coordinates</a></li>
+<li class="h3" data-chapter="1-what-tgun-can-do"><a href="#two-geometries-for-the-electric-and-magnetic-fields">Two geometries for the electric and magnetic fields</a></li>
+<li class="h3" data-chapter="1-what-tgun-can-do"><a href="#workflow">Workflow</a></li>
+<li class="h2" data-chapter="2-installation-and-startup"><a href="#2-installation-and-startup">2. Installation and startup</a></li>
+<li class="h3" data-chapter="2-installation-and-startup"><a href="#using-the-distributed-version-zip">Using the distributed version (zip)</a></li>
+<li class="h3" data-chapter="2-installation-and-startup"><a href="#running-from-the-development-environment-source">Running from the development environment (source)</a></li>
+<li class="h2" data-chapter="3-screen-layout"><a href="#3-screen-layout">3. Screen layout</a></li>
+<li class="h3" data-chapter="3-screen-layout"><a href="#operating-the-central-canvas">Operating the central canvas</a></li>
+<li class="h3" data-chapter="3-screen-layout"><a href="#the-view-tab-and-the-manage-tab">The View tab and the Manage tab</a></li>
+<li class="h2" data-chapter="4-tutorial-calculating-the-example"><a href="#4-tutorial-calculating-the-example">4. Tutorial: calculating the example</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#41-opening-the-example">4.1 Opening the example</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#42-saving-under-a-new-name">4.2 Saving under a new name</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#43-viewing-the-geometry-and-parameters">4.3 Viewing the geometry and parameters</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#44-viewing-the-physics-settings">4.4 Viewing the physics settings</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#45-generating-the-mesh">4.5 Generating the mesh</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#46-running-the-calculation">4.6 Running the calculation</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#47-viewing-the-results">4.7 Viewing the results</a></li>
+<li class="h3" data-chapter="4-tutorial-calculating-the-example"><a href="#48-changing-conditions-and-comparing">4.8 Changing conditions and comparing</a></li>
+<li class="h2" data-chapter="5-drawing-the-geometry-sketch"><a href="#5-drawing-the-geometry-sketch">5. Drawing the geometry (sketch)</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#51-basics-of-drawing">5.1 Basics of drawing</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#52-closed-regions-the-range-to-be-calculated">5.2 Closed regions (the range to be calculated)</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#53-constraints">5.3 Constraints</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#54-dimensions">5.4 Dimensions</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#55-parameters-and-expressions">5.5 Parameters and expressions</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#56-selecting-moving-and-deleting">5.6 Selecting, moving and deleting</a></li>
+<li class="h3" data-chapter="5-drawing-the-geometry-sketch"><a href="#57-drawing-the-magnetic-geometry">5.7 Drawing the magnetic geometry</a></li>
+<li class="h2" data-chapter="6-specifying-the-physics"><a href="#6-specifying-the-physics">6. Specifying the physics</a></li>
+<li class="h3" data-chapter="6-specifying-the-physics"><a href="#61-electric-field-region-kinds">6.1 Electric field: region kinds</a></li>
+<li class="h3" data-chapter="6-specifying-the-physics"><a href="#62-electric-field-setting-the-electrodes">6.2 Electric field: setting the electrodes</a></li>
+<li class="h3" data-chapter="6-specifying-the-physics"><a href="#63-magnetic-field-field-source">6.3 Magnetic field: field source</a></li>
+<li class="h3" data-chapter="6-specifying-the-physics"><a href="#64-magnetic-field-coils-magnetic-materials-and-boundary-conditions">6.4 Magnetic field: coils, magnetic materials and boundary conditions</a></li>
+<li class="h3" data-chapter="6-specifying-the-physics"><a href="#65-region-table-and-checks">6.5 Region table and checks</a></li>
+<li class="h3" data-chapter="6-specifying-the-physics"><a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">6.6 Saturation of magnetic materials (Fröhlich–Kennelly model)</a></li>
+<li class="h2" data-chapter="7-generating-the-mesh"><a href="#7-generating-the-mesh">7. Generating the mesh</a></li>
+<li class="h2" data-chapter="8-running-the-calculation"><a href="#8-running-the-calculation">8. Running the calculation</a></li>
+<li class="h3" data-chapter="8-running-the-calculation"><a href="#81-types-of-calculation">8.1 Types of calculation</a></li>
+<li class="h3" data-chapter="8-running-the-calculation"><a href="#82-during-and-after-the-calculation">8.2 During and after the calculation</a></li>
+<li class="h3" data-chapter="8-running-the-calculation"><a href="#83-calculation-settings">8.3 Calculation settings</a></li>
+<li class="h2" data-chapter="9-viewing-the-results"><a href="#9-viewing-the-results">9. Viewing the results</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#91-displayed-quantities">9.1 Displayed quantities</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#92-overlays">9.2 Overlays</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#93-zooming-and-panning">9.3 Zooming and panning</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#94-probe-reading-values-at-a-point">9.4 Probe (reading values at a point)</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#95-exporting-plots-and-fields">9.5 Exporting plots and fields</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#96-beam-diagnostics">9.6 Beam diagnostics</a></li>
+<li class="h3" data-chapter="9-viewing-the-results"><a href="#97-managing-results">9.7 Managing results</a></li>
+<li class="h2" data-chapter="10-import-and-export"><a href="#10-import-and-export">10. Import and export</a></li>
+<li class="h3" data-chapter="10-import-and-export"><a href="#101-importing-version-2--1-projects">10.1 Importing Version 2 / 1 projects</a></li>
+<li class="h3" data-chapter="10-import-and-export"><a href="#102-importing-dgun-input">10.2 Importing DGUN input</a></li>
+<li class="h3" data-chapter="10-import-and-export"><a href="#103-importing-a-magnetic-field-map">10.3 Importing a magnetic field map</a></li>
+<li class="h3" data-chapter="10-import-and-export"><a href="#104-exporting-to-emrm-cad">10.4 Exporting to EMRM-CAD</a></li>
+<li class="h3" data-chapter="10-import-and-export"><a href="#105-exporting-input-for-the-cli">10.5 Exporting input for the CLI</a></li>
+<li class="h2" data-chapter="11-saving-and-folder-structure"><a href="#11-saving-and-folder-structure">11. Saving and folder structure</a></li>
+<li class="h2" data-chapter="12-troubleshooting"><a href="#12-troubleshooting">12. Troubleshooting</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#a-closed-region-is-not-filled">A closed region is not filled</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#the-run-button-is-disabled-or-the-calculation-cannot-be-started-appears">The Run button is disabled, or &quot;The calculation cannot be started&quot; appears</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#the-assigned-closed-region-was-not-found-appears">&quot;The assigned closed region was not found&quot; appears</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#a-unit-error-appears-in-a-value-field">A unit error appears in a value field</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#the-calculation-does-not-converge-not-converged">The calculation does not converge (&quot;not converged&quot;)</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#improving-the-accuracy-of-the-beam-current">Improving the accuracy of the beam current</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#the-nonlinear-magnetic-calculation-did-not-converge-in-n-iterations-appears">&quot;The nonlinear magnetic calculation did not converge in N iterations&quot; appears</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#accuracy-of-the-magnetic-field-with-magnetic-materials">Accuracy of the magnetic field with magnetic materials</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#stopping-a-calculation-in-the-middle">Stopping a calculation in the middle</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#cannot-delete-a-result">Cannot delete a result</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#cannot-open-a-model-already-open-elsewhere-appears">Cannot open a model (&quot;Already open elsewhere&quot; appears)</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#lines-in-the-sketch-tab-do-not-move-or-points-cannot-be-selected">Lines in the Sketch tab do not move, or points cannot be selected</a></li>
+<li class="h3" data-chapter="12-troubleshooting"><a href="#undoing-a-mistake">Undoing a mistake</a></li>
+<li class="h2" data-chapter="13-keyboard-and-mouse-reference"><a href="#13-keyboard-and-mouse-reference">13. Keyboard and mouse reference</a></li>
+<li class="h2" data-chapter="appendix-a-glossary"><a href="#appendix-a-glossary">Appendix A Glossary</a></li>
+<li class="h2" data-chapter="appendix-b-command-line-cli"><a href="#appendix-b-command-line-cli">Appendix B Command line (CLI)</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b1-command-names-and-basics">B.1 Command names and basics</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b2-two-kinds-of-files-model-file-tgun-and-input-for-the-cli-tgunproj">B.2 Two kinds of files: model file (.tgun) and input for the CLI (.tgunproj)</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b3-creating-input-from-a-model-params-and-convert">B.3 Creating input from a model: params and convert</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b4-running-calculations-run-solve-e-solve-b-and-mesh">B.4 Running calculations: run, solve-e, solve-b and mesh</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b5-viewing-results-info-plot-export-and-beam">B.5 Viewing results: info, plot, export and beam</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b6-import-import-dgun-and-import-b">B.6 Import: import-dgun and import-b</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b7-reproducing-the-gui-calculation">B.7 Reproducing the GUI calculation</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b8-script-example-sweeping-parameters">B.8 Script example: sweeping parameters</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b9-script-example-matching-a-target-automatic-adjustment-of-perveance">B.9 Script example: matching a target (automatic adjustment of perveance)</a></li>
+<li class="h3" data-chapter="appendix-b-command-line-cli"><a href="#b10-other-commands">B.10 Other commands</a></li>
+<li class="h2" data-chapter="appendix-c-for-users-moving-from-version-2"><a href="#appendix-c-for-users-moving-from-version-2">Appendix C For users moving from Version 2</a></li>
+</ul>
+</nav>
+<main><article>
+<h1 id="tgun-user-manual-version-3">TGUN User Manual (Version 3)</h1>
+<p>This is the user guide for people who use TGUN for the first time. It explains, with the actual screens, how to read the
+screen, go through a calculation with an example, draw the geometry, specify the physics, generate the mesh, run the
+calculation, read the results, and import from DGUN and other programs.</p>
+<ul>
+<li><strong>If you want to try it first</strong>, read <a href="#1-what-tgun-can-do">Chapter 1</a> (what TGUN can do) and <a href="#3-screen-layout">Chapter 3</a>
+(reading the screen), then calculate the example in <a href="#4-tutorial-calculating-the-example">Chapter 4</a> (about 10 minutes).</li>
+<li><strong>To calculate your own electron gun</strong>, refer to <a href="#5-drawing-the-geometry-sketch">Chapter 5</a> to <a href="#9-viewing-the-results">Chapter 9</a> in order.</li>
+<li><strong>If you have DGUN input</strong>, start from <a href="#102-importing-dgun-input">Section 10.2</a> to calculate the same electron gun right away.</li>
+<li><strong>If you used Version 2</strong>, first read <a href="#appendix-c-for-users-moving-from-version-2">Appendix C</a> (what has changed, and how to move your project).</li>
+</ul>
+<p>The <code>W:\tgun\…</code> in the screen examples is a working folder used for explanation. Read it as your own folder.</p>
+<hr />
+<h2 id="1-what-tgun-can-do">1. What TGUN can do</h2>
+<p>TGUN is a simulation program for designing <strong>axisymmetric (z-r, two-dimensional) thermionic electron guns</strong>. It solves the
+fields with the finite element method (FEM) and tracks the electrons leaving the cathode. It performs the same kinds of
+calculation as EGUN / DGUN, while you draw the geometry (verified against DGUN: with a mesh refined near the cathode, the
+difference in beam current is within 1%).</p>
+<p>The calculation consists of the following.</p>
+<ol>
+<li><strong>Electrostatic field</strong>: Solves the Poisson equation from the electrode voltages and the space charge ρ, and obtains the potential V and the electric field E.</li>
+<li><strong>Magnetostatic field</strong>: Solves the magnetic field B by FEM from the coils (total current I [A·turn]) and the magnetic materials (relative permeability μr). Saturation of magnetic materials can also be handled (the Fröhlich–Kennelly model, which uses the saturation magnetization and the initial susceptibility; <a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">Section 6.6</a>).
+You can also read a magnetic field map file or the on-axis magnetic field of DGUN (mag.dat).</li>
+<li><strong>Emission and tracking</strong>: Electrons are emitted from the cathode with space-charge-limited emission (a virtual cathode based on the Child-Langmuir law), and their orbits are tracked with the relativistic equations of motion (the self-magnetic field of the beam can also be included).</li>
+<li><strong>Iteration</strong>: The space charge ρ is rebuilt from the trajectories, and steps 1 and 3 are repeated until the solution converges to a self-consistent state in which the fields and the beam are in balance.</li>
+</ol>
+<p>What you obtain includes the beam current I_total, the perveance, the electron trajectories, the distributions of the potential / electric field / space charge density / magnetic field, the envelope, the phase space, and the emittance.</p>
+<h3 id="axial-symmetry-and-coordinates">Axial symmetry and coordinates</h3>
+<ul>
+<li><strong>z</strong> is the direction in which the beam travels (the axis of symmetry), and <strong>r</strong> is the distance from the axis (the radius). The unit of length is mm.</li>
+<li>The geometry is drawn <strong>only for the half with r ≥ 0</strong>. The red dash-dot line across the screen is the axis of symmetry (r = 0), and the region below it (r &lt; 0) is shown in gray.</li>
+</ul>
+<h3 id="two-geometries-for-the-electric-and-magnetic-fields">Two geometries for the electric and magnetic fields</h3>
+<p>In TGUN, the <strong>geometry used for the electric field calculation</strong> (electrodes, vacuum, dielectrics) and the <strong>geometry used for the magnetic field calculation</strong> (coils, magnetic materials, air) are drawn separately.
+Use the &quot;Electric&quot; / &quot;Magnetic&quot; buttons (&quot;Domain&quot;) at the left end of the ribbon to switch which one you work on.</p>
+<ul>
+<li>The electric geometry is the vacuum region in which the electrons fly (the range enclosed by the electrodes).</li>
+<li>The magnetic geometry includes the coils and magnetic materials, and is made wider than the electric geometry so that the magnetic field becomes sufficiently small at its outer boundary.
+You do not need to draw it if the calculation does not use a magnetic field.</li>
+</ul>
+<h3 id="workflow">Workflow</h3>
+<p>The ribbon (the tabs on the screen) is arranged from left to right in the order of work.</p>
+<pre><code>Sketch (draw the geometry) → Physics (set the electrodes and coils) → Mesh → Calculation → Results
+</code></pre>
+<hr />
+<h2 id="2-installation-and-startup">2. Installation and startup</h2>
+<h3 id="using-the-distributed-version-zip">Using the distributed version (zip)</h3>
+<p>Requirements: Windows 10 / 11 (64-bit). Python and other software do not need to be installed.</p>
+<ol>
+<li>Extract the distributed zip (<code>TGUN-&lt;version&gt;-trial-win64.zip</code>, from the Releases page at https://github.com/TakuyaNatsui/TGUN) to a place of your choice (for example, Models\TGUN).
+Before extracting, right-click the zip, choose &quot;Properties&quot;, check &quot;Unblock&quot; at the bottom, and click OK. This makes the warning below less likely to appear.</li>
+<li>Double-click <code>TGUN.exe</code> in the extracted folder.
+If &quot;Windows protected your PC&quot; appears at the first startup, click &quot;More info&quot; and then &quot;Run anyway&quot;
+(TGUN does not yet have a digital signature).</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Contents of the folder</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TGUN.exe</code></td>
+<td>The program (GUI and commands)</td>
+</tr>
+<tr>
+<td><code>manual\</code></td>
+<td>This manual (HTML. It can also be opened from the &quot;?&quot; at the upper right, &quot;Manual&quot;, or the F1 key)</td>
+</tr>
+<tr>
+<td><code>examples\</code></td>
+<td>Examples (used in the tutorial in Chapter 4)</td>
+</tr>
+<tr>
+<td><code>mesher\</code></td>
+<td>A separate program that generates the mesh (GNU GPL. It includes Gmsh)</td>
+</tr>
+<tr>
+<td><code>licenses\</code>, <code>THIRD_PARTY_NOTICES.txt</code></td>
+<td>Licenses of the open-source software used</td>
+</tr>
+<tr>
+<td><code>README.txt</code>, <code>TERMS_OF_USE.txt</code></td>
+<td>Please read first / terms of use</td>
+</tr>
+</tbody>
+</table>
+<p>The trial version has a fixed expiry date (it is shown in the window title and in &quot;About TGUN&quot;).
+To check that it works, run <code>TGUN.exe selftest</code> in the command prompt. It performs a small calculation (a planar diode) with the same mechanism as the GUI, and if &quot;Result: OK&quot; appears, it is working correctly.</p>
+<h3 id="running-from-the-development-environment-source">Running from the development environment (source)</h3>
+<p>Requirements: Windows (verified on Windows 11), Python 3.13.</p>
+<p>In the <code>TGUN_ver3</code> folder, run the following from the command prompt. This also installs PySide6 needed for the GUI and gmsh used for mesh generation.</p>
+<pre><code class="language-bash">pip install -e .[gui,mesher]
+</code></pre>
+<p>If you want to solve large meshes faster, it is convenient to also install the fast linear solver (optional).</p>
+<pre><code class="language-bash">pip install -e .[accel]
+</code></pre>
+<p>Start the program with one of the following. If you specify a model file, it is opened at startup.</p>
+<pre><code class="language-bash">tgun-gui
+python -m tgun
+tgun-gui C:\work\gun.tgun
+</code></pre>
+<p>If you specify a Version 2 / 1 project (<code>.tgunproj</code>), it is imported as a new model (<a href="#101-importing-version-2--1-projects">Section 10.1</a>).
+The window position and size are remembered when you quit, and restored at the next startup.</p>
+<hr />
+<h2 id="3-screen-layout">3. Screen layout</h2>
+<figure><img loading="lazy" width="1440" height="934" src="manual_images_en/overview.png" alt="Whole screen (with the Physics tab open)" /><figcaption>Whole screen (with the Physics tab open)</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>Quick Access</td>
+<td>New, Open, Save, Undo, Redo</td>
+</tr>
+<tr>
+<td>②</td>
+<td>File</td>
+<td>New, Open, Recent models, Save, Save As, Import, Export, Quit</td>
+</tr>
+<tr>
+<td>③</td>
+<td>Ribbon tabs</td>
+<td>In order of work: Sketch / Physics / Mesh / Calculation / Results. To the right are Manage (parameters) and View. Switching tabs changes the screen to the one for that work</td>
+</tr>
+<tr>
+<td>④</td>
+<td>Ribbon panel</td>
+<td>The operation buttons of the current tab. Move the mouse over a button to see its description. Buttons that cannot be pressed now are shown in a faint color</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>Domain</td>
+<td>Selects which geometry, &quot;Electric&quot; or &quot;Magnetic&quot;, is handled. It is at the left end of the Sketch, Physics and Mesh tabs. The &quot;Fit&quot; button next to it adjusts the view so that the current domain's geometry fits (F key)</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>Central canvas</td>
+<td>The screen where you draw and select the geometry (canvas). The name of the current domain appears at the upper right (electric = blue, magnetic = green). In the Results tab, it is replaced by the result plots</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>Right panel</td>
+<td>The setting fields of the current tab (Physics: table of regions and electrodes; Mesh: size and status; Calculation: convergence graph and settings; Results: list of results and display options). Not shown in the Sketch tab</td>
+</tr>
+<tr>
+<td>⑧</td>
+<td>Status bar</td>
+<td>Guidance for the current operation, the state of the calculation, and the coordinates (z, r) of the mouse position</td>
+</tr>
+</tbody>
+</table>
+<p>To change the display language (Japanese / English), choose &quot;File&quot; → &quot;Language...&quot;. It takes effect after you restart TGUN.</p>
+<p>The &quot;?&quot; at the upper right has &quot;Manual&quot; (F1 key) and &quot;About TGUN&quot; (version, trial expiry, terms of use, and the licenses of the open-source software used). The &quot;∧&quot; to its right collapses the ribbon to the tab names only (press it again to restore).</p>
+<p>The window title shows the name of the model. If there are unsaved changes, &quot;*&quot; is added after the name.
+For the trial version, the expiry date is also shown (for example, &quot;Trial version (until 2027-12-31)&quot;).</p>
+<h3 id="operating-the-central-canvas">Operating the central canvas</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mouse wheel</td>
+<td>Zoom in and out, centered on the mouse position</td>
+</tr>
+<tr>
+<td>Drag while holding the middle button (wheel)</td>
+<td>Pan the view</td>
+</tr>
+<tr>
+<td>F key (or &quot;Fit&quot;)</td>
+<td>Adjust the view so that the geometry of the current domain fits</td>
+</tr>
+</tbody>
+</table>
+<p>The geometry of the other domain is overlaid as gray dashed lines (you can hide it with &quot;Other Domain&quot; in the View tab).</p>
+<h3 id="the-view-tab-and-the-manage-tab">The View tab and the Manage tab</h3>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_view.png" alt="The View tab" /><figcaption>The View tab</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fit</td>
+<td>Adjusts the view so that the geometry of the current domain (and the axis) fits (F key). In the Results tab, returns the result plot to the full view</td>
+</tr>
+<tr>
+<td>Other Domain</td>
+<td>Shows / hides the outline of the other domain (electric / magnetic) as gray dashed lines</td>
+</tr>
+<tr>
+<td>Show Mesh</td>
+<td>Overlays / hides the generated mesh on the geometry</td>
+</tr>
+<tr>
+<td>Minimize Ribbon</td>
+<td>Shows only the tab names in the ribbon (Ctrl+F1. Double-clicking a tab name does the same)</td>
+</tr>
+<tr>
+<td>Full Screen</td>
+<td>Makes the window fill the screen (F11)</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>Shows / hides the log of mesh generation and calculation at the bottom of the screen</td>
+</tr>
+</tbody>
+</table>
+<p>The Manage tab has &quot;Parameters&quot; (the table of parameters, <a href="#55-parameters-and-expressions">Section 5.5</a>). The View and Manage tabs do not change
+the current work (sketch, physics, ...) when you open them.</p>
+<hr />
+<h2 id="4-tutorial-calculating-the-example">4. Tutorial: calculating the example</h2>
+<p>This section walks you through opening the example <strong>gun_with_solenoid</strong> (a Pierce-type electron gun with a solenoid
+that has an iron yoke), generating the mesh, running the calculation, and viewing the results.
+One calculation takes about 15 seconds.</p>
+<p>The structure of the example (r-z cross section, dimensions in mm):</p>
+<pre><code>Electric field  Cathode (-200 kV)           sphere. Radius 30, radius of curvature 60
+                Wehnelt (-200 kV)           focusing electrode that opens at 45 degrees from the edge of the cathode
+                Anode (0 V)                 the plane at z = 70 and the beam pipe (radius 15, up to z = 300)
+Magnetic field  Coil (5000 A)               z = 100 to 280, r = 140 to 190
+                Yoke (saturable material)   iron of thickness 10 that surrounds the coil, z = 80 to 300
+</code></pre>
+<p>A beam of about 77 A leaves the cathode and passes through a beam pipe with a radius of 15 mm.
+<strong>Without the solenoid, half of the beam hits the wall of the pipe. With the solenoid, all of it passes through</strong>
+(compared in Section 4.8).</p>
+<p>The geometry of this example is defined by <strong>dimensions and parameters</strong>. The cathode radius, the position of the anode,
+the accelerating voltage and the coil current are parameters, so changing one value changes the geometry or the conditions.</p>
+<h3 id="41-opening-the-example">4.1 Opening the example</h3>
+<ol>
+<li>Choose &quot;File&quot; → &quot;Open&quot; (Ctrl+O) at the upper left.</li>
+<li>Select <code>examples\gun_with_solenoid\gun_with_solenoid.tgun</code> in the TGUN folder (the folder that contains <code>TGUN.exe</code>).
+In the development environment, this is <code>TGUN_ver3\examples\gun_with_solenoid\gun_with_solenoid.tgun</code>.</li>
+</ol>
+<p>The geometry and the settings of the example open as they are. There is no mesh and no result yet; you create them below.</p>
+<blockquote class="tip"><p><strong>Tip</strong>: The file <code>gun_with_solenoid.tgunproj</code> in the same folder is the input for the command line
+(<a href="#appendix-b-command-line-cli">Appendix B</a>). It was made from this model, and you can pass it to <code>tgun run -p</code> as it is.</p>
+</blockquote>
+<h3 id="42-saving-under-a-new-name">4.2 Saving under a new name</h3>
+<p>Before you start the calculation, choose &quot;File&quot; → &quot;Save as…&quot; (Ctrl+Shift+S) and save the model under a different name
+in your working folder (for example <code>gun_tutorial.tgun</code>). This leaves the original example folder unchanged.
+Saving creates the model file <code>gun_tutorial.tgun</code>. The mesh and the results are stored in the data folder with the same
+name, <code>gun_tutorial.tgun.data</code> (<a href="#11-saving-and-folder-structure">Chapter 11</a>).</p>
+<h3 id="43-viewing-the-geometry-and-parameters">4.3 Viewing the geometry and parameters</h3>
+<p>On the Sketch tab, look at the geometry of the electric field. The filled light blue areas are the closed regions
+(the vacuum parts). The arc at the lower left is the cathode (a sphere), the slanted line rising from it is the Wehnelt electrode,
+the vertical line at z = 70 mm is the face of the anode, and the thin part extending to the right is the beam pipe.
+The bottom edge is the axis of symmetry (r = 0). The gray dashed lines are the outline of the magnetic geometry (the yoke and the coil).</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_shape_e.png" alt="Electric field geometry (Sketch tab)" /><figcaption>Electric field geometry (Sketch tab)</figcaption></figure>
+<p>The numbers and arrows in the figure are <strong>dimensions</strong>. A dimension whose value is preceded by <code>fx:</code> is determined by an
+expression (a parameter). Double-click a dimension to show its value or expression (such as <code>Rc2</code> or <code>d_an</code>). If you change it,
+the geometry follows (<a href="#54-dimensions">Section 5.4</a>).</p>
+<p>Click &quot;Parameters&quot; on the Manage tab to open the parameter table. The upper group in the table (Dimension Parameters)
+is for the dimensions in the sketch. Scroll down to find the group of user parameters that was made for this example.</p>
+<figure><img loading="lazy" width="900" height="330" src="manual_images_en/tut_params.png" alt="Parameters of the example" /><figcaption>Parameters of the example</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rc1</code></td>
+<td>30 mm</td>
+<td>Radius of the cathode</td>
+</tr>
+<tr>
+<td><code>Rc2</code></td>
+<td>60 mm</td>
+<td>Radius of curvature of the spherical cathode surface</td>
+</tr>
+<tr>
+<td><code>d_an</code></td>
+<td>70 mm</td>
+<td>Distance from the center of the cathode to the face of the anode</td>
+</tr>
+<tr>
+<td><code>r_pip</code></td>
+<td>15 mm</td>
+<td>Radius of the beam pipe</td>
+</tr>
+<tr>
+<td><code>Va</code></td>
+<td>200 kV</td>
+<td>Accelerating voltage (the voltage of the cathode and the Wehnelt electrode is <code>-Va</code>)</td>
+</tr>
+<tr>
+<td><code>I_coil</code></td>
+<td>5000 A</td>
+<td>Total current of the coil</td>
+</tr>
+</tbody>
+</table>
+<p>If you change an expression in the &quot;Expression&quot; column of the table, the dimensions, voltages and currents that use it
+change at once (<a href="#55-parameters-and-expressions">Section 5.5</a>).
+Here, just look at the table and close it.</p>
+<p>Click &quot;Magnetic Field&quot; at the left end of the ribbon to switch to the magnetic geometry. The large outer rectangle is the air box,
+the U-shaped part inside is the yoke, and the square inside that is the coil. The gray dashed lines at the lower left are the
+outline of the electric geometry.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_shape_b.png" alt="Magnetic field geometry" /><figcaption>Magnetic field geometry</figcaption></figure>
+<h3 id="44-viewing-the-physics-settings">4.4 Viewing the physics settings</h3>
+<p>On the Physics tab, curves are drawn in the <strong>colors of their boundary</strong> and closed regions in the <strong>colors of their kind</strong>,
+and the panel on the right appears.</p>
+<p>With the electric field (the domain set to &quot;Electric Field&quot;), the electrode table in the panel on the right lists Cathode
+(the Cathode column is checked), Wehnelt and Anode. The voltage fields of Cathode and Wehnelt contain the expression <code>-Va</code>,
+and the evaluated value (-200000 V) is shown. In the figure, the red line is the boundary of Cathode, the blue line is that of Wehnelt,
+and the green line is that of Anode. The lines without a color (the short edge at the upper left and the edge at the right end) are
+natural boundaries (∂V/∂n = 0). The bottom edge is the axis of symmetry.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_physics_e.png" alt="Electric field physics (regions and electrode table)" /><figcaption>Electric field physics (regions and electrode table)</figcaption></figure>
+<p>With the magnetic field (the domain set to &quot;Magnetic Field&quot;), the region table lists Coil and Yoke (Saturable material).
+The total current field of Coil contains the parameter <code>I_coil</code>. The purple dashed line on the outer boundary is A = 0
+(a boundary that magnetic flux does not cross). Click a row of the region table, or a closed region in the figure, to select it.
+Then the fields for its kind, name and value appear below the table. The figure below shows the case where the coil is selected.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_physics_b.png" alt="Magnetic field physics (coil selected)" /><figcaption>Magnetic field physics (coil selected)</figcaption></figure>
+<h3 id="45-generating-the-mesh">4.5 Generating the mesh</h3>
+<p>On the Mesh tab, click &quot;Both Domains&quot;. The mesh (the fine triangular subdivision) is generated for the electric field first,
+then for the magnetic field.
+Click &quot;Show Mesh&quot; to overlay the mesh on the geometry. The panel on the right shows the numbers of nodes and elements and the edge lengths.
+The electric mesh is finer only near the cathode (overall 2 mm, near the cathode 1 mm; <a href="#7-generating-the-mesh">Chapter 7</a>).</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_mesh_e.png" alt="Electric field mesh" /><figcaption>Electric field mesh</figcaption></figure>
+<p>Switch the domain to the magnetic field to see the magnetic mesh.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_mesh_b.png" alt="Magnetic field mesh" /><figcaption>Magnetic field mesh</figcaption></figure>
+<blockquote class="tip"><p><strong>Tip</strong>: If you start the calculation without generating a mesh, the mesh is generated automatically before the calculation. Generating it on the Mesh tab first
+lets you check the fineness before you calculate. If the settings have not changed, the calculation uses that mesh as it is.</p>
+</blockquote>
+<h3 id="46-running-the-calculation">4.6 Running the calculation</h3>
+<p>On the Calculation tab, click &quot;Run&quot;. A confirmation dialog appears. It lists the parameters, the calculation settings, the voltages of the
+electrodes, the currents of the coils, the mesh and the output folder of the results. Check them, then click &quot;Run&quot;.</p>
+<figure><img loading="lazy" width="520" height="650" src="manual_images_en/run_confirm.png" alt="Confirmation before the run" /><figcaption>Confirmation before the run</figcaption></figure>
+<p>During the calculation, the <strong>convergence graph</strong> in the panel on the right extends with each iteration. Above it, &quot;running: iteration k/max&quot;
+and the current I_total at that moment are shown. Click &quot;Log&quot; on the ribbon to show the calculation log below the screen.
+To stop the calculation, click &quot;Stop&quot; (it stops at the next iteration boundary) or &quot;Force Stop&quot;.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_running.png" alt="Calculation in progress (with the log shown)" /><figcaption>Calculation in progress (with the log shown)</figcaption></figure>
+<p>When the calculation finishes, the status becomes &quot;Done (converged)&quot;. Below the graph, I_total, the perveance, the energy and
+the radius at the exit, and the calculation time are shown. In this example, the calculation converges in about 30 iterations,
+and the current is about 76.9 A (perveance 0.86 µP).</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_run_done.png" alt="Calculation finished" /><figcaption>Calculation finished</figcaption></figure>
+<p>How to read the convergence graph:</p>
+<ul>
+<li><strong>Blue line (left axis)</strong>: beam current I_total [A]. It settles to a constant value as the iterations proceed.</li>
+<li><strong>dI / dJ / ρ (right, logarithmic axis)</strong>: relative residuals of the current, the emission current density and the space charge.
+dI and dJ are the differences between &quot;the cathode current that the present field requires&quot; and &quot;the current used in the previous iteration&quot;.
+ρ is the difference between &quot;the charge produced by the trajectories in the present field&quot; and &quot;the charge on which that field was based&quot;.
+The calculation has converged when dI and dJ are below the gray dotted line (tol), and ρ is below the purple dotted line (tol ρ).</li>
+<li><strong>Vertical dashed lines</strong>: iterations at which the relaxation factor α was changed automatically. If the calculation is about to diverge,
+α is halved (the log shows &quot;divergence detected&quot;). After that, when ρ keeps decreasing, α is returned to its original value
+(the log shows &quot;residual keeps decreasing&quot;).</li>
+</ul>
+<h3 id="47-viewing-the-results">4.7 Viewing the results</h3>
+<p>When you open the Results tab, the <strong>result list</strong> appears at the upper right and the result plot in the center. Click &quot;0001-run Full run [Done]&quot;
+in the list to show that result. At first, the distribution of the potential V is shown with the electron trajectories (blue) and the electrode
+shapes overlaid. The panel on the right shows a summary (current, perveance, the range of the fields and the peak of the on-axis magnetic field).</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/tut_results_v.png" alt="Result (potential and trajectories)" /><figcaption>Result (potential and trajectories)</figcaption></figure>
+<p>You can see the electrons leaving the cathode, focused toward the hole in the anode, and traveling through the beam pipe guided by the solenoid field.
+Switching the displayed quantity (electric field, space charge density, magnetic field) and the probes are described in <a href="#9-viewing-the-results">Chapter 9</a>.</p>
+<h3 id="48-changing-conditions-and-comparing">4.8 Changing conditions and comparing</h3>
+<p>Calculation results are <strong>kept as a history</strong> and are not overwritten. Change a parameter, calculate again, and compare.
+Here, set the coil current to 0 and calculate the case without the solenoid.</p>
+<ol>
+<li>On the Manage tab, click &quot;Parameters&quot; to open the parameter table. Change the expression of <code>I_coil</code> to <code>0 A</code> and press Enter.</li>
+<li>On the Calculation tab, click &quot;Run&quot;. The confirmation dialog shows &quot;All coil currents are 0, so the calculation runs without a magnetic field&quot;.
+Run it as it is. The result &quot;0002-run&quot; is created.</li>
+<li>On the Results tab, select the result. Use &quot;Rename…&quot; under the panel on the right to give it a clear name
+(for example, &quot;Coil 5000 A&quot; or &quot;Coil 0 A&quot;).</li>
+</ol>
+<figure><img loading="lazy" width="437" height="140" src="manual_images_en/results_list.png" alt="Result list (with names given)" /><figcaption>Result list (with names given)</figcaption></figure>
+<p>Click a result in the list to switch the display. Without the solenoid, the beam spreads under its own space charge,
+and the outer electrons hit the wall of the beam pipe (only about half of the emitted current reaches the exit).</p>
+<figure><img loading="lazy" width="2010" height="786" src="manual_images_en/tut_compare.png" alt="Comparison with the coil (left) and without the coil (right)" /><figcaption>Comparison with the coil (left) and without the coil (right)</figcaption></figure>
+<p>When you have finished comparing, set <code>I_coil</code> back to <code>5000 A</code>.</p>
+<blockquote class="tip"><p><strong>Tip</strong>: In the same way, you can change <code>d_an</code> (the position of the anode) or <code>Va</code> (the accelerating voltage) and compare how the current changes.
+The results record the parameter values used in the calculation (see the summary on the Results tab). To vary parameters from the command line
+and calculate automatically, see <a href="#b8-script-example-sweeping-parameters">Section B.8</a> and <a href="#b9-script-example-matching-a-target-automatic-adjustment-of-perveance">Section B.9</a> in Appendix B.</p>
+</blockquote>
+<p>This completes the tutorial. The following chapters explain in detail how to model and calculate your own electron gun.</p>
+<hr />
+<h2 id="5-drawing-the-geometry-sketch">5. Drawing the geometry (sketch)</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_sketch.png" alt="Sketch tab" /><figcaption>Sketch tab</figcaption></figure>
+<p>On the Sketch tab, you draw the geometry of the current domain (electric field or magnetic field). Before you draw, check which domain you are drawing for in the <strong>Domain</strong> box at the left end.
+The drawing, constraint and dimension tools are the same as the sketcher in the 3D CAD EMRM-CAD (close to the operation of Autodesk Inventor).</p>
+<ul>
+<li><strong>Create</strong>: draws lines, circles, arcs, rectangles and so on.</li>
+<li><strong>Modify</strong>: moves, trims, extends, copies and so on the drawn geometry.</li>
+<li><strong>Pattern</strong>: copies in arrays, or mirror images.</li>
+<li><strong>Constraints</strong>: dimensions and relations between entities (horizontal, parallel, coincident and so on).</li>
+<li><strong>Format</strong>: switches to construction lines (auxiliary lines) and so on.</li>
+</ul>
+<h3 id="51-basics-of-drawing">5.1 Basics of drawing</h3>
+<ol>
+<li>On the <strong>Create</strong> panel, select a tool (buttons with ▼ open a list of related tools).
+The status bar shows the next step.</li>
+<li>Click on the screen to set the points in order. If you click near an existing point or line, the cursor snaps to an endpoint, a midpoint, or a point on a line.</li>
+<li>When a shape is finished, you can draw the next shape right away. Press <strong>Esc</strong> to finish the tool.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>How to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Line (L key)</td>
+<td>Click the start point, then the next point, and so on (connected lines). Double-click or press Enter to finish. Clicking the first point to close the loop also finishes</td>
+</tr>
+<tr>
+<td>Circle ▼</td>
+<td>Center, then a point on the circumference. ▼ has Three Point Circle and Tangent Circle</td>
+</tr>
+<tr>
+<td>Centerpoint Arc ▼</td>
+<td>Center, start point, end point. ▼ has Three Point Arc and Tangent Arc (an arc that joins smoothly to the end of a line)</td>
+</tr>
+<tr>
+<td>Corner Rectangle ▼</td>
+<td>Two opposite corners. Horizontal and vertical constraints are added to the four sides. ▼ has Three Point Rectangle, Slot, Polygon and so on</td>
+</tr>
+<tr>
+<td>Fillet ▼</td>
+<td>Rounds the corner between lines (enter the radius, then click the corner or the two lines). ▼ has Chamfer</td>
+</tr>
+<tr>
+<td>Point</td>
+<td>Places a point</td>
+</tr>
+<tr>
+<td>Construction Line / Centerline</td>
+<td>Auxiliary line (dashed). It does not form the outline of a closed region</td>
+</tr>
+</tbody>
+</table>
+<p>While drawing, the <strong>input window</strong> appears at the top left of the screen. Instead of positioning with the mouse, you can type numbers to set the shape.
+The figure below shows the state after the first point of a line is placed. There are fields for length and angle.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/model_line_hud.png" alt="Drawing a line (length and angle input window at the top left)" /><figcaption>Drawing a line (length and angle input window at the top left)</figcaption></figure>
+<ul>
+<li>Press <strong>Tab</strong> to move to the next field, type a value, and press <strong>Enter</strong> to confirm. The typed values remain as dimensions.</li>
+<li>You can also type expressions in the fields (<code>25 mm</code>, <code>40 + 2 * 5</code>, or a parameter name such as <code>Lgap</code>).</li>
+<li>If you draw a line that is nearly horizontal or vertical, a horizontal or vertical constraint is added automatically. If you snap an endpoint to an existing point, a Coincident constraint connects them.
+<strong>Hold Ctrl and click</strong> to draw without adding a constraint at that click.</li>
+</ul>
+<blockquote class="warn"><p><strong>Note</strong>: The curves that can be used in the calculation are lines, circles and arcs. Splines, ellipses and text cannot be used (there are no buttons for them).</p>
+</blockquote>
+<h3 id="52-closed-regions-the-range-to-be-calculated">5.2 Closed regions (the range to be calculated)</h3>
+<p><strong>A region enclosed by lines</strong> is found automatically and shaded in light blue. This is a closed region, the unit of the range to be calculated.
+If a region is not shaded, its outline is not closed (see <a href="#12-troubleshooting">Chapter 12</a>).</p>
+<ul>
+<li>Lines must be joined by matching endpoints. Endpoints that are not joined are shown as large orange dots.</li>
+<li>Even where lines cross, the curves are not cut. The regions separated by the crossing become separate closed regions.
+For example, if you draw a square coil inside an air box, the inside and the outside of the coil become separate closed regions.</li>
+<li>Draw the top edge on the axis of symmetry too. Points on the axis are automatically given a constraint that keeps them on the axis.
+Do not let the geometry extend to r &lt; 0 (the check reports this as an error).</li>
+</ul>
+<h3 id="53-constraints">5.3 Constraints</h3>
+<p>A constraint defines a relation between entities and keeps the shape. Add constraints with the icons on the <strong>Constraints</strong> panel (hover over an icon to see its name).</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Symbol on screen</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coincident</td>
+<td>C</td>
+<td>Makes two points coincide (can also be applied to the origin)</td>
+</tr>
+<tr>
+<td>Point on Object</td>
+<td>On</td>
+<td>Places a point on a line, circle, arc or axis</td>
+</tr>
+<tr>
+<td>Collinear</td>
+<td>≡</td>
+<td>Places two lines on the same straight line</td>
+</tr>
+<tr>
+<td>Horizontal / Vertical</td>
+<td>H / V</td>
+<td>Makes a line (or two points) horizontal / vertical</td>
+</tr>
+<tr>
+<td>Parallel / Perpendicular</td>
+<td>// / ⊥</td>
+<td>Makes two lines parallel / perpendicular</td>
+</tr>
+<tr>
+<td>Tangent</td>
+<td>T</td>
+<td>Makes a line tangent to a circle or arc, or circles and arcs tangent to each other</td>
+</tr>
+<tr>
+<td>Concentric</td>
+<td>◎</td>
+<td>Makes the centers of two circles or arcs coincide</td>
+</tr>
+<tr>
+<td>Equal</td>
+<td>=</td>
+<td>Makes the lengths of two lines equal, or the radii of two circles or arcs equal</td>
+</tr>
+<tr>
+<td>Midpoint</td>
+<td>M</td>
+<td>Places a point at the midpoint of a line or an arc</td>
+</tr>
+<tr>
+<td>Symmetric</td>
+<td>][</td>
+<td>Makes two points, lines, circles or arcs symmetric about a line</td>
+</tr>
+<tr>
+<td>Fix</td>
+<td>F</td>
+<td>Fixes a point or an entity at its current position</td>
+</tr>
+</tbody>
+</table>
+<p>There are two ways to apply a constraint.</p>
+<ul>
+<li>Select the entities first (Ctrl-click to add more), then press the constraint button.</li>
+<li>Press the constraint button first, then click the entities one at a time. The constraint is applied when the required number of entities is reached. Press Esc to finish.</li>
+</ul>
+<p>The color of the lines shows how far the shape is defined. <strong>Thin blue lines</strong> can still move (dimensions or constraints are missing),
+<strong>thick black lines</strong> are fully defined, and <strong>red lines</strong> have too many constraints or conflict.
+If you try to add a constraint that conflicts with an existing one, a conflict dialog appears and the shape does not change.</p>
+<h3 id="54-dimensions">5.4 Dimensions</h3>
+<p>A dimension is a constraint that defines the shape by values such as length, angle and radius.</p>
+<ol>
+<li>Press <strong>Dimension</strong> (D key).</li>
+<li>Click the line, circle or point to dimension (when two items are needed, click them in order).</li>
+<li>Click where to place the dimension. The input window appears. Type the value (expressions are allowed) and press Enter.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>What you select</th>
+<th>Dimension created</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One line, or two points</td>
+<td>Length (the placement position makes it horizontal or vertical)</td>
+</tr>
+<tr>
+<td>A point and a line</td>
+<td>Distance from the point to the line</td>
+</tr>
+<tr>
+<td>Two lines</td>
+<td>Angle (distance for parallel lines)</td>
+</tr>
+<tr>
+<td>Circle / arc</td>
+<td>Diameter / radius</td>
+</tr>
+<tr>
+<td>Origin and a point</td>
+<td>Horizontal or vertical distance (coordinates)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>To change the value of a dimension, <strong>double-click the dimension number</strong> on the screen.</li>
+<li>If you enter a parameter name or an expression as the value, <code>fx:</code> is added to the dimension text and the dimension follows the parameter.</li>
+<li>If you check &quot;Driven (reference)&quot; in the input window, the dimension only measures the current value without defining the shape (it is shown in parentheses).</li>
+</ul>
+<p>Example: a planar diode (width Lgap = 10 mm, height Rc = 5 mm) with its shape defined by parameters and dimensions.
+The lower-left corner is coincident with the origin, and the lines are black, so the shape is fully defined.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/model_sketch.png" alt="Dimensions defined by parameters (fx: is shown)" /><figcaption>Dimensions defined by parameters (fx: is shown)</figcaption></figure>
+<h3 id="55-parameters-and-expressions">5.5 Parameters and expressions</h3>
+<p>On the <strong>Manage</strong> tab, click &quot;Parameters&quot; to open the parameter table. (It can be opened from any tab, and you can keep it open while you work.)</p>
+<figure><img loading="lazy" width="820" height="360" src="manual_images_en/model_params.png" alt="Parameter table" /><figcaption>Parameter table</figcaption></figure>
+<ul>
+<li><strong>User Parameters</strong>: parameters you create. Click &quot;Add Numeric&quot; to add a row, then enter the name, unit and expression.</li>
+<li><strong>Dimension Parameters</strong>: the dimensions of the sketch (names such as d0, d1 are assigned automatically). You can link them to other parameters in the expression field.</li>
+<li>Parameters can be used in dimensions, and in fields such as the electrode voltage, the coil current, the relative permittivity and the mesh size. They are shared by the electric and magnetic fields.</li>
+<li>When you change a parameter, all shapes and values that use it follow.</li>
+</ul>
+<p><strong>How to write expressions</strong></p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number with a unit</td>
+<td><code>10 mm</code>, <code>10 kV</code>, <code>30 deg</code>, <code>2.15 T</code>, <code>1000 A</code></td>
+</tr>
+<tr>
+<td>Calculation</td>
+<td><code>Lgap / 2</code>, <code>2 * Rc + 1 mm</code>, <code>sqrt(2) * Rc</code></td>
+</tr>
+<tr>
+<td>Functions</td>
+<td><code>sin</code>, <code>cos</code>, <code>tan</code> (angles are in degrees: <code>sin(30 deg)</code> and <code>sin(30)</code> both give 0.5), <code>sqrt</code>, <code>abs</code>, <code>min</code>, <code>max</code> and so on</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules for units</strong></p>
+<ul>
+<li>If you type <strong>only a number</strong> in a value field (voltage, current, mesh size and so on), the unit of that field is added. For example, <code>10000</code> in the voltage field becomes <code>10000 V</code>.</li>
+<li>Create parameters <strong>with units</strong> (for a voltage, <code>Va = 10 kV</code>). If you enter a parameter without a unit in a field such as voltage, it is an error. It is not silently treated as V.
+To fix it, add a unit to the parameter, or write the field as <code>Vn * 1 V</code>.</li>
+<li>For a field where you write an expression, the evaluated value (for example <code>= 10000 V</code>) is shown below it.</li>
+</ul>
+<h3 id="56-selecting-moving-and-deleting">5.6 Selecting, moving and deleting</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Click</td>
+<td>Selects one point, curve, constraint symbol or dimension. Ctrl toggles the selection, and Shift adds to it</td>
+</tr>
+<tr>
+<td>Drag from empty space left to right</td>
+<td>Selects the entities that lie completely inside the box</td>
+</tr>
+<tr>
+<td>Drag from empty space right to left</td>
+<td>Selects the entities that touch the box</td>
+</tr>
+<tr>
+<td>Drag a selected point or curve</td>
+<td>Moves it while keeping its constraints</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Deletes the selected entities, constraints and dimensions</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>Modify</strong> panel has Move, Copy, Rotate, Trim (T key, removes the excess up to the intersection), Extend, Split, Scale, Stretch and Offset.
+The <strong>Pattern</strong> panel has rectangular and circular patterns, and Mirror.
+To make a line an auxiliary line, select it and press &quot;Construction&quot; on the <strong>Format</strong> panel. Press it again to change it back.</p>
+<p>If you make a mistake, use &quot;Undo&quot; (Ctrl+Z). To redo, press Ctrl+Y.</p>
+<h3 id="57-drawing-the-magnetic-geometry">5.7 Drawing the magnetic geometry</h3>
+<p>Set the domain to magnetic, then draw the air box (outer boundary), the coils and the magnetic materials.</p>
+<ul>
+<li>Make the air box large enough to enclose the coils and magnetic materials, so that the magnetic field becomes small at the outer boundary. Start drawing from the axis (r = 0).</li>
+<li>The electric-field geometry is shown overlaid as gray dashed lines. Use it as a guide when you place the coils relative to the electrodes.</li>
+<li>Make sure the region where the electrons travel (the electric-field geometry) lies inside the magnetic-field geometry.</li>
+<li>If you make dimensions and parameters shared with the electric field (for example, decide the coil position with a parameter for the electrode position), the other side follows when you change one of them.</li>
+</ul>
+<p><strong>If you drew in the wrong domain (moving to the other domain)</strong></p>
+<p>If you drew the magnetic geometry in the electric sketch by mistake, you can move it without drawing it again.</p>
+<ol>
+<li>Select the curves and points to move (drag a box to select several at once).</li>
+<li>Click &quot;Move to Other Domain&quot; in the &quot;Domain&quot; panel of the Sketch tab. The selected geometry moves to the <strong>same position</strong>
+in the sketch of the other domain (magnetic if you are in electric, and vice versa). To keep the original, click &quot;Copy to Other Domain&quot;.</li>
+</ol>
+<ul>
+<li>The constraints and dimensions move with it, including dimensions from the origin or the axes and expressions that use parameters (<code>Rc1</code>, <code>W / 2</code>, ...).</li>
+<li>Constraints and dimensions between the selection and unselected curves are dropped (the status bar shows how many). An expression that
+refers to another dimension is replaced by its current value.</li>
+<li>Electrode and boundary-condition assignments of the moved curves are removed. Assign them again on the Physics tab in the other domain.</li>
+<li>One &quot;Undo&quot; (Ctrl+Z) restores the state before the move.</li>
+</ul>
+<blockquote class="tip"><p><strong>Tip</strong>: The ordinary cut, copy and paste (Ctrl+X, Ctrl+C, Ctrl+V) also work across the two domains. However, they drop the constraints
+and dimensions attached to the origin and the axes, and turn dimension expressions into numbers (so that the geometry can also be pasted into another model).</p>
+</blockquote>
+<hr />
+<h2 id="6-specifying-the-physics">6. Specifying the physics</h2>
+<p>On the Physics tab, you assign a <strong>kind</strong> (vacuum, coil, etc.) to <strong>closed regions</strong>, and <strong>electrodes and boundary conditions</strong> to <strong>curves</strong>.
+The operations are done with the ribbon buttons, and the values (voltage, current, etc.) are entered in the fields of the panel on the right.</p>
+<ul>
+<li><strong>Selecting a closed region</strong>: click a place inside a closed region where there is no curve (you can also select it by clicking its row in the region table on the right panel).</li>
+<li><strong>Selecting a curve</strong>: click the curve (hold Ctrl or Shift to select several).</li>
+<li>On the Physics tab, the geometry cannot be moved. To change it, go back to the Sketch tab.</li>
+</ul>
+<h3 id="61-electric-field-region-kinds">6.1 Electric field: region kinds</h3>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_physics_e.png" alt="Physics tab (electric field)" /><figcaption>Physics tab (electric field)</figcaption></figure>
+<p>When you select a closed region, the &quot;Region Kind&quot; buttons on the ribbon become available, and the button for the current kind is shown as pressed.</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vacuum</td>
+<td>The range in which electrons travel (εr = 1). <strong>A closed region with no kind assigned is vacuum</strong> (shown as &quot;vacuum (default)&quot; in the table)</td>
+</tr>
+<tr>
+<td>Dielectric</td>
+<td>Insulator (such as an insulator bushing). Enter the relative permittivity εr in the panel on the right</td>
+</tr>
+<tr>
+<td>Electrode Region</td>
+<td>Conductor body (such as a Wehnelt or an electrode body). It is removed from the computational domain (mesh), and the curves of its outline become the boundary of that electrode. Select which electrode it is in the panel on the right (you can create a new one with &quot;+ New electrode&quot;)</td>
+</tr>
+<tr>
+<td>Not Calculated</td>
+<td>Removes the region from the computational domain (for a closed region that is neither an electrode nor used)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-electric-field-setting-the-electrodes">6.2 Electric field: setting the electrodes</h3>
+<p>There are two ways to set electrodes. You can combine them.</p>
+<ul>
+<li><strong>When the conductor is drawn as a closed shape</strong>: set that closed region as an &quot;Electrode Region&quot; (Section 6.1). The whole outline becomes that electrode.</li>
+<li><strong>When only part of the outer boundary of the computational domain is an electrode</strong>: select the curves and make them the boundary of the electrode (steps below).</li>
+</ul>
+<p><strong>Making a curve the boundary of an electrode</strong></p>
+<ol>
+<li>Select the curve you want to make an electrode (for example, the line of the cathode surface).</li>
+<li>Press &quot;Add Electrode&quot; on the ribbon. A new electrode is created, and the selected curve becomes its boundary.
+To add the curve to an existing electrode, select that electrode's row in the table on the right and then press &quot;Set as Boundary&quot;.</li>
+<li>In the fields below the table on the right panel, enter the name and the voltage (a number or an expression, for example <code>10 kV</code>, <code>Va</code>, <code>Va / 2</code>).</li>
+<li>For the electrode that emits electrons, select it in the table and press &quot;Cathode&quot; (the check box on the right panel does the same).</li>
+</ol>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/model_physics.png" alt="Planar diode with electrodes assigned (the voltage of the anode is the parameter Va)" /><figcaption>Planar diode with electrodes assigned (the voltage of the anode is the parameter Va)</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Add Electrode</td>
+<td>Adds one electrode. If curves are selected, they become the boundary of that electrode</td>
+</tr>
+<tr>
+<td>Set as Boundary</td>
+<td>Makes the selected curves the boundary of the electrode selected in the table on the right (they are removed from any other electrode)</td>
+</tr>
+<tr>
+<td>Remove from Boundary</td>
+<td>Removes the selected curves from the boundary of an electrode</td>
+</tr>
+<tr>
+<td>Cathode</td>
+<td>Sets the electrode selected in the table on the right as the cathode, or clears it</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>There is exactly one cathode</strong>. If another electrode is made the cathode, the previous cathode is cleared.</li>
+<li>In the &quot;boundary&quot; column of the electrode table, the boundary of each electrode is shown (for example, &quot;region 1, 2 curves&quot;). The curves in the figure are drawn in the color of their electrode.</li>
+<li>You can also make only part of the outline of an electrode region a different electrode (for example, the cathode surface). A curve that is assigned directly takes priority.</li>
+<li>To delete an electrode, select it in the table and press its &quot;Delete electrode&quot; button (the button shows the electrode's name).</li>
+<li><strong>Outer curves that are not made electrodes are natural boundaries (∂V/∂n = 0)</strong>. The axis of symmetry is the same.</li>
+</ul>
+<figure><img loading="lazy" width="437" height="571" src="manual_images_en/physics_e_panel.png" alt="Right panel for the electric field (regions, electrodes and check)" /><figcaption>Right panel for the electric field (regions, electrodes and check)</figcaption></figure>
+<h3 id="63-magnetic-field-field-source">6.3 Magnetic field: field source</h3>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_physics_b.png" alt="Physics tab (magnetic field)" /><figcaption>Physics tab (magnetic field)</figcaption></figure>
+<p>At the top of the panel on the right, choose how the magnetic field is given.</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Solve with FEM</td>
+<td>Calculates the magnetic field from the coils and magnetic materials drawn in the magnetic geometry. &quot;Grid points for the trajectory calculation&quot; below it is the number of divisions (z × r) of the magnetic field map used to trace electrons</td>
+</tr>
+<tr>
+<td>Import magnetic field map</td>
+<td>Uses an imported magnetic field map (<a href="#103-importing-a-magnetic-field-map">Section 10.3</a>)</td>
+</tr>
+<tr>
+<td>None</td>
+<td>Calculates without a magnetic field</td>
+</tr>
+</tbody>
+</table>
+<p>When &quot;Import magnetic field map&quot; or &quot;None&quot; is selected, the magnetic geometry (regions and boundary conditions) is not used in the calculation.</p>
+<h3 id="64-magnetic-field-coils-magnetic-materials-and-boundary-conditions">6.4 Magnetic field: coils, magnetic materials and boundary conditions</h3>
+<p>Select a closed region, press its kind button on the ribbon, and enter the values in the panel on the right.</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Air</td>
+<td>μr = 1, current 0 (<strong>A closed region with no kind assigned is air</strong>. In the table it is shown as &quot;air (default)&quot;)</td>
+</tr>
+<tr>
+<td>Coil</td>
+<td><strong>Total current [A·turn]</strong> (number of turns × current). Expressions can also be used</td>
+</tr>
+<tr>
+<td>Magnetic Material</td>
+<td>Relative permeability μr (constant)</td>
+</tr>
+<tr>
+<td>Saturable Material</td>
+<td>Saturation magnetization Js [T] and initial susceptibility χ0 (<a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">Section 6.6</a>)</td>
+</tr>
+<tr>
+<td>Not Calculated</td>
+<td>Removes the region from the computational domain</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Coil OFF</strong>: If the current of a coil is set to 0, that coil creates no magnetic field. <strong>When all coil currents are 0, the magnetic field is 0</strong> (magnetic materials are not magnetized either), so the full calculation is run without a magnetic field. The panel on the right and the check before running show this.
+In this case, &quot;Magnetic Only&quot; calculations and the magnetic field mesh are not made, since there is no magnetic field to compute.</p>
+<figure><img loading="lazy" width="437" height="668" src="manual_images_en/physics_b_panel.png" alt="Right panel for the magnetic field (field source, regions, boundary conditions and check)" /><figcaption>Right panel for the magnetic field (field source, regions, boundary conditions and check)</figcaption></figure>
+<p><strong>Boundary conditions</strong> (select curves, then use the ribbon buttons)</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A = 0</td>
+<td>Magnetic flux does not cross the line. Use it for the outer boundary of an air box</td>
+</tr>
+<tr>
+<td>Natural</td>
+<td>Magnetic flux enters and leaves the line perpendicularly (for example, a plane of symmetry)</td>
+</tr>
+<tr>
+<td>Default</td>
+<td>Removes the setting</td>
+</tr>
+</tbody>
+</table>
+<p>If nothing is specified, <strong>the outer boundary except on the axis is A = 0</strong> (dashed in the figure). Usually you do not need to specify boundary conditions.</p>
+<h3 id="65-region-table-and-checks">6.5 Region table and checks</h3>
+<ul>
+<li><strong>Reordering</strong>: select a row in the region table and move it up or down with <strong>↑ ↓</strong> below the table. This is used, for example, to line up coils in order.
+It changes only the display order and does not affect the calculation (the check before running uses the same order).</li>
+<li><strong>Name</strong>: when a region is selected, you can give it a name in the field below the table.</li>
+<li><strong>Check</strong>: the result of checking the current geometry and physics settings is always shown at the bottom of the panel on the right. If there are no problems, it shows &quot;No problems.&quot; The main items are:
+<ul>
+<li>Electric field: no cathode, or two or more cathodes; an electrode region with no electrode selected</li>
+<li>Magnetic field: all coil currents are 0 (the full calculation runs without a magnetic field)</li>
+<li>Common: no computational domain; geometry that protrudes below the axis (r &lt; 0); an assigned closed region that is not found (after the shape was changed. Assign it again)</li>
+</ul>
+</li>
+</ul>
+<h3 id="66-saturation-of-magnetic-materials-fröhlichkennelly-model">6.6 Saturation of magnetic materials (Fröhlich–Kennelly model)</h3>
+<p>In regions where the magnetic field is strong, the magnetization of a magnetic material (such as iron) saturates and its permeability drops. A closed region whose kind is set to &quot;Saturable Material&quot; is calculated with this saturation using the <strong>Fröhlich–Kennelly model</strong>.</p>
+<pre><code>M = χ0 H / (1 + χ0 H / Ms)        B = μ0 (H + M)        Js = μ0 Ms
+</code></pre>
+<ul>
+<li><strong>Saturation magnetization Js [T]</strong>: how large the magnetization can become (the upper limit of μ0M in a strong field). About 2.15 T for pure iron, and about 2.35 T for permendur (FeCo).</li>
+<li><strong>Initial susceptibility χ0</strong>: how easily the material magnetizes in a weak field (dM/dH at the origin). The initial relative permeability is 1 + χ0.</li>
+<li>H = Ms/χ0 gives exactly half saturation (M = Ms/2). This is the guide to the &quot;knee&quot;. In a strong field, B ≈ μ0 H + Js, and beyond that B increases only with the same slope μ0 as vacuum.</li>
+</ul>
+<p><strong>Entering the values</strong></p>
+<ol>
+<li>Select a closed region in the magnetic field, and press &quot;Saturable Material&quot; on the ribbon.</li>
+<li>Enter the values of &quot;Saturation magnetization Js&quot; and &quot;Initial susceptibility χ0&quot; in the panel on the right (a number or a parameter expression).</li>
+<li>The B–H curve for the values you entered appears below. The red dot is the guide to the knee, and the dashed line is Js. The H axis is on a logarithmic scale (turn off &quot;Show the H axis on a log scale&quot; to get a linear scale). Compare the curve with a catalog or measured B–H curve to check that the values are reasonable.</li>
+</ol>
+<figure><img loading="lazy" width="437" height="935" src="manual_images_en/sat_panel.png" alt="Right panel for the magnetic field (values for the saturable material and the B–H curve)" /><figcaption>Right panel for the magnetic field (values for the saturable material and the B–H curve)</figcaption></figure>
+<p><strong>Fitting the values from a B–H curve (Kennelly plot)</strong></p>
+<p>In this model, H / M is a linear function of H (H / M = 1/χ0 + H/Ms). From a measured B–H curve, compute M = B/μ0 − H, plot H on the horizontal axis and H/M on the vertical axis, and draw a straight line through the points. Then:</p>
+<ul>
+<li>The slope of the line = 1/Ms (Js = μ0 / slope)</li>
+<li>The intercept on the vertical axis = 1/χ0</li>
+</ul>
+<p>It is practical to fit using the points from the knee into the saturation range. The knee of this model is smoother than that of real iron, and the model cannot represent the rise at low fields (where the initial permeability is smaller than the maximum permeability). χ0 is the slope at the origin of the model, and it may not match the initial permeability of the material.</p>
+<p><strong>Calculation</strong></p>
+<p>With a saturable magnetic material, the magnetic field calculation becomes a nonlinear iteration (Newton's method). It usually converges in a few to about ten iterations, and the time increases by only a few seconds. The log shows a line for each iteration (<code>[b-nl] k=1 res=… step=… dA=… sat_max=…</code>, where res is the residual and sat_max is the maximum saturation ratio), and at the end, &quot;Nonlinear magnetic field calculation: converged in N iterations&quot;. If it does not converge, a warning is shown and the calculation continues with the last solution (the result summary also shows this. See <a href="#12-troubleshooting">Chapter 12</a>).</p>
+<p><strong>Reading the results</strong></p>
+<p>The displayed quantities on the Results tab include &quot;<strong>Saturation ratio M/Ms</strong>&quot; and &quot;<strong>Effective relative permeability μr</strong>&quot; (only for results that contain a saturable magnetic material). Both are values per element, and they are colored element by element. The saturation ratio is shown in colors from 0 (not saturated) to 1 (fully saturated).
+The summary shows &quot;Magnetic material saturation: converged in N nonlinear iterations (maximum saturation ratio …)&quot;. In a probe (double-click), the μr,eff, M/Ms and |H| at a point inside a magnetic material are also shown.</p>
+<figure><img loading="lazy" width="997" height="756" src="manual_images_en/sat_results.png" alt="Saturation ratio M/Ms (example solenoid_yoke, enlarged near the yoke)" /><figcaption>Saturation ratio M/Ms (example solenoid_yoke, enlarged near the yoke)</figcaption></figure>
+<p><strong>Notes</strong></p>
+<ul>
+<li><strong>Mesh around magnetic materials</strong>: outside a magnetic material, in a region with no magnetic field that encloses the flux, the error from a coarse mesh is amplified by the relative permeability of the material (for an iron core with μr = 1000, a 0.5 mm mesh gives an error of several percent). When you use magnetic materials, make the magnetic field mesh smaller and check that the results do not change. Saturation lowers the effective relative permeability, so this error also becomes smaller.</li>
+<li>Saturation occurs locally, for example at the tip of a pole piece. If that part is thin, make the mesh fine enough for its thickness.</li>
+<li>Hysteresis (magnetization history), remanent magnetization (permanent magnets) and anisotropy are not treated.</li>
+</ul>
+<p><strong>Trying it with an example</strong> (example <code>solenoid_yoke</code>. In the distributed version, it is in <code>examples\solenoid_yoke</code> in the TGUN folder)</p>
+<p>This is a magnetic-field-only example: a coil surrounded by a thin magnetic yoke (an outer tube, and plates at both ends that extend close to the axis).</p>
+<ol>
+<li>Open <code>solenoid_yoke.tgun</code> with &quot;File&quot; → &quot;Open&quot;, and save it under a new name in your working folder (the same as <a href="#42-saving-under-a-new-name">Section 4.2</a>).</li>
+<li>On the Physics tab, set the domain to magnetic and select the closed region of the yoke. Js = 2.15 T and χ0 = 1000 are shown, together with the B–H curve.</li>
+<li>Calculate with &quot;Magnetic Only&quot; on the Calculation tab (a few seconds). Lines for the nonlinear iterations appear in the log, and it converges in about 8 iterations.</li>
+<li>On the Results tab, set the displayed quantity to &quot;Saturation ratio M/Ms&quot;. You can see that the two end plates and the outer tube of the yoke are saturated to about 0.6 to 0.9.</li>
+</ol>
+<p>The maximum of Bz on the axis is about 0.431 T. If you change the yoke's kind to &quot;Magnetic Material&quot; (constant μr = 1000) and calculate again, it becomes about 0.45 T. This shows that ignoring saturation overestimates the magnetic field by about 5%. If the coil current is lowered from 16000 to 4000 A, the yoke barely saturates, and the magnetic field becomes almost proportional to the current.</p>
+<hr />
+<h2 id="7-generating-the-mesh">7. Generating the mesh</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_mesh.png" alt="Mesh tab" /><figcaption>Mesh tab</figcaption></figure>
+<p>The calculation divides the computational domain into fine triangles (the mesh). On the Mesh tab, you can generate the mesh before the calculation and check its fineness and size (number of elements). Settings are made for each domain (electric / magnetic).</p>
+<figure><img loading="lazy" width="437" height="257" src="manual_images_en/mesh_panel.png" alt="Right panel for the mesh" /><figcaption>Right panel for the mesh</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Size</td>
+<td>Approximate length of the triangle edges (for example <code>0.5 mm</code>). A number or an expression. A smaller value raises the accuracy, but the calculation becomes slower</td>
+</tr>
+<tr>
+<td>Size near the cathode (electric field)</td>
+<td>Makes the mesh fine only near the cathode curves, down to this size (<code>0 mm</code> = not used). This greatly improves the accuracy of the emission current (for a planar diode, the error goes from +2.4% to +1.4%)</td>
+</tr>
+<tr>
+<td>Refinement distance (electric field)</td>
+<td>Makes the mesh fine up to this distance from the cathode (<code>0 mm</code> = automatic, 10 times the size near the cathode)</td>
+</tr>
+</tbody>
+</table>
+<p>A value entered in a field takes effect when you press Enter or move to another field. Even if you enter a value and press a ribbon button such as &quot;Generate&quot; without pressing Enter, generation starts after that value has taken effect.</p>
+<p>Fields for the mesh with the cathode-area refinement (example of a DGUN import):</p>
+<figure><img loading="lazy" width="437" height="241" src="manual_images_en/mesh_panel_refine.png" alt="Refinement near the cathode" /><figcaption>Refinement near the cathode</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generate</td>
+<td>Generates the mesh of the current domain</td>
+</tr>
+<tr>
+<td>Both Domains</td>
+<td>Generates the electric and magnetic meshes one after the other</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>Stops the generation (available only while generating)</td>
+</tr>
+<tr>
+<td>Show Mesh</td>
+<td>Overlays the generated mesh on the geometry, or hides it</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>Shows the log of mesh generation at the bottom of the screen</td>
+</tr>
+</tbody>
+</table>
+<p>If a model has never been saved, you are first asked where to save it (the mesh is stored in the data folder next to the model).</p>
+<p>The &quot;State&quot; section of the panel on the right shows the state and statistics of the mesh (number of nodes and elements, and the mean, minimum and maximum edge length).</p>
+<ul>
+<li>&quot;Mesh for the current settings.&quot;: the mesh matches the current geometry and settings. The calculation uses it as it is (it is not regenerated).</li>
+<li>When the geometry, regions, boundaries or mesh settings are changed, a message says that the mesh must be regenerated (it is generated automatically when a calculation starts). If you have only changed an electrode voltage or a coil current, no regeneration is needed.</li>
+<li>&quot;All coil currents are 0, so no magnetic field mesh is needed.&quot;: coil OFF (<a href="#64-magnetic-field-coils-magnetic-materials-and-boundary-conditions">Section 6.4</a>).</li>
+<li>&quot;The magnetic field is not solved with FEM in this setting, so no magnetic field mesh is needed.&quot;: the field source is &quot;None&quot; or &quot;Import magnetic field map&quot;.</li>
+</ul>
+<blockquote class="tip"><p><strong>Tip</strong>: It is efficient to look at the overall picture first with a coarse mesh (for example 0.5 mm), and to refine near the cathode as needed.
+After making the mesh finer, also reduce the relaxation factor α (<a href="#83-calculation-settings">Section 8.3</a>).</p>
+</blockquote>
+<blockquote class="warn"><p><strong>Note</strong>: Around magnetic materials (materials with a large μr), the error from the coarseness of the magnetic field mesh has a large effect.
+Make the magnetic field mesh size smaller and check that the results do not change (see the note in <a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">Section 6.6</a>).</p>
+</blockquote>
+<hr />
+<h2 id="8-running-the-calculation">8. Running the calculation</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_run.png" alt="The Calculation tab" /><figcaption>The Calculation tab</figcaption></figure>
+<h3 id="81-types-of-calculation">8.1 Types of calculation</h3>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Run</td>
+<td>Full calculation. Computes everything from the magnetic field through the space-charge iteration (emission and tracking). This is the one to normally use</td>
+</tr>
+<tr>
+<td>Electric Only</td>
+<td>Solves only the electric field without space charge (Laplace equation). Use it to check the electrode layout and the electric field</td>
+</tr>
+<tr>
+<td>Magnetic Only</td>
+<td>Solves only the magnetic field (coils and magnetic materials) and builds a magnetic field map. Use it to check the coil layout or the saturation of magnetic materials</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>Stops at the next iteration boundary (available only during a calculation; the results are not saved)</td>
+</tr>
+<tr>
+<td>Force Stop</td>
+<td>Ends the calculation process immediately (the results are not saved)</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>Shows or hides the calculation log at the bottom of the screen</td>
+</tr>
+</tbody>
+</table>
+<p>When you press a calculation button, a confirmation appears before the run (<a href="#46-running-the-calculation">Section 4.6</a>). If the model has never been saved, you are first asked where to save it. The confirmation lists the parameter values, the electrode voltages, the coil currents, the calculation settings, the mesh (whether to reuse the current one or to make a new one), and the output folder and command. Pressing &quot;Run&quot; saves the model automatically and then starts the calculation.
+The calculation runs in a separate process, so the window does not freeze during the calculation, and you can still view earlier results.</p>
+<p>If the physics settings contain an error, the calculation does not start and the reason is shown (<a href="#12-troubleshooting">Chapter 12</a>).</p>
+<h3 id="82-during-and-after-the-calculation">8.2 During and after the calculation</h3>
+<p>The panel on the right shows the state, the convergence graph and the summary (see <a href="#46-running-the-calculation">Section 4.6</a>). When the calculation ends, a new result is added to the list in the Results tab.</p>
+<ul>
+<li>A result that reached the maximum number of iterations without converging is marked &quot;not converged&quot; in the summary.</li>
+<li>Use &quot;Result folder&quot; in the panel on the right to open the result folder (result.h5, log.txt, etc.).</li>
+<li>If there is a saturable magnetic material, the log shows the lines of the nonlinear iteration (<code>[b-nl] …</code>) during the first magnetic field calculation (<a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">Section 6.6</a>). The convergence graph shows the space-charge iteration only.</li>
+</ul>
+<h3 id="83-calculation-settings">8.3 Calculation settings</h3>
+<p>You can change the calculation settings at the bottom of the panel on the right. A blank field uses the default value (shown in light text as &quot;default …&quot;). Type a value and press Enter to apply it; leave the field empty to return to the default. The settings are saved in the model.</p>
+<figure><img loading="lazy" width="437" height="1148" src="manual_images_en/run_panel.png" alt="The panel on the right of Calculation (state, convergence graph, settings)" /><figcaption>The panel on the right of Calculation (state, convergence graph, settings)</figcaption></figure>
+<p><strong>Convergence settings (space-charge iteration)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Relaxation α</td>
+<td>How much of the new space-charge density ρ replaces the old value at each iteration (0 &lt; α ≤ 1). A smaller value is more stable but converges more slowly. <strong>Use a smaller value for a finer mesh</strong></td>
+</tr>
+<tr>
+<td>Guide α ≈ … / Use guide</td>
+<td>Guide value of α computed from the mesh size (or from the size near the cathode, if the cathode region is refined). &quot;Use guide&quot; enters it as α</td>
+</tr>
+<tr>
+<td>Current relaxation α_J</td>
+<td>Relaxation factor for the emission current density J (blank = same as α)</td>
+</tr>
+<tr>
+<td>Max iterations</td>
+<td>Upper limit of the iterations (default 300). When it is reached, the result is saved even if it has not converged</td>
+</tr>
+<tr>
+<td>Tolerance tol_I / tol_J</td>
+<td>Residual tolerances for the current I and the emission current density J (default 0.001)</td>
+</tr>
+<tr>
+<td>Tolerance tol_ρ (space charge)</td>
+<td>Residual tolerance for the space charge (default 0.001). The calculation is converged when the residuals of I, J and ρ are all below their thresholds. Set 0 to leave ρ out of the check</td>
+</tr>
+</tbody>
+</table>
+<p>The cathode currents (I and J) settle quickly, but the beam in the drift tube keeps changing for a while after that. tol_ρ is the check for this. With 0, the iteration stops on I and J alone and is shorter, but the beam shape in the drift tube (such as the wavelength of the ripples) may not be converged. In this case the summary shows &quot;Space-charge residual … (large)&quot;.
+Example: in the DGUN example test3 (400 mm drift tube), with tol_ρ = 0 the iteration stops after 16 to 29 iterations and the ripple wavelength is off by 3 to 17%. With tol_ρ = 0.001 it converges after 39 iterations, and the wavelength agrees with the theoretical value within 0.3%.</p>
+<p>Guide values for α: mesh 0.5 mm → 0.4, 0.25 mm → 0.2, 0.1 mm → 0.1.</p>
+<p><strong>Emission and tracking settings</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Self magnetic field</td>
+<td>Includes the azimuthal magnetic field Bθ made by the beam current in the tracking (include it for high-current guns)</td>
+</tr>
+<tr>
+<td>Self-field grid nz / nr</td>
+<td>Number of grid cells used to accumulate the self field</td>
+</tr>
+<tr>
+<td>Time-step safety factor</td>
+<td>Time step = factor × mesh edge length / maximum speed</td>
+</tr>
+<tr>
+<td>Max steps</td>
+<td>Upper limit of tracking steps per particle</td>
+</tr>
+<tr>
+<td>Trajectory save interval</td>
+<td>Number of steps between saved trajectory points (a larger value makes the result file smaller)</td>
+</tr>
+<tr>
+<td>Virtual cathode distance factor / min / max</td>
+<td>Distance d to the virtual cathode used for space-charge-limited emission (= mesh edge length at the cathode × factor)</td>
+</tr>
+<tr>
+<td>Initial particle position (fraction of d)</td>
+<td>Position where the particles are placed (d × this value from the cathode surface)</td>
+</tr>
+</tbody>
+</table>
+<p>At the very bottom of the panel, the command that reproduces this calculation on the CLI and the check results are shown.</p>
+<hr />
+<h2 id="9-viewing-the-results">9. Viewing the results</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images_en/ribbon_results.png" alt="The Results tab" /><figcaption>The Results tab</figcaption></figure>
+<p>When you open the Results tab, the list of results appears at the upper right, the display settings below it, and the result plot in the center. Click a row in the list to show that result.</p>
+<figure><img loading="lazy" width="437" height="1051" src="manual_images_en/results_panel.png" alt="The panel on the right of Results (list, summary, quantity, overlays, probe, actions)" /><figcaption>The panel on the right of Results (list, summary, quantity, overlays, probe, actions)</figcaption></figure>
+<h3 id="91-displayed-quantities">9.1 Displayed quantities</h3>
+<p>Select the quantity to show as color in &quot;Quantity&quot;.</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Potential V</td>
+<td>Distribution of the potential</td>
+</tr>
+<tr>
+<td>Field magnitude |E|</td>
+<td>Strength of the electric field (useful as a guide for discharge)</td>
+</tr>
+<tr>
+<td>Space charge ρ</td>
+<td>Distribution of the beam charge, shown centered on 0: blue (negative, i.e. electrons) to white to red</td>
+</tr>
+<tr>
+<td>Magnetic Bz / Br / Magnetic |B|</td>
+<td>Components and magnitude of the magnetic field (only for results with a magnetic field)</td>
+</tr>
+<tr>
+<td>Effective relative permeability μr (magnetic)</td>
+<td>B / (μ0 H) of the magnetic material. It falls below the initial relative permeability when saturated (only for results with a saturable material; values per element)</td>
+</tr>
+<tr>
+<td>Saturation M/Ms (saturable magnetic)</td>
+<td>0 (not saturated) to 1 (fully saturated). Shows where the material is saturated (same condition; see <a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">Section 6.6</a>)</td>
+</tr>
+<tr>
+<td>None</td>
+<td>Only the geometry and the overlays</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Logarithmic colors</strong>: small values are colored too. For ρ, the thin regions outside the beam and downstream become visible.</li>
+<li><strong>Equal z and r scale</strong>: when this is turned off, the plot is stretched to fill the view. This is useful for long, thin geometries. The figure below shows the same result as the figure in <a href="#47-viewing-the-results">Section 4.7</a>, displayed without the equal scale.</li>
+</ul>
+<figure><img loading="lazy" width="997" height="756" src="manual_images_en/results_v_wide.png" alt="Displayed without equal z and r scale" /><figcaption>Displayed without equal z and r scale</figcaption></figure>
+<p>Space charge ρ (logarithmic colors, trajectories in black):</p>
+<figure><img loading="lazy" width="997" height="756" src="manual_images_en/results_rho.png" alt="Space charge ρ" /><figcaption>Space charge ρ</figcaption></figure>
+<p>Magnetic field magnitude |B| with the field lines and the axis Bz (lower panel) overlaid:</p>
+<figure><img loading="lazy" width="997" height="756" src="manual_images_en/results_b.png" alt="Magnetic field and field lines, axis Bz" /><figcaption>Magnetic field and field lines, axis Bz</figcaption></figure>
+<p>Electric field magnitude |E| with the mesh overlaid:</p>
+<figure><img loading="lazy" width="997" height="756" src="manual_images_en/results_e_mesh.png" alt="Electric field and mesh" /><figcaption>Electric field and mesh</figcaption></figure>
+<h3 id="92-overlays">9.2 Overlays</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trajectories</td>
+<td>Electron trajectories. The &quot;Color&quot; can be blue, red, green, purple, black, white, or per particle (black or red is easier to see on the ρ plot)</td>
+</tr>
+<tr>
+<td>Electrodes and coils</td>
+<td>Outlines of the electrodes and coils</td>
+</tr>
+<tr>
+<td>Mesh</td>
+<td>The mesh used for the calculation</td>
+</tr>
+<tr>
+<td>Field lines</td>
+<td>Magnetic field lines (the same magnetic flux passes between adjacent lines, which are equally spaced). The number of lines can be changed (FEM magnetic field only)</td>
+</tr>
+<tr>
+<td>B vectors</td>
+<td>Shows the direction of the magnetic field with arrows on a grid. You can choose the grid density and how the arrow length is set</td>
+</tr>
+<tr>
+<td>Axis Bz (below)</td>
+<td>Shows Bz(z) on the symmetry axis as a separate graph below the plot</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-zooming-and-panning">9.3 Zooming and panning</h3>
+<p>The toolbar below the plot provides zoom (magnifier) and pan (cross arrow). After zooming, switching the quantity or the overlays keeps the same display range. Click the house icon (or &quot;Fit&quot; on the View tab, or press the F key) to return to the full view.</p>
+<h3 id="94-probe-reading-values-at-a-point">9.4 Probe (reading values at a point)</h3>
+<p><strong>Double-click</strong> the plot. A red + mark is placed at that point, and the values of V, Ez, Er, |E|, ρ, Bz, Br and |B| at that point are shown in &quot;Probe&quot; in the panel on the right (they are also shown in the status bar). For results with a saturable magnetic material, the effective relative permeability μr,eff, the saturation M/Ms and |H| [A/m] at points inside the magnetic region are shown too. Outside the domain, the panel shows &quot;(outside the domain)&quot;.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/results_probe.png" alt="Probe" /><figcaption>Probe</figcaption></figure>
+<h3 id="95-exporting-plots-and-fields">9.5 Exporting plots and fields</h3>
+<p>In the &quot;Output&quot; group of the ribbon, you can export the plot and the field values.</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Save PNG</td>
+<td>Saves the plot on the screen as an image</td>
+</tr>
+<tr>
+<td>Field on the Axis ▼</td>
+<td>Writes the field values to a numerical file. Use ▼ to choose &quot;Field on the Axis&quot; (r = 0), &quot;Field on a Line&quot; (between two points), or &quot;Field in an Area&quot; (z × r grid)</td>
+</tr>
+</tbody>
+</table>
+<p>In the field export dialog, you set the range (mm), the number of points, the fields to export (V, Ez, Er, |E|, ρ, Bz, Br, |B|) and the format (TXT / HDF5). The default output folder is <code>exports\</code> in the data folder. The coordinates in the file are in SI units (m).</p>
+<figure><img loading="lazy" width="500" height="268" src="manual_images_en/export_axis.png" alt="Field export (axis)" /><figcaption>Field export (axis)</figcaption></figure>
+<h3 id="96-beam-diagnostics">9.6 Beam diagnostics</h3>
+<p>Click &quot;Beam diagnostics&quot; on the ribbon to open a window that examines the beam properties (only for full-calculation results). Select what to view at the upper left.</p>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Envelope</td>
+<td>The outer radius r_edge of the beam and the rms radius r_rms at each z</td>
+</tr>
+<tr>
+<td>Phase space (z cut)</td>
+<td>Position r and slope r' of the electrons passing through the &quot;Cut z&quot; plane (the rms emittance is shown in the title)</td>
+</tr>
+<tr>
+<td>Cathode current density J(r)</td>
+<td>Distribution of the emission current density over the cathode surface</td>
+</tr>
+<tr>
+<td>Summary</td>
+<td>Current, perveance, number of particles, and the exit radius and energy</td>
+</tr>
+</tbody>
+</table>
+<p>For each view, &quot;Save PNG...&quot; saves the plot as an image and &quot;Export TXT...&quot; saves the numbers.</p>
+<figure><img loading="lazy" width="900" height="640" src="manual_images_en/beam_envelope.png" alt="Envelope" /><figcaption>Envelope</figcaption></figure>
+<p>Example of phase space (the z = 500 mm cut of DGUN test3 from <a href="#102-importing-dgun-input">Section 10.2</a>):</p>
+<figure><img loading="lazy" width="900" height="640" src="manual_images_en/dgun_beam_phase.png" alt="Phase space" /><figcaption>Phase space</figcaption></figure>
+<p>Summary:</p>
+<figure><img loading="lazy" width="900" height="640" src="manual_images_en/beam_summary.png" alt="Summary" /><figcaption>Summary</figcaption></figure>
+<h3 id="97-managing-results">9.7 Managing results</h3>
+<p>Use &quot;Actions&quot; at the very bottom of the panel on the right to manage the result being shown.</p>
+<ul>
+<li><strong>Rename...</strong>: gives the result a readable name (it is shown in the list and as the plot title).</li>
+<li><strong>Delete...</strong>: deletes the result folder. This cannot be undone.</li>
+<li><strong>Open folder</strong>: opens the result folder (result.h5, log.txt, etc.).</li>
+</ul>
+<p>Hover the mouse over a row in the list to show the parameter values used for that result. When you run calculations while changing a parameter, this lets you check which result belongs to which value.</p>
+<hr />
+<h2 id="10-import-and-export">10. Import and export</h2>
+<figure><img loading="lazy" width="213" height="224" src="manual_images_en/menu_file.png" alt="File menu" /><figcaption>File menu</figcaption></figure>
+<h3 id="101-importing-version-2--1-projects">10.1 Importing Version 2 / 1 projects</h3>
+<p>Choose &quot;File&quot; → &quot;Import&quot; → &quot;TGUN v2 / v1 Project...&quot; to create a new model from a Version 2 / 1 project (<code>.tgunproj</code>).</p>
+<ul>
+<li>Imported items: electric and magnetic geometry, constraints and dimensions, parameters (including Version 1 variables), region kinds and values, electrodes, boundary conditions, mesh settings, calculation settings, the magnetic field source and any imported field map.</li>
+<li>Not imported: the mesh and the calculation results (calculate again).</li>
+<li>The units of parameters are chosen from how they are used (mm if used for a dimension, V if used for a voltage).</li>
+<li>Constraints are imported after checking that adding them does not move the shape. Constraints that would change the shape when imported are removed, and you are told about it.</li>
+<li>When the import finishes, the number of imported items and the notices are shown (&quot;Show details&quot;, which is also written to the log).</li>
+</ul>
+<p>The imported model is not saved yet. Choose where to save it with &quot;Save as...&quot;. The original project is not changed.</p>
+<h3 id="102-importing-dgun-input">10.2 Importing DGUN input</h3>
+<p>You can create a new model from the DGUN input files (<code>geom.cod</code>, <code>dginput.dat</code> and <code>mag.dat</code>).</p>
+<ol>
+<li>Choose &quot;File&quot; → &quot;Import&quot; → &quot;DGUN Input...&quot;.</li>
+<li>Choose the file with &quot;Browse...&quot; next to &quot;geom.cod&quot;. <code>dginput.dat</code> and <code>mag.dat</code> in the same folder, the save location, and the mesh size (the grid spacing of DGUN) are filled in automatically. Below, the title, grid, potentials, emission surface and the treatment of the magnetic field are shown.</li>
+<li>If needed, turn on &quot;Refine&quot; under &quot;Near cathode&quot; to improve accuracy (for example, 0.15 mm).</li>
+<li>Press &quot;Import&quot;. A new model is created, saved to the save location and opened.</li>
+</ol>
+<figure><img loading="lazy" width="760" height="408" src="manual_images_en/import_dgun.png" alt="Importing DGUN input" /><figcaption>Importing DGUN input</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>geom.cod / dginput.dat</td>
+<td>DGUN geometry and calculation conditions (required)</td>
+</tr>
+<tr>
+<td>mag.dat (optional)</td>
+<td>On-axis magnetic field. The on-axis Bz is expanded into a 2-D magnetic field map by a second-order paraxial expansion</td>
+</tr>
+<tr>
+<td>Do not import the magnetic field</td>
+<td>Imported without a magnetic field</td>
+</tr>
+<tr>
+<td>Save as</td>
+<td>The file of the model to create (a name that already exists cannot be used)</td>
+</tr>
+<tr>
+<td>Mesh size / Near cathode</td>
+<td>Mesh settings (lengths in mm)</td>
+</tr>
+<tr>
+<td>B map</td>
+<td>The range (maximum r) and number of points of the magnetic field map</td>
+</tr>
+</tbody>
+</table>
+<p>On import, the emission surface of DGUN electrode 1 becomes <strong>cathode</strong>, the rest of electrode 1 becomes <strong>focus</strong> (same potential), and the second electrode becomes <strong>anode</strong> (the third and later electrodes are elec3 ...). The magnetic field becomes &quot;Import (field map file)&quot; (the field map placed in the <code>inputs\</code> folder of the data folder), and the relaxation factor α is set to the guide value for the mesh.</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/dgun_project.png" alt="Imported DGUN test3 electric field (Physics tab)" /><figcaption>Imported DGUN test3 electric field (Physics tab)</figcaption></figure>
+<p>You can run the full calculation as it is. (Refining near the cathode makes α smaller, so it takes about 150 to 200 iterations.)
+The figure below shows the result of the DGUN test3 calculation (space-charge density ρ, log scale). The beam current was 55.703 A (DGUN: 55.30 A; difference +0.7%; converged in 176 iterations).</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images_en/dgun_results.png" alt="DGUN test3 calculation result" /><figcaption>DGUN test3 calculation result</figcaption></figure>
+<blockquote class="tip"><p><strong>Tip</strong>: To compare with the DGUN output, use <code>examples\dgun_test3\compare_beam.py --result &lt;path of result.h5&gt;</code>.
+You can compare the beam current, equipotential lines, surface field, envelope and cross section with the DGUN output (see <code>examples\dgun_test3\README.md</code> for details).</p>
+</blockquote>
+<h3 id="103-importing-a-magnetic-field-map">10.3 Importing a magnetic field map</h3>
+<p>You can use external magnetic field data as a magnetic field. In the Physics tab, set &quot;Domain&quot; to &quot;Magnetic Field&quot;, and press &quot;Import Field Map&quot; on the ribbon.
+The imported file is saved in the data folder, so save the model first.</p>
+<figure><img loading="lazy" width="680" height="469" src="manual_images_en/import_bmap.png" alt="Importing a magnetic field map" /><figcaption>Importing a magnetic field map</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TGUN B map or result (h5 /bmap)</td>
+<td>A TGUN magnetic field map, or a &quot;Magnetic Only&quot; result from another model</td>
+</tr>
+<tr>
+<td>4-column text (z r Bz Br, SI)</td>
+<td>Magnetic field on a grid</td>
+</tr>
+<tr>
+<td>2-column on-axis Bz text (z Bz)</td>
+<td>On-axis magnetic field. Choose the unit of the columns. It is expanded to 2-D by a second-order paraxial expansion</td>
+</tr>
+<tr>
+<td>DGUN mag.dat</td>
+<td>On-axis magnetic field of DGUN (z [mm], b [G])</td>
+</tr>
+</tbody>
+</table>
+<p>When you choose the source file, the format is selected automatically and a graph of the on-axis Bz appears. When you make the map from an on-axis magnetic field, set the &quot;Expansion range&quot; (maximum r and number of points). It is valid only in a range where r is sufficiently smaller than the length over which the magnetic field changes.
+When you press &quot;Import&quot;, the field map is saved in the <code>inputs\</code> folder of the data folder, and the field source becomes &quot;Import (field map file)&quot;.</p>
+<h3 id="104-exporting-to-emrm-cad">10.4 Exporting to EMRM-CAD</h3>
+<p>Choose &quot;File&quot; → &quot;Export&quot; → &quot;EMRM-CAD Document (.mcad)...&quot; to export the geometry as a file that can be opened in the 3D CAD program EMRM-CAD (used when making a 3D model of a revolved body or drawings).</p>
+<figure><img loading="lazy" width="520" height="268" src="manual_images_en/export_mcad.png" alt="Exporting an EMRM-CAD document" /><figcaption>Exporting an EMRM-CAD document</figcaption></figure>
+<ul>
+<li>What is exported is the sketch, the constraints and dimensions, and the parameters. TGUN settings (regions, electrodes, boundary conditions, mesh and calculation) are not included.</li>
+<li>You can choose the plane on which the sketch is placed (XY, XZ or YZ) and the axis to align with the axis of symmetry (z).</li>
+<li>A file edited in EMRM-CAD cannot be brought back into TGUN. TGUN models are <code>.tgun</code> files, which are separate from EMRM-CAD documents.</li>
+</ul>
+<h3 id="105-exporting-input-for-the-cli">10.5 Exporting input for the CLI</h3>
+<p>Choose &quot;File&quot; → &quot;Export&quot; → &quot;Input for the CLI (.tgunproj)...&quot; to export the current model in a format that the <code>tgun</code> command on the command line can calculate (<a href="#appendix-b-command-line-cli">Appendix B</a>). When the input for a full calculation cannot be made (for example, the magnetic field source is not specified), the part that can be made (electric field only, or magnetic field only) is written, and you are told about it.</p>
+<p>The same can be done without opening the GUI, with the <code>tgun convert</code> command. This command can also create input with changed parameters (<a href="#b3-creating-input-from-a-model-params-and-convert">Appendix B.3</a>).</p>
+<hr />
+<h2 id="11-saving-and-folder-structure">11. Saving and folder structure</h2>
+<p>A TGUN model consists of two items that make one set: the <strong>model file</strong> and a <strong>data folder</strong> with the same name.</p>
+<pre><code>gun_tutorial.tgun                  Model file (geometry, parameters, physics, settings). Open this file
+gun_tutorial.tgun.data\            Data folder
+    command.log                    Record of calculation and export commands
+    mesh\e\&lt;date-time&gt;\, mesh\b\&lt;date-time&gt;\    Meshes made in the Mesh tab
+    results\0001-run\              Results of one calculation (all are kept as history)
+        result.h5                  Results (fields, trajectories, etc.)
+        log.txt                    Calculation log
+        model.tgunproj             Input used for this calculation (CLI format)
+        result.json                Result name, status, summary and the parameters used for the calculation
+    exports\                       Default location for exported files (field values, PNG, etc.)
+    inputs\                        Imported magnetic field maps, etc.
+</code></pre>
+<ul>
+<li><strong>Auto-save</strong>: The model is saved automatically before the mesh is generated and before the calculation runs. A result and the geometry and settings used to calculate it are always paired.</li>
+<li><strong>Save as</strong>: Saving under a new name copies the data folder (meshes and results) along with the model.</li>
+<li><strong>Moving a model</strong>: Move <code>.tgun</code> and <code>.tgun.data</code> together. An imported magnetic field map is referenced from inside the data folder, so moving the model does not break it.</li>
+<li><strong>Recent files</strong>: &quot;File&quot; → &quot;Recent files&quot; lists the models you opened or saved, newest first.</li>
+<li>While a model is open, a <code>name.tgun.lock</code> file is created next to it. This is a mark that stops the same model from being opened in two places. It is deleted when the model is closed.</li>
+<li>Only one model can be open at a time. While a calculation is running, you cannot open or create another model.</li>
+<li>It also works inside OneDrive.</li>
+</ul>
+<hr />
+<h2 id="12-troubleshooting">12. Troubleshooting</h2>
+<h3 id="a-closed-region-is-not-filled">A closed region is not filled</h3>
+<p>The outline is not closed. Check for places where the end points of lines are apart (end points that are not connected are shown as large orange dots).
+Drag one point onto another point to overlap them, or select two points and add a &quot;Coincident&quot; constraint.</p>
+<h3 id="the-run-button-is-disabled-or-the-calculation-cannot-be-started-appears">The Run button is disabled, or &quot;The calculation cannot be started&quot; appears</h3>
+<p>The physics settings are incomplete. Check the details with &quot;Check&quot; at the bottom of the panel on the right of the Physics tab. Common causes are:</p>
+<ul>
+<li><strong>No cathode</strong> (&quot;Exactly one electrode with is_cathode=True is required&quot;): In the electrode table, select the electrode to be the cathode, and press &quot;Cathode&quot; on the ribbon.</li>
+<li><strong>No electrode, or an electrode has no boundary</strong>: Select a curve, then press &quot;Add Electrode&quot; or &quot;Set as Boundary&quot;.</li>
+<li><strong>The field source is &quot;FEM (solve the magnetic sketch)&quot; but there is no magnetic geometry</strong>: If you do not use the magnetic field, set &quot;Field source&quot; to &quot;None&quot;.</li>
+</ul>
+<h3 id="the-assigned-closed-region-was-not-found-appears">&quot;The assigned closed region was not found&quot; appears</h3>
+<p>The shape was changed a lot after the kinds were assigned, so the closed region can no longer be identified. In the Physics tab, select that closed region again and assign its kind again, or delete the &quot;not found&quot; row in the table.
+&quot;The closed region was found again by a representative point&quot; is a warning. Check the colors in the figure to confirm that the assignment is what you intended.</p>
+<h3 id="a-unit-error-appears-in-a-value-field">A unit error appears in a value field</h3>
+<p>A parameter without a unit is written in a field such as voltage or current. Either add a unit to the parameter (<code>Va = 10 kV</code>), or write the value in the field as <code>Vn * 1 V</code> (<a href="#55-parameters-and-expressions">Section 5.5</a>).</p>
+<h3 id="the-calculation-does-not-converge-not-converged">The calculation does not converge (&quot;not converged&quot;)</h3>
+<p>Try making the relaxation factor α smaller (&quot;Use guide&quot;), or increasing the maximum number of iterations (default 300). If the calculation starts to diverge, α is reduced automatically (the log shows &quot;divergence tendency detected&quot;, and a dashed vertical line appears in the convergence graph). When the mesh is made finer, make α smaller too. The &quot;Unmet criteria&quot; line in the log shows the last remaining quantities (dI, dJ and the space-charge residual).</p>
+<h3 id="improving-the-accuracy-of-the-beam-current">Improving the accuracy of the beam current</h3>
+<p>The &quot;Size near the cathode&quot; setting in the Mesh tab is effective. Accuracy improves with far fewer elements than refining the whole mesh. After refining, set α to the guide value.</p>
+<h3 id="the-nonlinear-magnetic-calculation-did-not-converge-in-n-iterations-appears">&quot;The nonlinear magnetic calculation did not converge in N iterations&quot; appears</h3>
+<p>This is a warning that the magnetic field calculation with a saturable magnetic material did not converge within the iteration limit. The calculation continues with the last solution, but the magnetic field contains errors. Check that Js and χ0 are not extreme values, and that the magnetic mesh is not too coarse.</p>
+<h3 id="accuracy-of-the-magnetic-field-with-magnetic-materials">Accuracy of the magnetic field with magnetic materials</h3>
+<p>Near magnetic materials, errors from a coarse mesh have a large effect. Make the magnetic mesh size smaller and calculate again, then check that the on-axis Bz and other values do not change (see the note in <a href="#66-saturation-of-magnetic-materials-fröhlichkennelly-model">Section 6.6</a>).</p>
+<h3 id="stopping-a-calculation-in-the-middle">Stopping a calculation in the middle</h3>
+<p>Use &quot;Stop&quot; (stops at the next iteration boundary) or &quot;Force stop&quot; in the Calculation tab. Neither of them saves the result.</p>
+<h3 id="cannot-delete-a-result">Cannot delete a result</h3>
+<p>A result cannot be deleted while its file (result.h5) is open in another program (an HDF viewer, Python, etc.). Close the file, then delete the result again.</p>
+<h3 id="cannot-open-a-model-already-open-elsewhere-appears">Cannot open a model (&quot;Already open elsewhere&quot; appears)</h3>
+<p>The same model is open in another TGUN window. Close it there. If the message appears although the model is not open anywhere (for example, after an abnormal exit), delete the <code>name.tgun.lock</code> file in the same folder as the model, then open the model.</p>
+<h3 id="lines-in-the-sketch-tab-do-not-move-or-points-cannot-be-selected">Lines in the Sketch tab do not move, or points cannot be selected</h3>
+<p>In the Physics, Mesh and Calculation tabs, the geometry cannot be moved (you can only select it). Go back to the Sketch tab.
+In the Sketch tab, only the geometry of the current &quot;Domain&quot; (electric / magnetic) can be edited. The gray dashed lines show the geometry of the other domain.</p>
+<h3 id="undoing-a-mistake">Undoing a mistake</h3>
+<p>With &quot;Undo&quot; (Ctrl+Z), you can undo changes to the geometry, parameters, physics, and the mesh and calculation settings, one at a time. &quot;Redo&quot; is Ctrl+Y.</p>
+<hr />
+<h2 id="13-keyboard-and-mouse-reference">13. Keyboard and mouse reference</h2>
+<p><strong>File and general</strong></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ctrl+N</td>
+<td>New</td>
+</tr>
+<tr>
+<td>Ctrl+O</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>Ctrl+S / Ctrl+Shift+S</td>
+<td>Save / Save as</td>
+</tr>
+<tr>
+<td>Ctrl+Z / Ctrl+Y</td>
+<td>Undo / Redo</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Fit</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td>Ctrl+F1</td>
+<td>Minimize the ribbon</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>Full screen</td>
+</tr>
+<tr>
+<td>Ctrl+Q</td>
+<td>Quit</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sketch (central canvas)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L / D / T</td>
+<td>Line / Dimension / Trim</td>
+</tr>
+<tr>
+<td>Tab / Enter (input box)</td>
+<td>Next field / Confirm</td>
+</tr>
+<tr>
+<td>Enter or double-click</td>
+<td>End a chain of lines</td>
+</tr>
+<tr>
+<td>Esc</td>
+<td>Discard the drawing in progress, then exit the tool</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Delete the selected items</td>
+</tr>
+<tr>
+<td>Click / Ctrl+click / Shift+click</td>
+<td>Select / toggle / add to the selection</td>
+</tr>
+<tr>
+<td>Drag from empty space</td>
+<td>Box select (left to right: elements fully inside; right to left: elements touched)</td>
+</tr>
+<tr>
+<td>Drag (point or curve)</td>
+<td>Move while keeping the constraints</td>
+</tr>
+<tr>
+<td>Double-click (dimension value)</td>
+<td>Change the dimension value (expression)</td>
+</tr>
+<tr>
+<td>Ctrl+click (while drawing)</td>
+<td>Do not add automatic constraints for that click</td>
+</tr>
+<tr>
+<td>Mouse wheel / middle-button drag</td>
+<td>Zoom in and out / pan the view</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Physics (central canvas)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Click</td>
+<td>Select a closed region or a curve</td>
+</tr>
+<tr>
+<td>Ctrl+click / Shift+click</td>
+<td>Add a curve to the selection</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Result plots</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Double-click</td>
+<td>Probe (show the value at that point)</td>
+</tr>
+<tr>
+<td>Toolbar below the plot</td>
+<td>Zoom, pan, home (fit all), save the plot</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="appendix-a-glossary">Appendix A Glossary</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Axial symmetry</td>
+<td>Shape rotated around the z axis. Only the half-plane r ≥ 0 is calculated</td>
+</tr>
+<tr>
+<td>Domain (electric / magnetic)</td>
+<td>The target of each calculation: the electric geometry (electrodes, vacuum) and the magnetic geometry (coils, magnetic materials, air)</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>A TGUN file (<code>name.tgun</code>). It contains the geometry, parameters, physics and settings</td>
+</tr>
+<tr>
+<td>Sketch</td>
+<td>A drawing of the geometry. There are two, one for the electric field and one for the magnetic field</td>
+</tr>
+<tr>
+<td>Closed region</td>
+<td>A region enclosed by lines. The unit to which a kind is assigned</td>
+</tr>
+<tr>
+<td>Computational domain</td>
+<td>The range in which the mesh is made and the field is solved (closed regions of vacuum, dielectric, air, coils and magnetic material)</td>
+</tr>
+<tr>
+<td>Constraint / Dimension</td>
+<td>Relations between shapes (horizontal, coincident, ...) / values such as length and angle. They determine the shape</td>
+</tr>
+<tr>
+<td>Parameter</td>
+<td>A named value. It can be used in expressions for dimensions, voltages, etc.</td>
+</tr>
+<tr>
+<td>Boundary condition</td>
+<td>A condition given to the curves at the edge of the computational domain: electrode (fixed voltage), natural boundary, A = 0, etc.</td>
+</tr>
+<tr>
+<td>Cathode</td>
+<td>The electrode that emits electrons. There is exactly one in a model</td>
+</tr>
+<tr>
+<td>Electrode region</td>
+<td>A conductor body. It is not meshed, and its outline is at the electrode potential</td>
+</tr>
+<tr>
+<td>A = 0</td>
+<td>The magnetic field boundary condition A_θ = 0. Magnetic flux does not cross the line</td>
+</tr>
+<tr>
+<td>Total current [A·turn]</td>
+<td>Number of turns of the coil × current</td>
+</tr>
+<tr>
+<td>Magnetic material / Saturable material</td>
+<td>A material that is magnetized and strengthens the field (e.g. iron). It is treated with a constant relative permeability μr, or with saturation taken into account</td>
+</tr>
+<tr>
+<td>Saturation magnetization Js</td>
+<td>The upper limit that the magnetization approaches in a strong field (μ0Ms [T]). About 2.15 T for pure iron</td>
+</tr>
+<tr>
+<td>Initial susceptibility χ0</td>
+<td>How easily the material is magnetized in a weak field. The initial relative permeability is 1 + χ0</td>
+</tr>
+<tr>
+<td>Saturation ratio M/Ms</td>
+<td>The ratio of the magnetization M to the saturation magnetization. From 0 to 1</td>
+</tr>
+<tr>
+<td>Effective relative permeability μr,eff</td>
+<td>B / (μ0 H) including saturation. It decreases when saturated</td>
+</tr>
+<tr>
+<td>Mesh</td>
+<td>The triangles that divide the computational domain</td>
+</tr>
+<tr>
+<td>Space charge ρ</td>
+<td>The charge distribution made by the beam electrons. It weakens the electric field and limits the current</td>
+</tr>
+<tr>
+<td>Iteration and relaxation factor α</td>
+<td>The procedure that recalculates the space charge and the trajectories alternately to balance them / the rate of update at each step</td>
+</tr>
+<tr>
+<td>Convergence</td>
+<td>The state in which the current and other quantities no longer change with iteration</td>
+</tr>
+<tr>
+<td>Perveance</td>
+<td>I / V^1.5 (µP = 10⁻⁶ A/V^1.5). A quantity that expresses the performance of an electron gun</td>
+</tr>
+<tr>
+<td>Envelope</td>
+<td>The outer radius of the beam at each z</td>
+</tr>
+<tr>
+<td>Emittance</td>
+<td>The spread of the beam in phase space (r and r'). An index of beam quality</td>
+</tr>
+<tr>
+<td>Magnetic field map</td>
+<td>Values of the magnetic field (Bz, Br) on a grid. Used for tracking</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="appendix-b-command-line-cli">Appendix B Command line (CLI)</h2>
+<p>TGUN calculations can also be run from the command line without opening the GUI. The GUI also runs the same calculation in a separate process internally, so the results are the same. Use the command line in cases such as these:</p>
+<ul>
+<li>Repeating the same calculation many times while changing parameters such as voltage, dimensions or coil current (a parameter sweep)</li>
+<li>Calling the calculation from other programs, such as Python or PowerShell scripts</li>
+<li>Extracting result values, such as the field on the axis or the beam envelope, as text</li>
+<li>Reproducing a calculation made in the GUI later, as it is</li>
+</ul>
+<h3 id="b1-command-names-and-basics">B.1 Command names and basics</h3>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>Command</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Distributed version</td>
+<td><code>TGUN.exe</code></td>
+<td><code>TGUN.exe run -p gun.tgunproj</code></td>
+</tr>
+<tr>
+<td>Development environment (after <code>pip install -e</code>)</td>
+<td><code>tgun</code> or <code>python -m tgun</code></td>
+<td><code>tgun run -p gun.tgunproj</code></td>
+</tr>
+</tbody>
+</table>
+<p>In this appendix, <code>tgun</code> is used. In the distributed version, read it as <code>TGUN.exe</code> (move to the TGUN folder in Command Prompt or PowerShell, or write the full path of <code>TGUN.exe</code>).</p>
+<ul>
+<li>Run without any arguments to open the GUI. <code>tgun name.tgun</code> opens that model in the GUI.</li>
+<li><code>tgun -h</code> shows the list of commands, and <code>tgun &lt;command&gt; -h</code> shows the arguments of that command.</li>
+<li><code>-p</code>, <code>-i</code> and <code>-o</code> can also be written as <code>--project</code> (input), <code>--input</code> (result) and <code>--output</code> (output).</li>
+<li>Length arguments are always in <strong>SI units (m)</strong> for every command (not mm as in the GUI). The only exception is the DGUN import (mm).</li>
+</ul>
+<p><strong>Try it first</strong> (make the input from the example model and calculate; about 15 seconds):</p>
+<pre><code class="language-bash">tgun convert examples\gun_with_solenoid\gun_with_solenoid.tgun -o work\gun.tgunproj
+tgun run -p work\gun.tgunproj -o work\gun.h5
+tgun beam -i work\gun.h5 --what summary
+</code></pre>
+<p>The calculation converges in 29 iterations, and the last line is <code>I_total = 7.686871e+01 A (converged)</code> (the same value as in the GUI tutorial).</p>
+<p>List of commands:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>params</code></td>
+<td>List the parameters of a model</td>
+<td><code>.tgun</code></td>
+<td>Screen</td>
+</tr>
+<tr>
+<td><code>convert</code></td>
+<td>Make the input for the CLI from a model</td>
+<td><code>.tgun</code></td>
+<td><code>.tgunproj</code></td>
+</tr>
+<tr>
+<td><code>run</code></td>
+<td>Full calculation (magnetic field, then convergence of the space charge)</td>
+<td><code>.tgunproj</code></td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>solve-e</code></td>
+<td>Electric field only (no space charge)</td>
+<td><code>.tgunproj</code></td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>solve-b</code></td>
+<td>Magnetic field only</td>
+<td><code>.tgunproj</code></td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>mesh</code></td>
+<td>Make only the mesh</td>
+<td><code>.tgunproj</code></td>
+<td><code>.msh</code></td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>List the contents of a result file</td>
+<td><code>.h5</code></td>
+<td>Screen</td>
+</tr>
+<tr>
+<td><code>plot</code></td>
+<td>Plot of the results</td>
+<td><code>.h5</code></td>
+<td><code>.png</code></td>
+</tr>
+<tr>
+<td><code>export</code></td>
+<td>Export field values (on the axis, on a line, in an area)</td>
+<td><code>.h5</code></td>
+<td><code>.txt</code>, <code>.h5</code></td>
+</tr>
+<tr>
+<td><code>beam</code></td>
+<td>Beam diagnostics (summary, envelope, cut)</td>
+<td><code>.h5</code></td>
+<td>Screen, <code>.txt</code>, <code>.png</code></td>
+</tr>
+<tr>
+<td><code>import-dgun</code></td>
+<td>Convert a DGUN input to the input for the CLI</td>
+<td><code>geom.cod</code> and others</td>
+<td><code>.tgunproj</code></td>
+</tr>
+<tr>
+<td><code>import-b</code></td>
+<td>Convert a magnetic field map (text) to <code>.h5</code></td>
+<td>Text</td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Show the version and configuration</td>
+<td>—</td>
+<td>Screen</td>
+</tr>
+<tr>
+<td><code>selftest</code></td>
+<td>Run a small calculation to check that it works</td>
+<td>—</td>
+<td>Screen</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b2-two-kinds-of-files-model-file-tgun-and-input-for-the-cli-tgunproj">B.2 Two kinds of files: model file (.tgun) and input for the CLI (.tgunproj)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Model <code>name.tgun</code></th>
+<th>Input for the CLI <code>name.tgunproj</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Made / read by</td>
+<td>GUI</td>
+<td>Calculation commands (<code>run</code>, <code>solve-e</code>, <code>solve-b</code>, <code>mesh</code>)</td>
+</tr>
+<tr>
+<td>Contents</td>
+<td>Sketch, constraints and dimensions, parameters and expressions, physics settings, and settings</td>
+<td>Only what the calculation needs (point coordinates, boundary names, region values, electrode voltages, and settings)</td>
+</tr>
+<tr>
+<td>Parameters</td>
+<td>Kept as expressions</td>
+<td><strong>Evaluated numbers</strong> (no expressions)</td>
+</tr>
+<tr>
+<td>Format</td>
+<td>TGUN model format</td>
+<td>JSON (text; can be read in a text editor)</td>
+</tr>
+</tbody>
+</table>
+<p>The calculation commands read <code>.tgunproj</code>. There are four ways to get a <code>.tgunproj</code> file.</p>
+<ol>
+<li><strong>Make it from a model with <code>tgun convert</code></strong> (<a href="#b3-creating-input-from-a-model-params-and-convert">Section B.3</a>). You can make it without opening the GUI, and you can also change parameters.</li>
+<li>Make it in the GUI with <code>&quot;File&quot; &gt; &quot;Export&quot; &gt; &quot;Input for the CLI (.tgunproj)...&quot;</code> (<a href="#105-exporting-input-for-the-cli">Section 10.5</a>).</li>
+<li><code>model.tgunproj</code> in the folder of a result calculated in the GUI (the input used for that calculation itself; <a href="#b7-reproducing-the-gui-calculation">Section B.7</a>).</li>
+<li>Make it from a DGUN input with <code>tgun import-dgun</code> (<a href="#b6-import-import-dgun-and-import-b">Section B.6</a>).</li>
+</ol>
+<blockquote class="warn"><p><strong>Note</strong>: To load a <code>.tgunproj</code> into the GUI, use &quot;Import&quot; instead of &quot;Open&quot;
+(<a href="#101-importing-version-2--1-projects">Section 10.1</a>). A <code>.tgunproj</code> has no expressions or parameters, so
+the imported model keeps only the coordinates. Keep the source for changing the shape and values in the model file (<code>.tgun</code>).</p>
+</blockquote>
+<h3 id="b3-creating-input-from-a-model-params-and-convert">B.3 Creating input from a model: params and convert</h3>
+<p><strong>Viewing the parameters</strong></p>
+<pre><code class="language-bash">tgun params gun.tgun
+</code></pre>
+<pre><code>gap = 10.0 mm   -&gt; 10.00 mm
+R   = 5.0 mm    -&gt; 5.00 mm
+Va  = 10 kV     -&gt; 10000.00 V
+</code></pre>
+<p>From left to right: the name, the written expression, and the evaluated value.</p>
+<p><strong>Making the input</strong></p>
+<pre><code class="language-bash">tgun convert gun.tgun -o work\gun.tgunproj
+</code></pre>
+<pre><code>Wrote work\gun.tgunproj (Full calculation input)
+Run: tgun run -p &quot;work\gun.tgunproj&quot; -o result.h5
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model</code></td>
+<td>Model (<code>name.tgun</code>)</td>
+</tr>
+<tr>
+<td><code>-o output</code></td>
+<td>Output file. If omitted, <code>name_cli.tgunproj</code> next to the model. Folders are created if they do not exist</td>
+</tr>
+<tr>
+<td><code>--set name=expression</code></td>
+<td>Makes the input after changing parameters (can be repeated)</td>
+</tr>
+<tr>
+<td><code>--scope</code></td>
+<td>Input to make: <code>run</code> = full calculation, <code>e</code> = electric field only, <code>b</code> = magnetic field only, <code>auto</code> = whatever can be made (default)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>The model is not changed.</strong> <code>--set</code> affects only the <code>.tgunproj</code> that is made.</li>
+<li>You can run it while the model is open in the GUI. It reads the last saved content.</li>
+<li><code>--scope auto</code> makes whatever can be made, in the order full calculation, then electric field only, then magnetic field only (a model without an electric geometry can still give a magnetic field only input). The screen shows which inputs were made and which command to use with each.</li>
+<li>For a model that uses an imported magnetic field map, the full path of the map file (inside the data folder of the model) is written in the input.</li>
+</ul>
+<p><strong>Changing parameters (<code>--set</code>)</strong></p>
+<pre><code class="language-bash">tgun convert gun.tgun -o work\v12.tgunproj --set &quot;Va=12 kV&quot; --set &quot;gap=8 mm&quot;
+</code></pre>
+<pre><code>Parameter: Va = 12 kV (in the model: 10 kV)
+Parameter: gap = 8 mm (in the model: 10.0 mm)
+Wrote work\v12.tgunproj (Full calculation input)
+</code></pre>
+<ul>
+<li>Write expressions as in the parameter table of the GUI (<a href="#55-parameters-and-expressions">Section 5.5</a>). You can write units (<code>12 kV</code>, <code>8 mm</code>).</li>
+<li>If you write only a number, the unit of that parameter is used (<code>--set gap=8</code> means 8 mm).</li>
+<li>Expressions that use other parameters can also be written (<code>--set &quot;gap=R + 3 mm&quot;</code>).</li>
+<li>Enclose an expression that contains spaces in <code>&quot;</code> (<code>--set &quot;Va=12 kV&quot;</code>).</li>
+<li>When a parameter is changed, the sketch shapes whose dimensions use it also change, as when the value is changed in the GUI.</li>
+<li>To check the result before a calculation, use <code>tgun params gun.tgun --set &quot;gap=R + 3 mm&quot;</code> (the list after the change is printed; the model is not changed).</li>
+</ul>
+<p>If you write the name of a parameter that does not exist, if an expression is wrong, or if the changed values cannot make the shape, the reason is shown and the program ends with exit code 1 (no file is written).</p>
+<h3 id="b4-running-calculations-run-solve-e-solve-b-and-mesh">B.4 Running calculations: run, solve-e, solve-b and mesh</h3>
+<pre><code class="language-bash">tgun run     -p gun.tgunproj -o gun.h5        # Full calculation (magnetic field, then iteration of electric field and trajectories)
+tgun solve-e -p gun_e.tgunproj -o gun_e.h5    # Electric field only (no space charge = Laplace equation)
+tgun solve-b -p coil.tgunproj -o coil.h5      # Magnetic field only
+tgun mesh    -p gun.tgunproj --domain e       # Make only the electric field mesh (--domain b for the magnetic field)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Command</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-p input</code></td>
+<td>All</td>
+<td>Input for the CLI (<code>.tgunproj</code>)</td>
+</tr>
+<tr>
+<td><code>-o output</code></td>
+<td>All</td>
+<td>Output file. If omitted, <code>name_result.h5</code> next to the input (<code>mesh</code> makes <code>name_e.msh</code> and <code>name_b.msh</code>)</td>
+</tr>
+<tr>
+<td><code>--reuse-mesh</code></td>
+<td><code>run</code>, <code>solve-e</code></td>
+<td>If a mesh made before (<code>name_e.msh</code> and <code>name_b.msh</code>) is next to the input, it is used without being made again</td>
+</tr>
+<tr>
+<td><code>--max-iter count</code></td>
+<td><code>run</code></td>
+<td>Uses this upper limit on the number of iterations instead of the value written in the input</td>
+</tr>
+<tr>
+<td><code>--alpha value</code></td>
+<td><code>run</code></td>
+<td>Uses this relaxation factor α instead of the value written in the input</td>
+</tr>
+<tr>
+<td><code>--domain e</code>/<code>b</code></td>
+<td><code>mesh</code></td>
+<td>Domain for which the mesh is made (electric or magnetic)</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="warn"><p><strong>Note</strong>: If <code>-o</code> is omitted, the name is <code>name_result.h5</code> for <code>run</code>, <code>solve-e</code> and <code>solve-b</code>. Running with the same input
+again overwrites it, so we recommend naming the output with <code>-o</code>.</p>
+</blockquote>
+<p>If a model file (<code>.tgun</code>) is passed to <code>-p</code> as it is, the program stops with a message to make the input with <code>convert</code> (the calculation commands read only <code>.tgunproj</code>).</p>
+<p>Mesh files (<code>name_e.msh</code>, <code>name_b.msh</code>, and their <code>.domain.json</code> files) are also created next to the input. When you change the geometry or the mesh settings, do not use <code>--reuse-mesh</code> (with it, the calculation uses the old mesh).</p>
+<p>Screen output of <code>run</code>:</p>
+<pre><code>mesh written: gun_b.msh
+coil 'coil_0': I = 5000 A, mesh area = 0.009 m^2, J_theta = 555556 A/m^2
+magnetic material 'iron_sat_1': Frohlich-Kennelly (Js = 1.9 T, chi0 = 1000)
+solving nonlinear magnetostatics (A_theta, Newton)...
+ ...
+nonlinear magnetic field solve: converged in 3 iterations (residual 1.67e-14)
+B map sampled on 201x101 grid
+cathode refine: size = 1 mm, dist = 10 mm
+mesh written: gun_e.msh
+dt = 2.630e-12 s, electrodes = {'Cathode': -200000.0, 'Wehnelt': -200000.0, 'Anode': 0.0}, cathode = 'Cathode'
+[iter] k=1 I_total=1.555862e+02 dI=inf dJ=inf drho=1.000e+00 res=1.000e+00
+[iter] k=2 I_total=1.612142e+02 dI=8.293e-02 dJ=1.898e-01 drho=6.280e-01 res=8.483e-01
+ ...
+[iter] k=29 I_total=7.686871e+01 dI=5.137e-05 dJ=6.014e-05 drho=2.716e-04 res=6.791e-04
+[iter] converged at k=29
+result written: gun.h5
+I_total = 7.686871e+01 A (converged)
+</code></pre>
+<p>The <code>[iter]</code> lines give the values for each iteration. They are the same as in the convergence graph of the GUI (<a href="#82-during-and-after-the-calculation">Section 8.2</a>). <code>k</code> is the iteration number, <code>I_total</code> is the emitted current [A], <code>dI</code> and <code>dJ</code> are the relative changes of the current and of the current density from the previous iteration, <code>drho</code> is the change of the space charge, and <code>res</code> is the residual of the space charge. The last line is the result. <code>(converged)</code> means converged; <code>(NOT converged)</code> means the calculation was stopped at the upper limit of the iterations.</p>
+<p><strong>Exit codes</strong> (used to judge the result in a script):</p>
+<table>
+<thead>
+<tr>
+<th>Exit code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Finished normally (<code>run</code> converged)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Error (input validation error, missing file, etc.). The reason is shown</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Invalid arguments</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>run</code> did not converge (<strong>the result file is still written</strong>; it can be viewed as an intermediate state)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>The trial period has ended (distributed version)</td>
+</tr>
+</tbody>
+</table>
+<p>The calculation settings (α, tolerances, the upper limit of iterations, the time step of the trajectories, and so on) are written in the input. The calculation settings of the model (<a href="#83-calculation-settings">Section 8.3</a>) are carried over as they are by <code>convert</code>. To change settings other than <code>--max-iter</code> and <code>--alpha</code>, change the settings of the model on the &quot;Calculation&quot; tab in the GUI, save it, and run <code>convert</code> again.</p>
+<h3 id="b5-viewing-results-info-plot-export-and-beam">B.5 Viewing results: info, plot, export and beam</h3>
+<p>Every command takes the result file (<code>.h5</code>) with <code>-i</code>. You can use it not only for results calculated on the command line, but also for <strong>results calculated in the GUI</strong> (for example <code>results\0001-run\result.h5</code> in the data folder of the model; <a href="#11-saving-and-folder-structure">Chapter 11</a>).</p>
+<p><strong>info - list of contents</strong></p>
+<pre><code class="language-bash">tgun info -i gun.h5
+</code></pre>
+<p>The names and sizes of the data in the result file are printed. The main items are listed below (all values are in SI units).</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/emesh</code> and <code>/bmesh</code></td>
+<td>Electric and magnetic meshes (node coordinates, triangles, boundaries and regions)</td>
+</tr>
+<tr>
+<td><code>/electrostatics</code></td>
+<td>Node potential <code>V</code>, electric field <code>E_nodal</code>, space charge <code>rho_nodal</code></td>
+</tr>
+<tr>
+<td><code>/magnetostatics</code></td>
+<td>Node vector potential <code>A_theta</code>, flux density <code>B_nodal</code> (if there are saturable materials, also the effective μr and saturation ratio of each element)</td>
+</tr>
+<tr>
+<td><code>/bmap</code></td>
+<td>Magnetic field map used for the trajectory calculation (<code>z</code>, <code>r</code>, <code>Bz</code>, <code>Br</code>)</td>
+</tr>
+<tr>
+<td><code>/emission</code></td>
+<td>Current density <code>J</code> and current <code>I</code> for each cathode surface</td>
+</tr>
+<tr>
+<td><code>/particles</code></td>
+<td>Trajectories (positions and momenta), current of each particle, destination</td>
+</tr>
+<tr>
+<td><code>/convergence</code></td>
+<td><code>I_total</code>, <code>dI_rel</code>, <code>dJ_rel</code>, <code>drho_rel</code>, <code>alpha</code> and <code>rho_res</code> at each iteration</td>
+</tr>
+<tr>
+<td><code>/parameters</code></td>
+<td>Attributes: converged current <code>I_total</code>, whether it converged (<code>converged</code>), and the input used for the calculation (<code>project_json</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>plot - figures</strong></p>
+<pre><code class="language-bash">tgun plot -i gun.h5 --what traj -o traj.png
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>--what</code></th>
+<th>Figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>V</code></td>
+<td>Potential (equipotential lines)</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>Magnitude of the electric field</td>
+</tr>
+<tr>
+<td><code>rho</code></td>
+<td>Space-charge density</td>
+</tr>
+<tr>
+<td><code>traj</code></td>
+<td>Trajectories</td>
+</tr>
+<tr>
+<td><code>J</code></td>
+<td>Distribution of the cathode current density</td>
+</tr>
+<tr>
+<td><code>conv</code></td>
+<td>Convergence history</td>
+</tr>
+<tr>
+<td><code>B</code></td>
+<td>Magnitude of the flux density, field lines, arrows, and Bz on the axis</td>
+</tr>
+</tbody>
+</table>
+<p>If <code>-o</code> is omitted, the figure is written next to the result as <code>name_&lt;what&gt;.png</code>. The resolution can be changed with <code>--dpi</code> (default 150).
+With <code>--what B</code>, you can use <code>--b-levels n</code> (number of field lines; default 20, 0 = do not draw), <code>--b-vectors NZ,NR</code> (grid of arrows; default 24,12, 0 = do not draw), and <code>--b-vec-scale unit</code>/<code>mag</code> (all arrows the same length / length proportional to the magnitude).</p>
+<p><strong>export - field values</strong></p>
+<pre><code class="language-bash">tgun export -i gun.h5 -o axis --shape axis --fields V,Ez,Bz --format txt
+tgun export -i gun.h5 -o line --shape line --p1 0.0,0.001 --p2 0.04,0.001 --npts 200
+tgun export -i gun.h5 -o area --shape area --z-range 0,0.04 --r-range 0,0.005 --nz 200 --nr 50
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-o name</code></td>
+<td>Name of the output (no extension is added; <code>name.txt</code> and <code>name.h5</code> are created)</td>
+</tr>
+<tr>
+<td><code>--shape</code></td>
+<td><code>axis</code> = on the axis (default), <code>line</code> = on the line joining two points, <code>area</code> = grid over a rectangular range</td>
+</tr>
+<tr>
+<td><code>--fields</code></td>
+<td>Quantities to write. Select from <code>V,Ez,Er,Emag,rho,Bz,Br,Bmag</code>, separated by commas (if omitted, everything in the result)</td>
+</tr>
+<tr>
+<td><code>--z-range zmin,zmax</code></td>
+<td>Range of z [m] (<code>axis</code> and <code>area</code>; whole range if omitted)</td>
+</tr>
+<tr>
+<td><code>--r-range rmin,rmax</code></td>
+<td>Range of r [m] (<code>area</code>)</td>
+</tr>
+<tr>
+<td><code>--p1 z,r</code> and <code>--p2 z,r</code></td>
+<td>Start and end points of the line [m] (<code>line</code>)</td>
+</tr>
+<tr>
+<td><code>--npts</code></td>
+<td>Number of points (<code>axis</code> and <code>line</code>; default 500)</td>
+</tr>
+<tr>
+<td><code>--nz</code> and <code>--nr</code></td>
+<td>Number of grid divisions (<code>area</code>; default 200 and 100)</td>
+</tr>
+<tr>
+<td><code>--format</code></td>
+<td><code>txt</code>, <code>h5</code>, or <code>both</code> (default)</td>
+</tr>
+</tbody>
+</table>
+<p>Text output (<code>--shape axis</code>):</p>
+<pre><code># TGUN field export (shape=axis, SI units)
+# source_file = gun.h5
+# fields = V Ez Bz
+# units = SI (z,r[m] V[V] E[V/m] rho[C/m^3] B[T])
+# Columns: s distance z r V Ez Bz mask
+0.000000000e+00 0.000000000e+00 0.000000000e+00 0.000000000e+00 0.000000e+00 -3.514372e+05 2.779186e-03 1
+2.500000000e-01 1.000000000e-02 1.000000000e-02 0.000000000e+00 8.982020e+03 -6.582072e+05 9.952325e-03 1
+</code></pre>
+<p>Lines beginning with <code>#</code> are comments, and the <code>Columns:</code> line gives the column names. <code>s</code> is the position along the line (0 to 1), <code>distance</code> is the distance from the start point [m], and <code>mask</code> is 1 if the point is inside the electric computational domain, or 0 if it is outside (for example, inside an electrode).</p>
+<p><strong>beam - beam diagnostics</strong></p>
+<pre><code class="language-bash">tgun beam -i gun.h5 --what summary
+tgun beam -i gun.h5 --what envelope --z-planes 0.011,0.04,100 -o envelope.txt --plot envelope.png
+tgun beam -i gun.h5 --what cut --cut 0.03 -o cut.txt --plot phase.png
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>--what</code></th>
+<th>Output</th>
+<th>Argument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>summary</code></td>
+<td>Shows the summary on the screen (also written to a file with <code>-o</code>)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>envelope</code></td>
+<td>Beam radius at each z plane</td>
+<td><code>--z-planes zmin,zmax,number</code> [m] (number of planes; if omitted, 200 planes over the whole range)</td>
+</tr>
+<tr>
+<td><code>cut</code></td>
+<td>List of particles crossing one z plane (phase space)</td>
+<td><code>--cut z</code> [m] (required)</td>
+</tr>
+</tbody>
+</table>
+<p>If <code>-o</code> is omitted, the output is written next to the result as <code>name_envelope.txt</code> or <code>name_cut.txt</code>. With <code>--plot</code>, a figure (<code>.png</code>) is also created.</p>
+<p>Output of <code>summary</code>:</p>
+<pre><code>I_total      = 76.8687 A (converged=True)
+dV           = 200000 V (V_cathode=-200000 V)
+perveance    = 8.5942e-07 A/V^1.5 (0.8594 microperv)
+particles    = 32 (exited 32, max_steps 0)
+exit r mean  = 0.00609325 m / max 0.00935684 m
+exit Ekin    = 194909 eV (mean)
+</code></pre>
+<p>The columns of <code>envelope</code> are <code>z</code>, <code>r_edge</code> (radius of the outermost particle), <code>r_rms</code> (rms radius weighted by current), <code>I_pass</code> (current passing the plane [A]), and <code>n_rays</code> (number of particles passing). The columns of <code>cut</code> are <code>pid</code> (particle number), <code>r</code>, <code>rp</code> (slope dr/dz), <code>I</code> (current of the particle [A]) and <code>ekin_eV</code> (kinetic energy [eV]), and the rms emittance is also printed on the screen. The values are the same as in &quot;Beam Diagnostics&quot; in the GUI (<a href="#96-beam-diagnostics">Section 9.6</a>).</p>
+<h3 id="b6-import-import-dgun-and-import-b">B.6 Import: import-dgun and import-b</h3>
+<p><strong>Creating input for the CLI from DGUN input</strong></p>
+<pre><code class="language-bash">tgun import-dgun --geom geom.cod --dginput dginput.dat --mag mag.dat -o test3.tgunproj --cathode-mesh-size 0.25
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--geom</code> and <code>--dginput</code></td>
+<td>DGUN geometry (<code>geom.cod</code>) and input (<code>dginput.dat</code>). Required</td>
+</tr>
+<tr>
+<td><code>--mag</code></td>
+<td>Field on the axis (<code>mag.dat</code>). If omitted, the field in <code>dginput.dat</code> is used</td>
+</tr>
+<tr>
+<td><code>--no-b</code></td>
+<td>Do not import the magnetic field</td>
+</tr>
+<tr>
+<td><code>-o</code></td>
+<td>Output (<code>.tgunproj</code>). Required</td>
+</tr>
+<tr>
+<td><code>--mesh-size</code></td>
+<td>Mesh size <strong>[mm]</strong> (default 1.0)</td>
+</tr>
+<tr>
+<td><code>--cathode-mesh-size</code></td>
+<td>Mesh size near the cathode [mm] (if omitted, the mesh is not refined)</td>
+</tr>
+<tr>
+<td><code>--refine-dist</code></td>
+<td>Distance over which the mesh is refined [mm] (if omitted, 10 times the size near the cathode)</td>
+</tr>
+<tr>
+<td><code>--rmax</code> and <code>--nr</code></td>
+<td>Upper limit of r of the field map [mm] (default 35) and number of divisions (default 71)</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>.tgunproj</code> file created can be calculated as it is with <code>tgun run -p</code>. To see the geometry and settings in the GUI, use &quot;File&quot; &gt; &quot;Import&quot; &gt; &quot;DGUN Input...&quot; in the GUI (<a href="#102-importing-dgun-input">Section 10.2</a>). It performs the same conversion and saves the result as a model.</p>
+<p><strong>Converting a field map to .h5</strong></p>
+<pre><code class="language-bash">tgun import-b --file bmap.txt -o bmap.h5
+</code></pre>
+<p>Converts a text field map to the TGUN field map format (<code>.h5</code>). The GUI's &quot;Import Field Map&quot; (<a href="#103-importing-a-magnetic-field-map">Section 10.3</a>) does the same conversion and registers the map in the model.</p>
+<h3 id="b7-reproducing-the-gui-calculation">B.7 Reproducing the GUI calculation</h3>
+<p>When you calculate in the GUI, the input <code>model.tgunproj</code> used for that calculation is placed in the result folder (for example <code>results\0001-run\</code> in the data folder of the model). The same calculation command (for example <code>tgun run -p model.tgunproj -o result.h5</code>) is recorded in <code>command.log</code> in the data folder. Running that command in the result folder reproduces the same calculation (use a different name for <code>-o</code> so that the earlier result is not overwritten).</p>
+<pre><code class="language-bash">cd gun.tgun.data\results\0001-run
+tgun run -p model.tgunproj -o again.h5
+</code></pre>
+<p><code>model.tgunproj</code> holds the numbers after the parameters were evaluated at that time. Even if you change the model afterwards, the input of the earlier calculation remains. A saturable magnetic material region is written as <code>&quot;b_model&quot;: &quot;fk&quot;</code>, <code>&quot;fk_js&quot;</code> (Js [T]), and <code>&quot;fk_chi0&quot;</code> (χ0).</p>
+<h3 id="b8-script-example-sweeping-parameters">B.8 Script example: sweeping parameters</h3>
+<p>This example changes the anode voltage <code>Va</code> to 8, 10, 12, and 15 kV and lists the emission current for each. The model <code>gun.tgun</code> is not changed.</p>
+<p>PowerShell:</p>
+<pre><code class="language-powershell">foreach ($v in 8, 10, 12, 15) {
+    tgun convert gun.tgun -o &quot;sweep\v$v.tgunproj&quot; --set &quot;Va=$v kV&quot; | Out-Null
+    tgun run -p &quot;sweep\v$v.tgunproj&quot; -o &quot;sweep\v$v.h5&quot; | Select-String &quot;I_total = &quot;
+}
+</code></pre>
+<p><code>Select-String &quot;I_total = &quot;</code> extracts only the result line (for example <code>I_total = 1.336526e+00 A (converged)</code>). In the distributed version, replace <code>tgun</code> with the full path of <code>TGUN.exe</code> (for example <code>&amp; &quot;C:\TGUN\TGUN.exe&quot; convert ...</code>).</p>
+<p>Python (checks convergence with the exit code and reads the current from the result file):</p>
+<pre><code class="language-python">import subprocess
+import h5py                      # pip install h5py
+
+TGUN = &quot;tgun&quot;                    # In the distributed version, use r&quot;C:\TGUN\TGUN.exe&quot;
+
+for va in (8, 10, 12, 15):
+    proj, h5 = f&quot;sweep/v{va}.tgunproj&quot;, f&quot;sweep/v{va}.h5&quot;
+    subprocess.run([TGUN, &quot;convert&quot;, &quot;gun.tgun&quot;, &quot;-o&quot;, proj, &quot;--set&quot;, f&quot;Va={va} kV&quot;], check=True)
+    code = subprocess.run([TGUN, &quot;run&quot;, &quot;-p&quot;, proj, &quot;-o&quot;, h5]).returncode     # 0 = converged, 3 = not converged
+    with h5py.File(h5, &quot;r&quot;) as f:
+        current = f[&quot;parameters&quot;].attrs[&quot;I_total&quot;]
+    print(f&quot;Va = {va} kV: I = {current:.4f} A&quot; + (&quot;&quot; if code == 0 else &quot; (not converged)&quot;))
+</code></pre>
+<p>Output for the planar diode model (gap 10 mm, radius 5 mm):</p>
+<pre><code>Va = 8 kV: I = 1.3365 A
+Va = 10 kV: I = 1.8662 A
+Va = 12 kV: I = 2.4533 A
+Va = 15 kV: I = 3.4264 A
+</code></pre>
+<p>In a space-charge-limited electron gun, the current is proportional to the voltage to the power 1.5 (constant perveance). The output above agrees well with this: the current ratio of 15 kV to 8 kV, 2.564, matches the 1.5 power of the voltage ratio (2.567).</p>
+<blockquote class="tip"><p><strong>Tip</strong>: To sweep two or more parameters, repeat <code>--set</code> (<code>--set &quot;Va=12 kV&quot; --set &quot;gap=8 mm&quot;</code>).
+Coil currents and electrode voltages can be swept in the same way if they are made parameters in the model (write a name such as <code>Va</code> or <code>I_coil</code> in the field; the example gun_with_solenoid is set up this way).</p>
+</blockquote>
+<h3 id="b9-script-example-matching-a-target-automatic-adjustment-of-perveance">B.9 Script example: matching a target (automatic adjustment of perveance)</h3>
+<p>You can also change a parameter to match a result to a target value. The script <code>tune_perveance.py</code> in the folder of the example gun_with_solenoid moves the anode position <code>d_an</code> to match the perveance to 1 µP.</p>
+<pre><code class="language-bash">cd examples\gun_with_solenoid
+python tune_perveance.py
+</code></pre>
+<pre><code>Target 1 uP (tolerance 0.5%). Adjusting d_an (now 70 mm)
+  d_an =  70.0000 mm  -&gt;  0.8594 uP (-14.06%)
+  d_an =  63.0000 mm  -&gt;  1.0342 uP (+3.42%)
+  d_an =  64.2715 mm  -&gt;  0.9960 uP (-0.40%)
+Matched: d_an = 64.27 mm
+Input for this value (with coil): work\tuned.tgunproj
+To apply this to the model, set d_an to 64.27 mm in the parameter table of the GUI
+</code></pre>
+<p>The fit takes three calculations (about 50 seconds). The script repeats the following three commands (it runs with only the Python standard library; the model is not changed).</p>
+<pre><code class="language-bash">tgun convert gun_with_solenoid.tgun -o work\case.tgunproj --set &quot;d_an=63 mm&quot; --set &quot;I_coil=0&quot;
+tgun run     -p work\case.tgunproj -o work\case.h5
+tgun beam    -i work\case.h5 --what summary
+</code></pre>
+<ul>
+<li>The script reads the <code>perveance = ...</code> line in the output of <code>tgun beam --what summary</code> to get the perveance.</li>
+<li>The perveance does not depend on the magnetic field, so during the adjustment the coil is turned off with <code>--set &quot;I_coil=0&quot;</code>, and the magnetic field calculation is skipped.</li>
+<li>The next value to try is chosen by the secant method (where the line through the two points crosses the target). The perveance changes roughly as the distance to the power of -2, so drawing the line on a logarithmic scale reaches the target in a few steps.</li>
+<li>Finally, the input <code>work\tuned.tgunproj</code> is written with the coil turned on at the matched value.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Meaning (default)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--target value</code></td>
+<td>Target perveance [µP] (default 1.0)</td>
+</tr>
+<tr>
+<td><code>--param name</code></td>
+<td>Parameter to move (<code>d_an</code>). Example: <code>--param Rc2</code></td>
+</tr>
+<tr>
+<td><code>--tol value</code></td>
+<td>Allowed relative difference (0.005 = 0.5%)</td>
+</tr>
+<tr>
+<td><code>--step value</code></td>
+<td>Second point = current value × this (default 0.9)</td>
+</tr>
+<tr>
+<td><code>--max-evals n</code></td>
+<td>Upper limit on the number of calculations (default 8)</td>
+</tr>
+<tr>
+<td><code>--tgun command</code></td>
+<td>The TGUN command. In the distributed version, use <code>--tgun &quot;C:\TGUN\TGUN.exe&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p>To use the script with your own model, give the path of the model as the first argument (<code>python tune_perveance.py my_gun.tgun --param gap</code>). To match a different quantity (for example, the beam radius at the exit), rewrite the <code>perveance</code> function in the script so that it reads another line of the output of <code>tgun beam</code>.</p>
+<h3 id="b10-other-commands">B.10 Other commands</h3>
+<pre><code class="language-bash">tgun version      # Version and configuration (Python, libraries, mesh generator)
+tgun selftest     # Runs a small calculation (mesh and full calculation of the planar diode); normal if &quot;Result: OK&quot; is printed
+</code></pre>
+<ul>
+<li>If something does not work, please report it with the output of <code>tgun version</code> and <code>tgun selftest</code>.</li>
+<li><code>tgun job ...</code> is the command that the GUI starts by itself to run calculations (you do not run it by hand).</li>
+<li>If a file is missing or an argument value is wrong, the command shows a one-line reason starting with <code>Error:</code> and exits with code 1.
+To see the Python traceback for a bug report, run the command with the environment variable <code>TGUN_TRACEBACK</code> set to 1.</li>
+<li>After the trial period ends, the distributed <code>TGUN.exe</code> cannot run calculations from the command line either (<code>version</code> and <code>-h</code> still work).</li>
+</ul>
+<hr />
+<h2 id="appendix-c-for-users-moving-from-version-2">Appendix C For users moving from Version 2</h2>
+<p>In Version 3, the way the geometry is drawn has been replaced by the sketch of the 3D CAD EMRM-CAD. The calculation itself (field calculation, emission, tracking, and convergence check) is the same as in Version 2.</p>
+<p><strong>What has changed</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Version 2</th>
+<th>Version 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td><code>name.tgunproj</code> and <code>name.tgunproj.data\</code></td>
+<td><code>name.tgun</code> and <code>name.tgun.data\</code></td>
+</tr>
+<tr>
+<td>Drawing the geometry</td>
+<td>TGUN's own drawing tools</td>
+<td>The same sketch as EMRM-CAD (input window, automatic constraints, many drawing and editing tools)</td>
+</tr>
+<tr>
+<td>Intersecting lines</td>
+<td>Curves are split automatically at the intersection</td>
+<td>Curves are not split. The regions separated by intersections are found as closed regions (constraints are less likely to be lost)</td>
+</tr>
+<tr>
+<td>Parameters</td>
+<td>Numbers only (no units)</td>
+<td>With units (<code>10 mm</code>, <code>10 kV</code>). Trigonometric functions use degrees</td>
+</tr>
+<tr>
+<td>Value fields</td>
+<td>Numbers or expressions</td>
+<td>Numbers, numbers with units, or expressions (a bare number takes the unit of that field)</td>
+</tr>
+<tr>
+<td>Switching electric / magnetic field</td>
+<td>Upper right of the screen</td>
+<td>&quot;Domain&quot; at the left end of the ribbon</td>
+</tr>
+<tr>
+<td>List of results</td>
+<td>The browser on the left</td>
+<td>Upper right of the Results tab</td>
+</tr>
+<tr>
+<td>Length unit</td>
+<td>Choose from mm, cm, m, inch</td>
+<td>mm (in expressions, you can write units such as <code>1 in</code> or <code>2 cm</code>)</td>
+</tr>
+<tr>
+<td>Screen language</td>
+<td>Japanese / English</td>
+<td>Japanese</td>
+</tr>
+</tbody>
+</table>
+<p><strong>To use a Version 2 project</strong>: import it with &quot;File&quot; &gt; &quot;Import&quot; &gt; &quot;TGUN v2 / v1 Project...&quot;, and save it as <code>.tgun</code> (<a href="#101-importing-version-2--1-projects">Section 10.1</a>). The original project is not changed.
+Meshes and calculation results are not carried over, so run the calculation again.</p>
+<p><strong>Not yet in Version 3</strong>: there is no function yet to open and display result files outside a project (<code>.h5</code> files calculated with the CLI).</p>
+<footer>TGUN 3.0.0b2 User Manual (built on 2026-11-28)</footer>
+</article></main>
+<button id="top" type="button" title="Top">↑</button>
+<div id="zoom"><img alt=""></div>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var byId = {};
+  links.forEach(function (a) { byId[decodeURIComponent(a.getAttribute('href').slice(1))] = a; });
+  var heads = Array.prototype.slice.call(document.querySelectorAll('article h2, article h3'));
+  function mark() {
+    var current = heads[0];
+    for (var i = 0; i < heads.length; i++) {
+      if (heads[i].getBoundingClientRect().top <= 90) { current = heads[i]; } else { break; }
+    }
+    var a = current ? byId[current.id] : null;
+    links.forEach(function (x) { x.classList.toggle('current', x === a); });
+    var chapter = a ? a.parentNode.getAttribute('data-chapter') : '';
+    document.querySelectorAll('#toc li.h3').forEach(function (li) {
+      li.classList.toggle('open', li.getAttribute('data-chapter') === chapter);
+    });
+    if (a && a.scrollIntoView) { a.scrollIntoView({ block: 'nearest' }); }
+    document.getElementById('top').classList.toggle('show', window.scrollY > 600);
+  }
+  var waiting = false;
+  window.addEventListener('scroll', function () {
+    if (!waiting) { waiting = true; setTimeout(function () { waiting = false; mark(); }, 60); }
+  });
+  mark();
+  document.getElementById('top').addEventListener('click', function () { window.scrollTo({ top: 0 }); });
+  document.getElementById('menu').addEventListener('click', function () { document.body.classList.toggle('menu'); });
+  links.forEach(function (a) { a.addEventListener('click', function () { document.body.classList.remove('menu'); }); });
+  var zoom = document.getElementById('zoom'), big = zoom.querySelector('img');
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('click', function () { big.src = img.src; big.alt = img.alt; zoom.classList.add('show'); });
+  });
+  zoom.addEventListener('click', function () { zoom.classList.remove('show'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { zoom.classList.remove('show'); } });
+})();
+</script>
+</body>
+</html>

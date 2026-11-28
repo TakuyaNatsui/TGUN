@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TGUN ユーザーマニュアル（Version 3）</title>
+<style>
+:root { --ink: #1e293b; --muted: #64748b; --line: #dbe3ec; --paper: #ffffff; --ground: #f3f6fa;
+        --accent: #1d4ed8; --accent-soft: #e8efff; --side: 300px; }
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; }
+body { margin: 0; background: var(--ground); color: var(--ink);
+       font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif; line-height: 1.8; }
+a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+
+/* ---- 左の目次 */
+#toc { position: fixed; inset: 0 auto 0 0; width: var(--side); overflow-y: auto; background: #0f1b33; color: #cbd5e1;
+       padding: 0 0 32px; font-size: .92em; line-height: 1.5; }
+#toc .brand { padding: 20px 20px 14px; border-bottom: 1px solid #23335a; margin-bottom: 8px; }
+#toc .brand b { display: block; color: #ffffff; font-size: 1.25em; letter-spacing: .02em; }
+#toc .brand span { color: #94a3b8; font-size: .9em; }
+#toc ul { list-style: none; margin: 0; padding: 0; }
+#toc a { display: block; padding: 5px 20px; color: inherit; border-left: 3px solid transparent; }
+#toc a:hover { background: #1b2a4d; text-decoration: none; color: #ffffff; }
+#toc li.h3 a { padding-left: 36px; font-size: .93em; color: #94a3b8; display: none; }
+#toc li.open.h3 a { display: block; }
+#toc a.current { border-left-color: #60a5fa; background: #1b2a4d; color: #ffffff; }
+#menu { display: none; }
+
+/* ---- 本文 */
+main { margin-left: var(--side); }
+article { max-width: 1020px; margin: 0 auto; padding: 28px 48px 56px; background: var(--paper); min-height: 100vh;
+          box-shadow: 0 0 0 1px var(--line); }
+h1 { font-size: 2em; margin: .2em 0 .6em; padding-bottom: .35em; border-bottom: 3px solid var(--accent); }
+h2 { font-size: 1.5em; margin: 2.6em 0 .8em; padding: .35em .6em; background: var(--accent-soft);
+     border-left: 6px solid var(--accent); border-radius: 0 4px 4px 0; }
+h3 { font-size: 1.18em; margin: 2em 0 .6em; padding-bottom: .2em; border-bottom: 1px solid var(--line); }
+p, li { overflow-wrap: anywhere; }
+table { border-collapse: collapse; margin: 1em 0; font-size: .96em; }
+th, td { border: 1px solid var(--line); padding: .4em .75em; vertical-align: top; }
+th { background: #eef2f8; text-align: left; white-space: nowrap; }
+tr:nth-child(even) td { background: #fafbfd; }
+code { font-family: Consolas, "BIZ UDGothic", monospace; background: #eef2f8; padding: .1em .35em; border-radius: 3px;
+       font-size: .95em; }
+pre { background: #0f1b33; color: #e2e8f0; padding: .9em 1.1em; border-radius: 6px; overflow-x: auto; line-height: 1.55; }
+pre code { background: none; color: inherit; padding: 0; }
+hr { border: none; border-top: 1px solid var(--line); margin: 2.4em 0; }
+blockquote { margin: 1.1em 0; padding: .5em 1em; border-left: 5px solid #93c5fd; background: #eff6ff; border-radius: 0 4px 4px 0; }
+blockquote.warn { border-left-color: #f59e0b; background: #fffbeb; }
+blockquote.tip { border-left-color: #22c55e; background: #f0fdf4; }
+blockquote p { margin: .3em 0; }
+figure { margin: 1.3em 0; text-align: center; }
+figure img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; cursor: zoom-in;
+             box-shadow: 0 2px 8px rgba(15, 27, 51, .08); }
+figcaption { color: var(--muted); font-size: .9em; margin-top: .4em; }
+footer { color: var(--muted); font-size: .85em; margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--line); }
+#top { position: fixed; right: 22px; bottom: 22px; width: 44px; height: 44px; border-radius: 50%; border: none;
+       background: var(--accent); color: #fff; font-size: 20px; cursor: pointer; opacity: 0; pointer-events: none;
+       transition: opacity .2s; box-shadow: 0 2px 8px rgba(0, 0, 0, .25); }
+#top.show { opacity: .9; pointer-events: auto; }
+
+/* ---- 図の拡大 */
+#zoom { position: fixed; inset: 0; background: rgba(8, 15, 30, .88); display: none; align-items: center;
+        justify-content: center; z-index: 10; cursor: zoom-out; padding: 24px; }
+#zoom.show { display: flex; }
+#zoom img { max-width: 100%; max-height: 100%; border-radius: 4px; background: #fff; }
+
+/* ---- 狭い画面・印刷 */
+@media (max-width: 900px) {
+  #toc { transform: translateX(-100%); transition: transform .2s; z-index: 5; }
+  body.menu #toc { transform: none; }
+  main { margin-left: 0; }
+  article { padding: 56px 18px 40px; }
+  #menu { display: block; position: fixed; left: 10px; top: 10px; z-index: 6; border: none; border-radius: 4px;
+          background: #0f1b33; color: #fff; padding: 6px 12px; font-size: 1em; }
+}
+@media print {
+  #toc, #menu, #top, #zoom { display: none !important; }
+  main { margin-left: 0; } article { box-shadow: none; max-width: none; padding: 0; }
+  body { background: #fff; } h2 { break-after: avoid; } figure, table, pre { break-inside: avoid; }
+  a { color: inherit; }
+}
+</style>
+</head>
+<body>
+<button id="menu" type="button">☰ 目次</button>
+<nav id="toc">
+<div class="brand"><b>TGUN</b><span>ユーザーマニュアル ／ Version 3.0.0b2</span></div>
+<ul>
+<li class="h2" data-chapter="1-tgun-でできること"><a href="#1-tgun-でできること">1. TGUN でできること</a></li>
+<li class="h3" data-chapter="1-tgun-でできること"><a href="#軸対称と座標">軸対称と座標</a></li>
+<li class="h3" data-chapter="1-tgun-でできること"><a href="#電場と磁場の-2-つの形状">電場と磁場の 2 つの形状</a></li>
+<li class="h3" data-chapter="1-tgun-でできること"><a href="#作業の流れ">作業の流れ</a></li>
+<li class="h2" data-chapter="2-インストールと起動"><a href="#2-インストールと起動">2. インストールと起動</a></li>
+<li class="h3" data-chapter="2-インストールと起動"><a href="#配布版zipを使う">配布版（zip）を使う</a></li>
+<li class="h3" data-chapter="2-インストールと起動"><a href="#開発環境ソースから使う">開発環境（ソース）から使う</a></li>
+<li class="h2" data-chapter="3-画面の見方"><a href="#3-画面の見方">3. 画面の見方</a></li>
+<li class="h3" data-chapter="3-画面の見方"><a href="#中央の画面の操作">中央の画面の操作</a></li>
+<li class="h3" data-chapter="3-画面の見方"><a href="#表示のタブと管理のタブ">表示のタブと管理のタブ</a></li>
+<li class="h2" data-chapter="4-チュートリアル-例題を計算する"><a href="#4-チュートリアル-例題を計算する">4. チュートリアル: 例題を計算する</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#41-例題を開く">4.1 例題を開く</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#42-名前を付けて保存する">4.2 名前を付けて保存する</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#43-形状とパラメータを見る">4.3 形状とパラメータを見る</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#44-物理の指定を見る">4.4 物理の指定を見る</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#45-メッシュを作る">4.5 メッシュを作る</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#46-計算する">4.6 計算する</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#47-結果を見る">4.7 結果を見る</a></li>
+<li class="h3" data-chapter="4-チュートリアル-例題を計算する"><a href="#48-条件を変えて比べる">4.8 条件を変えて比べる</a></li>
+<li class="h2" data-chapter="5-形状を描くスケッチ"><a href="#5-形状を描くスケッチ">5. 形状を描く（スケッチ）</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#51-作図の基本">5.1 作図の基本</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#52-閉領域計算する範囲">5.2 閉領域（計算する範囲）</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#53-拘束">5.3 拘束</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#54-寸法">5.4 寸法</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#55-パラメータと式">5.5 パラメータと式</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#56-選ぶ動かす消す">5.6 選ぶ・動かす・消す</a></li>
+<li class="h3" data-chapter="5-形状を描くスケッチ"><a href="#57-磁場の形状を描く">5.7 磁場の形状を描く</a></li>
+<li class="h2" data-chapter="6-物理を指定する"><a href="#6-物理を指定する">6. 物理を指定する</a></li>
+<li class="h3" data-chapter="6-物理を指定する"><a href="#61-電場-領域の種別">6.1 電場: 領域の種別</a></li>
+<li class="h3" data-chapter="6-物理を指定する"><a href="#62-電場-電極を決める">6.2 電場: 電極を決める</a></li>
+<li class="h3" data-chapter="6-物理を指定する"><a href="#63-磁場-磁場の与え方">6.3 磁場: 磁場の与え方</a></li>
+<li class="h3" data-chapter="6-物理を指定する"><a href="#64-磁場-コイル磁性体境界条件">6.4 磁場: コイル・磁性体・境界条件</a></li>
+<li class="h3" data-chapter="6-物理を指定する"><a href="#65-領域の表と検査">6.5 領域の表と検査</a></li>
+<li class="h3" data-chapter="6-物理を指定する"><a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 磁性体の飽和（Fröhlich–Kennelly モデル）</a></li>
+<li class="h2" data-chapter="7-メッシュを作る"><a href="#7-メッシュを作る">7. メッシュを作る</a></li>
+<li class="h2" data-chapter="8-計算する"><a href="#8-計算する">8. 計算する</a></li>
+<li class="h3" data-chapter="8-計算する"><a href="#81-計算の種類">8.1 計算の種類</a></li>
+<li class="h3" data-chapter="8-計算する"><a href="#82-計算中と計算の後">8.2 計算中と計算の後</a></li>
+<li class="h3" data-chapter="8-計算する"><a href="#83-計算の設定">8.3 計算の設定</a></li>
+<li class="h2" data-chapter="9-結果を見る"><a href="#9-結果を見る">9. 結果を見る</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#91-表示量">9.1 表示量</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#92-重ね表示">9.2 重ね表示</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#93-拡大移動">9.3 拡大・移動</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#94-プローブ点の値を読む">9.4 プローブ（点の値を読む）</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#95-図と場の書き出し">9.5 図と場の書き出し</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#96-ビーム診断">9.6 ビーム診断</a></li>
+<li class="h3" data-chapter="9-結果を見る"><a href="#97-結果の管理">9.7 結果の管理</a></li>
+<li class="h2" data-chapter="10-取り込みと書き出し"><a href="#10-取り込みと書き出し">10. 取り込みと書き出し</a></li>
+<li class="h3" data-chapter="10-取り込みと書き出し"><a href="#101-version-2--1-のプロジェクトを取り込む">10.1 Version 2 / 1 のプロジェクトを取り込む</a></li>
+<li class="h3" data-chapter="10-取り込みと書き出し"><a href="#102-dgun-の入力を取り込む">10.2 DGUN の入力を取り込む</a></li>
+<li class="h3" data-chapter="10-取り込みと書き出し"><a href="#103-磁場マップを取り込む">10.3 磁場マップを取り込む</a></li>
+<li class="h3" data-chapter="10-取り込みと書き出し"><a href="#104-emrm-cad-へ書き出す">10.4 EMRM-CAD へ書き出す</a></li>
+<li class="h3" data-chapter="10-取り込みと書き出し"><a href="#105-cli-用の入力を書き出す">10.5 CLI 用の入力を書き出す</a></li>
+<li class="h2" data-chapter="11-保存とフォルダの構成"><a href="#11-保存とフォルダの構成">11. 保存とフォルダの構成</a></li>
+<li class="h2" data-chapter="12-困ったときは"><a href="#12-困ったときは">12. 困ったときは</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#閉領域が塗られない">閉領域が塗られない</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#計算のボタンが押せない計算を始められませんと出る">計算のボタンが押せない・「計算を始められません」と出る</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#割り当てた閉領域が見つかりませんと出る">「割り当てた閉領域が見つかりません」と出る</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#値の欄で単位の誤りが出る">値の欄で「単位」の誤りが出る</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#計算が収束しない未収束になる">計算が収束しない（「未収束」になる）</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#ビーム電流の精度を上げたい">ビーム電流の精度を上げたい</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#非線形の磁場計算が-n-回で収束しませんでしたと出る">「非線形の磁場計算が N 回で収束しませんでした」と出る</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#磁性体を使った磁場の精度が気になる">磁性体を使った磁場の精度が気になる</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#計算を途中で止めたい">計算を途中で止めたい</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#結果を削除できない">結果を削除できない</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#モデルを開けないほかで開いていますと出る">モデルを開けない（「ほかで開いています」と出る）</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#スケッチのタブの線が動かない点が選べない">スケッチのタブの線が動かない・点が選べない</a></li>
+<li class="h3" data-chapter="12-困ったときは"><a href="#操作を間違えた">操作を間違えた</a></li>
+<li class="h2" data-chapter="13-キーボードとマウスの操作一覧"><a href="#13-キーボードとマウスの操作一覧">13. キーボードとマウスの操作一覧</a></li>
+<li class="h2" data-chapter="付録-a-用語"><a href="#付録-a-用語">付録 A 用語</a></li>
+<li class="h2" data-chapter="付録-b-コマンドラインcli"><a href="#付録-b-コマンドラインcli">付録 B コマンドライン（CLI）</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b1-コマンドの名前と基本">B.1 コマンドの名前と基本</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b2-2-種類のファイル-モデルファイルtgunと-cli-用の入力tgunproj">B.2 2 種類のファイル: モデルファイル（.tgun）と CLI 用の入力（.tgunproj）</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b3-モデルから入力を作る-params-と-convert">B.3 モデルから入力を作る: params と convert</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b4-計算する-runsolve-esolve-bmesh">B.4 計算する: run・solve-e・solve-b・mesh</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b5-結果を見る-infoplotexportbeam">B.5 結果を見る: info・plot・export・beam</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b6-取り込み-import-dgun-と-import-b">B.6 取り込み: import-dgun と import-b</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b7-gui-の計算を再現する">B.7 GUI の計算を再現する</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b8-スクリプトの例-パラメータを振る">B.8 スクリプトの例: パラメータを振る</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b9-スクリプトの例-目標に合わせるパービアンスの自動調整">B.9 スクリプトの例: 目標に合わせる（パービアンスの自動調整）</a></li>
+<li class="h3" data-chapter="付録-b-コマンドラインcli"><a href="#b10-その他のコマンド">B.10 その他のコマンド</a></li>
+<li class="h2" data-chapter="付録-c-version-2-から移る人へ"><a href="#付録-c-version-2-から移る人へ">付録 C Version 2 から移る人へ</a></li>
+</ul>
+</nav>
+<main><article>
+<h1 id="tgun-ユーザーマニュアルversion-3">TGUN ユーザーマニュアル（Version 3）</h1>
+<p>TGUN を初めて使う人のための操作説明書です。画面の見方から、例題を使った計算の一通りの流れ、形状の描き方、物理の指定、メッシュ、計算、結果の見方、DGUN などからの取り込みまでを、実際の画面で説明します。</p>
+<ul>
+<li><strong>まず動かしてみたい人</strong>は、<a href="#1-tgun-でできること">1 章</a>（何ができるか）と <a href="#3-画面の見方">3 章</a>（画面の見方）を読んでから、
+<a href="#4-チュートリアル-例題を計算する">4 章のチュートリアル</a>で例題を計算してください（10 分ほど）。</li>
+<li>自分の電子銃を計算するときは、<a href="#5-形状を描くスケッチ">5 章</a>〜<a href="#9-結果を見る">9 章</a>を順に参照してください。</li>
+<li>DGUN の入力をお持ちなら、<a href="#102-dgun-の入力を取り込む">10.2 節</a>から始めると、すぐに同じ電子銃を計算できます。</li>
+<li>Version 2 を使っていた人は、先に<a href="#付録-c-version-2-から移る人へ">付録 C</a>を見てください（変わった点と、プロジェクトの移し方）。</li>
+</ul>
+<p>画面の例に出てくる <code>W:\tgun\…</code> は説明用の作業フォルダです。自分のフォルダに読み替えてください。</p>
+<hr />
+<h2 id="1-tgun-でできること">1. TGUN でできること</h2>
+<p>TGUN は、<strong>軸対称（z-r の 2 次元）の熱電子銃</strong>を設計するためのシミュレーションソフトです。有限要素法（FEM）で場を計算し、カソードから出た電子の軌道を追跡します。EGUN / DGUN と同じ種類の計算を、形状を描きながら行えます（DGUN との比較検証済み。カソード近傍を細かくしたメッシュで、ビーム電流の差は 1% 以内）。</p>
+<p>計算の中身は次のとおりです。</p>
+<ol>
+<li><strong>静電場</strong>: 電極の電圧と空間電荷 ρ からポアソン方程式を解き、電位 V と電界 E を求めます。</li>
+<li><strong>静磁場</strong>: コイル（総電流 I [A·turn]）と磁性体（比透磁率 μr）から磁場 B を FEM で解きます。磁性体の飽和も扱えます（飽和磁化と初期磁化率で表す Fröhlich–Kennelly モデル。<a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 節</a>）。磁場マップのファイルや DGUN の軸上磁場（mag.dat）を読み込むこともできます。</li>
+<li><strong>放出と追跡</strong>: カソードから空間電荷制限（Child-Langmuir 則の仮想カソード）で電子を放出し、相対論的な運動方程式で軌道を追跡します（ビームの自己磁場も含められます）。</li>
+<li><strong>反復</strong>: 軌道から空間電荷 ρ を作り直し、1. と 3. を繰り返して、場とビームがつり合った（自己無撞着な）解に収束させます。</li>
+</ol>
+<p>得られるのは、ビーム電流 I_total・パービアンス・電子の軌道・電位 / 電界 / 空間電荷密度 / 磁場の分布・エンベロープ・位相空間・エミッタンスなどです。</p>
+<h3 id="軸対称と座標">軸対称と座標</h3>
+<ul>
+<li><strong>z</strong> はビームの進む向き（対称軸）、<strong>r</strong> は軸からの距離（半径）です。長さの単位は mm です。</li>
+<li>形状は <strong>r ≥ 0 の半分だけ</strong>を描きます。画面の横の赤い一点鎖線が対称軸（r = 0）で、その下（r &lt; 0）は灰色になっています。</li>
+</ul>
+<h3 id="電場と磁場の-2-つの形状">電場と磁場の 2 つの形状</h3>
+<p>TGUN では、<strong>電場の計算に使う形状</strong>（電極・真空・誘電体）と、<strong>磁場の計算に使う形状</strong>（コイル・磁性体・空気）を別々に描きます。リボンの左端の「場」のボタン（電場 / 磁場）で、どちらを扱うかを切り替えます。</p>
+<ul>
+<li>電場の形状は、電子が飛ぶ真空の部分（電極に囲まれた範囲）です。</li>
+<li>磁場の形状は、コイルや磁性体を含み、外側で磁場が十分小さくなるように、電場の形状より広く取ります。磁場を使わない計算では描かなくてかまいません。</li>
+</ul>
+<h3 id="作業の流れ">作業の流れ</h3>
+<p>リボン（画面上のタブ）は、左から右へ作業の順に並んでいます。</p>
+<pre><code>スケッチ（形状を描く）→ 物理（電極・コイルを決める）→ メッシュ → 計算 → 結果
+</code></pre>
+<hr />
+<h2 id="2-インストールと起動">2. インストールと起動</h2>
+<h3 id="配布版zipを使う">配布版（zip）を使う</h3>
+<p>必要なもの: Windows 10 / 11（64 ビット）。Python などのインストールは要りません。</p>
+<ol>
+<li>配布の zip（<code>TGUN-&lt;版&gt;-trial-win64.zip</code>。https://github.com/TakuyaNatsui/TGUN の Releases）を、好きな場所に展開します（例: ドキュメント\TGUN）。展開の前に、zip を右クリック →「プロパティ」→ 下の「許可する」にチェック → OK とすると、次の警告が出にくくなります。</li>
+<li>展開したフォルダの <code>TGUN.exe</code> をダブルクリックします。初めての起動で「Windows によって PC が保護されました」と出たときは、「詳細情報」→「実行」を押します（TGUN にはまだ電子署名が付いていないためです）。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>フォルダの中身</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TGUN.exe</code></td>
+<td>本体（GUI とコマンド）</td>
+</tr>
+<tr>
+<td><code>manual\</code></td>
+<td>このマニュアル（HTML。右上の「?」→「マニュアル」や F1 キーでも開けます）</td>
+</tr>
+<tr>
+<td><code>examples\</code></td>
+<td>例題（4 章のチュートリアルで使います）</td>
+</tr>
+<tr>
+<td><code>mesher\</code></td>
+<td>メッシュ生成の別のプログラム（GNU GPL。Gmsh を含みます）</td>
+</tr>
+<tr>
+<td><code>licenses\</code>、<code>THIRD_PARTY_NOTICES.txt</code></td>
+<td>使っているオープンソースのライセンス</td>
+</tr>
+<tr>
+<td><code>README.txt</code>、<code>TERMS_OF_USE.txt</code></td>
+<td>はじめにお読みください・利用条件</td>
+</tr>
+</tbody>
+</table>
+<p>試用版は使える期限が決まっています（ウィンドウの題名と、「このソフトについて」に出ます）。動作を確かめたいときは、コマンドプロンプトで <code>TGUN.exe selftest</code> を実行します。GUI と同じ仕組みで小さな計算（平板ダイオード）をして、「結果: OK」と出れば正常です。</p>
+<h3 id="開発環境ソースから使う">開発環境（ソース）から使う</h3>
+<p>必要なもの: Windows（動作確認は Windows 11）、Python 3.13。</p>
+<p><code>TGUN_ver3</code> フォルダで、コマンドプロンプトから次を実行します（GUI に必要な PySide6 と、メッシュの生成に使う
+gmsh なども入ります）。</p>
+<pre><code class="language-bash">pip install -e .[gui,mesher]
+</code></pre>
+<p>大きなメッシュを速く解きたいときは、高速な線形ソルバも入れておくと便利です（任意）。</p>
+<pre><code class="language-bash">pip install -e .[accel]
+</code></pre>
+<p>起動は次のどれかです。モデルファイルを指定すると、それを開いて起動します。</p>
+<pre><code class="language-bash">tgun-gui
+python -m tgun
+tgun-gui C:\work\gun.tgun
+</code></pre>
+<p>Version 2 / 1 のプロジェクト（<code>.tgunproj</code>）を指定すると、取り込んで新しいモデルにします（<a href="#101-version-2--1-のプロジェクトを取り込む">10.1 節</a>）。ウィンドウの位置と大きさは、終了するときに覚えて次の起動で戻ります。</p>
+<hr />
+<h2 id="3-画面の見方">3. 画面の見方</h2>
+<figure><img loading="lazy" width="1440" height="934" src="manual_images/overview.png" alt="画面の全体（物理のタブを開いたところ）" /><figcaption>画面の全体（物理のタブを開いたところ）</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>番号</th>
+<th>名前</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>クイック アクセス</td>
+<td>新規・開く・保存・元に戻す・やり直し</td>
+</tr>
+<tr>
+<td>②</td>
+<td>ファイル</td>
+<td>新規・開く・最近使ったドキュメント・保存・名前を付けて保存・取り込み・書き出し・終了</td>
+</tr>
+<tr>
+<td>③</td>
+<td>リボンのタブ</td>
+<td>作業の順に スケッチ / 物理 / メッシュ / 計算 / 結果。その右に 管理（パラメータ）と 表示。タブを替えると、画面がその作業のものに替わります</td>
+</tr>
+<tr>
+<td>④</td>
+<td>リボンのパネル</td>
+<td>今のタブの操作ボタン。ボタンにマウスを乗せると説明が出ます。今は押せないボタンは薄い色になります</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>場</td>
+<td>「電場」「磁場」のどちらの形状を扱うか。スケッチ・物理・メッシュのタブの左端にあります。隣の「全体表示」は、今の場の形状が入るように表示を合わせます（F キー）</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>中央の画面</td>
+<td>形状を描く・選ぶ画面（キャンバス）。右上に今の場の名前（電場 = 青、磁場 = 緑）が出ます。結果のタブでは結果の図に替わります</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>右のパネル</td>
+<td>今のタブの設定の欄（物理: 領域と電極の表、メッシュ: 大きさと状態、計算: 収束グラフと設定、結果: 結果の一覧と表示の切り替え）。スケッチのタブでは出ません</td>
+</tr>
+<tr>
+<td>⑧</td>
+<td>ステータスバー</td>
+<td>今の操作の案内、計算の状態、マウスの位置の座標（z, r）</td>
+</tr>
+</tbody>
+</table>
+<p>表示の言語（日本語 / English）は、「ファイル」→「言語（Language）…」で選びます。TGUN を起動し直すと反映されます。</p>
+<p>右上の「?」には「マニュアル」（F1 キー）と「このソフトについて」（版・試用の期限・利用条件・使っているオープンソースのライセンス）があります。その右の「∧」はリボンをタブの名前だけに畳みます（もう一度押すと戻ります）。</p>
+<p>ウィンドウの題名にはモデルの名前が出ます。保存していない変更があると、名前の後ろに「*」が付きます。試用版では、使える期限（例:「試用版（2027-12-31 まで）」）も出ます。</p>
+<h3 id="中央の画面の操作">中央の画面の操作</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>動き</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>マウスホイール</td>
+<td>マウスの位置を中心に拡大・縮小</td>
+</tr>
+<tr>
+<td>中ボタン（ホイール）を押したままドラッグ</td>
+<td>表示の移動</td>
+</tr>
+<tr>
+<td>F キー（または「全体表示」）</td>
+<td>今の場の形状が入るように表示</td>
+</tr>
+</tbody>
+</table>
+<p>もう一方の場の形状は、灰色の破線で重ねて表示されます（表示のタブの「もう一方の場」で消せます）。</p>
+<h3 id="表示のタブと管理のタブ">表示のタブと管理のタブ</h3>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_view.png" alt="表示のタブ" /><figcaption>表示のタブ</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>ボタン</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全体表示</td>
+<td>今の場の形状（と軸）が入るように表示します（F キー）。結果のタブでは、結果の図を全体表示に戻します</td>
+</tr>
+<tr>
+<td>もう一方の場</td>
+<td>もう一方の場（電場 / 磁場）の輪郭を、灰色の破線で重ねます / 隠します</td>
+</tr>
+<tr>
+<td>メッシュを表示</td>
+<td>作ってあるメッシュを形状に重ねます / 隠します</td>
+</tr>
+<tr>
+<td>リボンを最小化</td>
+<td>リボンをタブの名前だけにします（Ctrl+F1。タブの名前のダブルクリックでも同じ）</td>
+</tr>
+<tr>
+<td>全画面表示</td>
+<td>窓を画面いっぱいにします（F11）</td>
+</tr>
+<tr>
+<td>ログ</td>
+<td>メッシュ生成と計算のログを、画面の下に出します / 隠します</td>
+</tr>
+</tbody>
+</table>
+<p>管理のタブには「パラメータ」（パラメータの表。<a href="#55-パラメータと式">5.5 節</a>）があります。表示と管理のタブは、開いても今の作業（スケッチ・物理…）を変えません。</p>
+<hr />
+<h2 id="4-チュートリアル-例題を計算する">4. チュートリアル: 例題を計算する</h2>
+<p>TGUN に付いている例題 <strong>gun_with_solenoid</strong>（ピアス型の電子銃 ＋ ヨークつきのソレノイド）を開き、メッシュを作り、計算して、結果を見るまでを一通りやってみます。計算は 1 回 15 秒ほどで終わります。</p>
+<p>例題の構成（r-z の断面。寸法は mm）:</p>
+<pre><code>電場   カソード Cathode（-200 kV）  球面。半径 30、曲率半径 60
+       ウェネルト Wehnelt（-200 kV） カソードの縁から 45 度に開くフォーカス電極
+       アノード Anode（0 V）         z = 70 の面と、ビームパイプ（半径 15、z = 300 まで）
+磁場   コイル Coil（5000 A）         z = 100〜280、r = 140〜190
+       ヨーク Yoke（磁性体・飽和）   コイルを囲む厚さ 10 の鉄。z = 80〜300
+</code></pre>
+<p>カソードから出た約 77 A のビームを、半径 15 mm のビームパイプに通します。<strong>ソレノイドが無いとビームの半分がパイプの壁に当たり、ソレノイドを入れると全部が通ります</strong>（4.8 節で比べます）。</p>
+<p>この例題の形状は、<strong>寸法とパラメータ</strong>で決まっています。カソードの半径やアノードの位置、加速電圧、コイルの電流はパラメータなので、値を 1 つ書き換えるだけで形状や条件が変わります。</p>
+<h3 id="41-例題を開く">4.1 例題を開く</h3>
+<ol>
+<li>左上の「ファイル」→「開く」（Ctrl+O）を選びます。</li>
+<li>TGUN のフォルダ（<code>TGUN.exe</code> のあるフォルダ）の <code>examples\gun_with_solenoid\gun_with_solenoid.tgun</code> を選びます（開発環境では <code>TGUN_ver3\examples\gun_with_solenoid\gun_with_solenoid.tgun</code>）。</li>
+</ol>
+<p>例題の形状と設定がそのまま開きます。メッシュと計算の結果は入っていないので、この後で作ります。</p>
+<blockquote class="tip"><p><strong>ヒント</strong>: 同じフォルダの <code>gun_with_solenoid.tgunproj</code> は、コマンドライン（<a href="#付録-b-コマンドラインcli">付録 B</a>）用の入力です。このモデルから作ったもので、そのまま <code>tgun run -p</code> に渡せます。</p>
+</blockquote>
+<h3 id="42-名前を付けて保存する">4.2 名前を付けて保存する</h3>
+<p>計算を始める前に、「ファイル」→「名前を付けて保存…」（Ctrl+Shift+S）で、作業用のフォルダに別の名前で保存します（例: <code>gun_tutorial.tgun</code>）。こうすると、例題のフォルダは元のまま残ります。保存すると、モデルファイル <code>gun_tutorial.tgun</code> ができます。メッシュや計算の結果は、同じ名前のデータフォルダ
+<code>gun_tutorial.tgun.data</code> に入ります（<a href="#11-保存とフォルダの構成">11 章</a>）。</p>
+<h3 id="43-形状とパラメータを見る">4.3 形状とパラメータを見る</h3>
+<p>スケッチのタブで、電場の形状を見てみます。薄い青に塗られた部分が、線で囲まれた領域（閉領域 = 真空の部分）です。左下の円弧がカソード（球面）、そこから斜めに上がる線がウェネルト、z = 70 mm の縦の線がアノードの面、右へ延びる細い部分がビームパイプです。下の辺が対称軸（r = 0）です。灰色の破線は、磁場の形状（ヨークとコイル）の輪郭です。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_shape_e.png" alt="電場の形状（スケッチのタブ）" /><figcaption>電場の形状（スケッチのタブ）</figcaption></figure>
+<p>図の中の数字と矢印は<strong>寸法</strong>です。値の前に <code>fx:</code> の付いた寸法は、式（パラメータ）で決まっています。寸法をダブルクリックすると値や式（<code>Rc2</code>・<code>d_an</code> など）が出て、書き換えると形状がそれに合わせて動きます（<a href="#54-寸法">5.4 節</a>）。</p>
+<p>管理のタブ →「パラメータ」を押すと、パラメータの表が出ます。表の上の組（寸法パラメータ）はスケッチの寸法で、下へスクロールすると、この例題のために作った「ユーザー パラメータ」の組があります。</p>
+<figure><img loading="lazy" width="900" height="330" src="manual_images/tut_params.png" alt="例題のパラメータ" /><figcaption>例題のパラメータ</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>パラメータ</th>
+<th>値</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rc1</code></td>
+<td>30 mm</td>
+<td>カソードの半径</td>
+</tr>
+<tr>
+<td><code>Rc2</code></td>
+<td>60 mm</td>
+<td>カソードの球面の曲率半径</td>
+</tr>
+<tr>
+<td><code>d_an</code></td>
+<td>70 mm</td>
+<td>カソードの中心からアノードの面までの距離</td>
+</tr>
+<tr>
+<td><code>r_pip</code></td>
+<td>15 mm</td>
+<td>ビームパイプの半径</td>
+</tr>
+<tr>
+<td><code>Va</code></td>
+<td>200 kV</td>
+<td>加速電圧（カソードとウェネルトの電圧は <code>-Va</code>）</td>
+</tr>
+<tr>
+<td><code>I_coil</code></td>
+<td>5000 A</td>
+<td>コイルの総電流</td>
+</tr>
+</tbody>
+</table>
+<p>表の「式」を書き換えると、それを使っている寸法・電圧・電流がすぐに変わります（<a href="#55-パラメータと式">5.5 節</a>）。ここでは見るだけにして、表を閉じます。</p>
+<p>リボンの左端の「磁場」を押すと、磁場の形状に切り替わります。外側の大きな四角が空気の箱、中のコの字形がヨーク、その内側の四角がコイルです。左下の灰色の破線は、電場の形状の輪郭です。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_shape_b.png" alt="磁場の形状" /><figcaption>磁場の形状</figcaption></figure>
+<h3 id="44-物理の指定を見る">4.4 物理の指定を見る</h3>
+<p>物理のタブを開くと、曲線が<strong>境界の色</strong>で、閉領域が<strong>種別の色</strong>で描かれ、右にパネルが出ます。</p>
+<p>電場（「場」が電場）では、右のパネルの電極の表に Cathode（カソードに ○）・Wehnelt・Anode があります。
+Cathode と Wehnelt の電圧の欄には式 <code>-Va</code> が書いてあり、評価した値（-200000 V）が出ています。図の赤い線が Cathode、青い線が Wehnelt、緑の線が Anode の境界です。色の付いていない線（左上の短い辺と、右端の辺）は自然境界（∂V/∂n = 0）、下の辺は対称軸です。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_physics_e.png" alt="電場の物理（領域と電極の表）" /><figcaption>電場の物理（領域と電極の表）</figcaption></figure>
+<p>磁場（「場」が磁場）では、領域の表に Coil（コイル）と Yoke（磁性体（飽和））があります。Coil の総電流の欄にはパラメータ <code>I_coil</code> が書いてあります。外周の紫の破線は A = 0（磁束が横切らない境界）です。領域の表の行や、図の中の閉領域をクリックすると、その領域が選ばれ、表の下に種別・名前・値の欄が出ます（下の図はコイルを選んだところ）。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_physics_b.png" alt="磁場の物理（コイルを選んだところ）" /><figcaption>磁場の物理（コイルを選んだところ）</figcaption></figure>
+<h3 id="45-メッシュを作る">4.5 メッシュを作る</h3>
+<p>メッシュのタブ →「両方を生成」を押します。電場 → 磁場の順にメッシュ（細かい三角形の分割）が作られます。「メッシュを表示」を押すと、形状に重ねて表示されます。右のパネルに節点と要素の数・辺の長さが出ます。電場のメッシュは、カソードの近くだけ細かくしてあります（全体 2 mm、カソード近傍 1 mm。<a href="#7-メッシュを作る">7 章</a>）。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_mesh_e.png" alt="電場のメッシュ" /><figcaption>電場のメッシュ</figcaption></figure>
+<p>「場」を磁場に切り替えると、磁場のメッシュが見られます。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_mesh_b.png" alt="磁場のメッシュ" /><figcaption>磁場のメッシュ</figcaption></figure>
+<blockquote class="tip"><p><strong>ヒント</strong>: メッシュを作らずにいきなり計算しても、計算の前に自動で作ります。メッシュのタブで先に作ると、細かさを確かめてから計算できます。設定が変わっていなければ、計算はそのメッシュをそのまま使います。</p>
+</blockquote>
+<h3 id="46-計算する">4.6 計算する</h3>
+<p>計算のタブ →「実行」を押すと、確認のダイアログが出ます。パラメータ・計算の設定・電極の電圧・コイルの電流・メッシュ・結果の出力先が一覧になっているので、確かめて「実行」を押します。</p>
+<figure><img loading="lazy" width="520" height="650" src="manual_images/run_confirm.png" alt="実行の前の確認" /><figcaption>実行の前の確認</figcaption></figure>
+<p>計算中は、右のパネルの<strong>収束グラフ</strong>が反復ごとに伸びていきます。その上に「実行中: 反復 k/最大」と、そのときの電流 I_total が出ます。リボンの「ログ」を押すと、計算のログが画面の下に出ます。止めたいときは「停止」（次の反復の区切りで止まる）か「強制停止」を押します。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_running.png" alt="計算中の画面（ログを出したところ）" /><figcaption>計算中の画面（ログを出したところ）</figcaption></figure>
+<p>終わると「完了（収束）」になり、グラフの下に I_total・パービアンス・出口のエネルギーと半径・計算時間が出ます。この例題では、30 回ほどの反復で収束し、電流は約 76.9 A（パービアンス 0.86 µP）になります。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_run_done.png" alt="計算の完了" /><figcaption>計算の完了</figcaption></figure>
+<p>収束グラフの見方:</p>
+<ul>
+<li><strong>青い線（左の軸）</strong>: ビーム電流 I_total [A]。反復とともに一定の値に落ち着きます。</li>
+<li><strong>dI / dJ / ρ（右の対数の軸）</strong>: 電流・放出電流密度・空間電荷の残差（相対値）。dI・dJ は「今の場が求めるカソードの電流」と「前の反復で使った電流」の差、ρ は「今の場で計算した軌道がつくる電荷」と「その場のもとになった電荷」の差です。dI・dJ が灰色の点線（tol）より、ρ が紫の点線（tol ρ）より小さくなると収束です。</li>
+<li><strong>縦の破線</strong>: 緩和係数 α を自動で変えた反復です。計算が発散しかけると α を半分にし（ログに「発散傾向を検知」）、その後 ρ が続けて減ると元の値へ戻します（「残差が減少を継続」）。</li>
+</ul>
+<h3 id="47-結果を見る">4.7 結果を見る</h3>
+<p>結果のタブを開くと、右上に<strong>結果の一覧</strong>、中央に結果の図が出ます。一覧の「0001-run 全計算［完了］」をクリックすると、その結果が表示されます。最初は電位 V の分布に、電子の軌跡（青）と電極の形状が重なっています。右のパネルには要約（電流・パービアンス・場の範囲・軸上の磁場のピーク）が出ます。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/tut_results_v.png" alt="結果（電位と軌跡）" /><figcaption>結果（電位と軌跡）</figcaption></figure>
+<p>カソードから出た電子がアノードの孔に向かって絞られ、ビームパイプの中をソレノイドの磁場に導かれて進むのが分かります。表示する量（電界・空間電荷密度・磁場）の切り替えやプローブなどは <a href="#9-結果を見る">9 章</a>で説明します。</p>
+<h3 id="48-条件を変えて比べる">4.8 条件を変えて比べる</h3>
+<p>計算の結果は、上書きされずに<strong>履歴として全部残ります</strong>。パラメータを変えて計算し直し、比べてみましょう。ここでは、コイルの電流を 0 にして、ソレノイドの無い場合を計算します。</p>
+<ol>
+<li>管理のタブ →「パラメータ」でパラメータの表を開き、<code>I_coil</code> の式を <code>0 A</code> に書き換えて Enter を押します。</li>
+<li>計算のタブ →「実行」。確認のダイアログに「コイルの電流がすべて 0 なので、磁場なしで計算します」と出ます。そのまま実行すると、結果「0002-run」ができます。</li>
+<li>結果のタブで結果を選び、右のパネルの下の「名前を変更…」で、分かりやすい名前（例: 「コイル 5000 A」「コイル 0 A」）を付けます。</li>
+</ol>
+<figure><img loading="lazy" width="400" height="140" src="manual_images/results_list.png" alt="結果の一覧（名前を付けたところ）" /><figcaption>結果の一覧（名前を付けたところ）</figcaption></figure>
+<p>一覧で結果をクリックすると、表示を切り替えられます。ソレノイドが無いと、ビームは自分の空間電荷で広がり、外側の電子がビームパイプの壁に当たります（放出した電流のうち、出口まで届くのは半分ほど）。</p>
+<figure><img loading="lazy" width="2084" height="786" src="manual_images/tut_compare.png" alt="コイルあり（左）とコイルなし（右）の比較" /><figcaption>コイルあり（左）とコイルなし（右）の比較</figcaption></figure>
+<p>比べ終わったら、<code>I_coil</code> を <code>5000 A</code> に戻します。</p>
+<blockquote class="tip"><p><strong>ヒント</strong>: 同じようにして、<code>d_an</code>（アノードの位置）や <code>Va</code>（加速電圧）を変えると、電流がどう変わるかを比べられます。結果には、計算したときのパラメータの値が記録されます（結果のタブの要約）。コマンドラインからパラメータを振って自動で計算する方法は、付録 B の <a href="#b8-スクリプトの例-パラメータを振る">B.8 節</a>・<a href="#b9-スクリプトの例-目標に合わせるパービアンスの自動調整">B.9 節</a>にあります。</p>
+</blockquote>
+<p>これでチュートリアルは終わりです。次の章からは、自分の電子銃を計算するための操作を詳しく説明します。</p>
+<hr />
+<h2 id="5-形状を描くスケッチ">5. 形状を描く（スケッチ）</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_sketch.png" alt="スケッチのタブ" /><figcaption>スケッチのタブ</figcaption></figure>
+<p>スケッチのタブでは、今の場（電場 / 磁場）の形状を描きます。描く前に、左端の「場」でどちらに描くかを確かめてください。作図・拘束・寸法の仕組みは、3D CAD の EMRM-CAD のスケッチと同じものです（Autodesk Inventor に近い操作です）。</p>
+<ul>
+<li><strong>作成</strong>: 線・円・円弧・長方形などを描きます。</li>
+<li><strong>修正</strong>: 描いた図形を動かす・切る・延ばす・複写するなど。</li>
+<li><strong>パターン</strong>: 並べて複写・鏡像。</li>
+<li><strong>拘束</strong>: 寸法と、図形どうしの関係（水平・平行・一致…）。</li>
+<li><strong>形式</strong>: 構築線（補助の線）への切り替えなど。</li>
+</ul>
+<h3 id="51-作図の基本">5.1 作図の基本</h3>
+<ol>
+<li>「作成」のパネルでツールを選びます（▼ の付いたボタンは、押すと仲間のツールの一覧が出ます）。ステータスバーに、次の操作が案内されます。</li>
+<li>画面をクリックして、点を順に決めます。既存の点・線の近くをクリックすると、端点・中点・線の上などに吸い付きます。</li>
+<li>図形ができたら、続けて次の図形を描けます。<strong>Esc</strong> でツールを終えます。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>ツール</th>
+<th>使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>線（L キー）</td>
+<td>始点 → 次の点 → …と続けて描きます（連続線）。ダブルクリックか Enter で終わります。最初の点をクリックして閉じたときも終わります</td>
+</tr>
+<tr>
+<td>中心点円 ▼</td>
+<td>中心 → 円周上の点。▼ に 3 点円・接線円</td>
+</tr>
+<tr>
+<td>中心点円弧 ▼</td>
+<td>中心 → 始点 → 終点。▼ に 3 点円弧・接線円弧（線の端から滑らかにつながる円弧）</td>
+</tr>
+<tr>
+<td>2 点長方形 ▼</td>
+<td>対角の 2 点。4 辺に水平・垂直の拘束が付きます。▼ に 3 点長方形・スロット・ポリゴンなど</td>
+</tr>
+<tr>
+<td>フィレット ▼</td>
+<td>線と線の角を丸めます（半径を入力してから、角か 2 本の線をクリック）。▼ に面取り</td>
+</tr>
+<tr>
+<td>点</td>
+<td>点を置きます</td>
+</tr>
+<tr>
+<td>線（構築線）・中心線</td>
+<td>補助の線（破線）。閉領域の輪郭にはなりません</td>
+</tr>
+</tbody>
+</table>
+<p>作図中は、画面の左上に<strong>入力ウィンドウ</strong>が出ます。マウスで位置を決める代わりに、数値を打って形を決められます（下の図は、線の 1 点目を置いたところ。長さと角度の欄があります）。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/model_line_hud.png" alt="線を描いているところ（左上に長さと角度の入力ウィンドウ）" /><figcaption>線を描いているところ（左上に長さと角度の入力ウィンドウ）</figcaption></figure>
+<ul>
+<li><strong>Tab</strong> で次の欄に移り、値を打って <strong>Enter</strong> で確定します。打った値は寸法として残ります。</li>
+<li>欄には式も打てます（<code>25 mm</code>、<code>40 + 2 * 5</code>、パラメータの名前 <code>Lgap</code>）。</li>
+<li>水平・垂直に近い向きで線を引くと、水平・垂直の拘束が自動で付きます。端点を既存の点に合わせると、一致の拘束でつながります。<strong>Ctrl を押しながらクリック</strong>すると、そのクリックでは拘束を付けません。</li>
+</ul>
+<blockquote class="warn"><p><strong>注意</strong>: 計算に使える曲線は<strong>線・円・円弧</strong>です。スプライン・楕円・文字は使えません（ボタンもありません）。</p>
+</blockquote>
+<h3 id="52-閉領域計算する範囲">5.2 閉領域（計算する範囲）</h3>
+<p><strong>線で囲まれた領域</strong>が自動で見つけられ、薄い青で塗られます。これが閉領域で、計算する範囲の単位です。塗られない場合は、輪郭が閉じていません（<a href="#12-困ったときは">12 章</a>）。</p>
+<ul>
+<li>線どうしは、端点が一致してつながっている必要があります。つながっていない端点は、橙の大きな点で表示されます。</li>
+<li>線が交差していても、曲線は切られません。交差で分かれた領域が、それぞれ別の閉領域になります（たとえば、空気の箱の中にコイルの四角を描くと、内側と外側が別の閉領域になります）。</li>
+<li>対称軸の上の辺も描いてください（軸の上の点には、点を軸の上に保つ拘束が自動で付きます）。形状を
+r &lt; 0 にはみ出させないでください（検査で誤りになります）。</li>
+</ul>
+<h3 id="53-拘束">5.3 拘束</h3>
+<p>拘束は、図形どうしの関係を決めて形を保つ決まりです。「拘束」のパネルのアイコンで付けます（アイコンにマウスを乗せると名前が出ます）。</p>
+<table>
+<thead>
+<tr>
+<th>拘束</th>
+<th>画面の記号</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一致</td>
+<td>C</td>
+<td>2 点を一致させます（原点にも付けられます）</td>
+</tr>
+<tr>
+<td>点を要素上に</td>
+<td>On</td>
+<td>点を線・円・円弧・軸の上に置きます</td>
+</tr>
+<tr>
+<td>同一直線上</td>
+<td>≡</td>
+<td>2 本の線を同一直線上に置きます</td>
+</tr>
+<tr>
+<td>水平 / 垂直</td>
+<td>H / V</td>
+<td>線（または 2 点）を水平 / 垂直にします</td>
+</tr>
+<tr>
+<td>平行 / 直交</td>
+<td>// / ⊥</td>
+<td>2 本の線を平行 / 直交にします</td>
+</tr>
+<tr>
+<td>正接</td>
+<td>T</td>
+<td>線と円・円弧、または円・円弧どうしを接させます</td>
+</tr>
+<tr>
+<td>同心円</td>
+<td>◎</td>
+<td>2 つの円・円弧の中心を一致させます</td>
+</tr>
+<tr>
+<td>等しい</td>
+<td>=</td>
+<td>2 本の線の長さ、または 2 つの円・円弧の半径を等しくします</td>
+</tr>
+<tr>
+<td>中点</td>
+<td>M</td>
+<td>点を線か円弧の中点に置きます</td>
+</tr>
+<tr>
+<td>対称</td>
+<td>][</td>
+<td>2 つの点・線・円・円弧を、ある線に対して対称にします</td>
+</tr>
+<tr>
+<td>固定</td>
+<td>F</td>
+<td>点か要素を今の位置に固定します</td>
+</tr>
+</tbody>
+</table>
+<p>付け方は 2 通りです。</p>
+<ul>
+<li>先に要素を選んで（Ctrl を押しながらクリックで追加）、拘束のボタンを押す。</li>
+<li>先に拘束のボタンを押して、要素を 1 つずつクリックする（必要な数がそろうと付きます。Esc で終わり）。</li>
+</ul>
+<p>線の色で、形がどこまで決まっているかが分かります。<strong>青い細い線</strong>はまだ動かせる（寸法や拘束が足りない）、
+<strong>黒い太い線</strong>は形が全部決まっている、<strong>赤い線</strong>は拘束が多すぎるか矛盾しています。すでにある拘束と矛盾する拘束を付けようとすると、競合のダイアログが出て、形は変わりません。</p>
+<h3 id="54-寸法">5.4 寸法</h3>
+<p>寸法は、長さ・角度・半径などの値で形を決める拘束です。</p>
+<ol>
+<li>「寸法」（D キー）を押します。</li>
+<li>寸法を付ける線・円・点などをクリックします（2 つ選ぶときは順にクリック）。</li>
+<li>寸法を置く位置をクリックします。入力ウィンドウが出るので、値（式も可）を入れて Enter を押します。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>選ぶもの</th>
+<th>付く寸法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>線 1 本、または 2 点</td>
+<td>長さ（置く位置で水平・垂直にもなります）</td>
+</tr>
+<tr>
+<td>点と線</td>
+<td>点から線までの距離</td>
+</tr>
+<tr>
+<td>2 本の線</td>
+<td>角度（平行な線は距離）</td>
+</tr>
+<tr>
+<td>円 / 円弧</td>
+<td>直径 / 半径</td>
+</tr>
+<tr>
+<td>原点と点</td>
+<td>水平・垂直の距離（座標）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>寸法の値を直すには、画面の<strong>寸法の数字をダブルクリック</strong>します。</li>
+<li>値にパラメータの名前や式を入れると、寸法の文字に <code>fx:</code> が付き、パラメータに追従します。</li>
+<li>入力ウィンドウの「従動（参照）」にチェックを入れると、形を決めずに今の値を測るだけの寸法（括弧付き）になります。</li>
+</ul>
+<p>例: 平板ダイオード（幅 Lgap = 10 mm、高さ Rc = 5 mm）を、パラメータと寸法で決めたところ。左下の角は原点に一致させてあり、線が黒いので形は全部決まっています。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/model_sketch.png" alt="パラメータで決めた寸法（fx: が付きます）" /><figcaption>パラメータで決めた寸法（fx: が付きます）</figcaption></figure>
+<h3 id="55-パラメータと式">5.5 パラメータと式</h3>
+<p>管理のタブ →「パラメータ」で、パラメータの表が開きます（どのタブからでも開けます。開いたまま作業できます）。</p>
+<figure><img loading="lazy" width="845" height="360" src="manual_images/model_params.png" alt="パラメータの表" /><figcaption>パラメータの表</figcaption></figure>
+<ul>
+<li><strong>ユーザー パラメータ</strong>: 自分で作るパラメータ。「数値を追加」で行を足し、名前・単位・式を入れます。</li>
+<li><strong>寸法パラメータ</strong>: スケッチの寸法（自動で d0・d1… の名前が付きます）。式の欄でパラメータと結べます。</li>
+<li>パラメータは、寸法のほか、電極の電圧・コイルの電流・比誘電率・メッシュの大きさなどの欄で使えます。電場と磁場で共通です。</li>
+<li>パラメータを変えると、それを使っている形状や値がすべて追従します。</li>
+</ul>
+<p><strong>式の書き方</strong></p>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>単位付きの数</td>
+<td><code>10 mm</code>・<code>10 kV</code>・<code>30 deg</code>・<code>2.15 T</code>・<code>1000 A</code></td>
+</tr>
+<tr>
+<td>計算</td>
+<td><code>Lgap / 2</code>・<code>2 * Rc + 1 mm</code>・<code>sqrt(2) * Rc</code></td>
+</tr>
+<tr>
+<td>関数</td>
+<td><code>sin</code>・<code>cos</code>・<code>tan</code>（角度は度。<code>sin(30 deg)</code> も <code>sin(30)</code> も 0.5）・<code>sqrt</code>・<code>abs</code>・<code>min</code>・<code>max</code> など</td>
+</tr>
+</tbody>
+</table>
+<p><strong>単位の決まり</strong></p>
+<ul>
+<li>値の欄（電圧・電流・メッシュの大きさなど）に<strong>数だけ</strong>を書くと、その欄の単位が付きます（電圧の欄に <code>10000</code> → <code>10000 V</code>）。</li>
+<li>パラメータは<strong>単位付き</strong>で作ります（電圧に使うなら <code>Va = 10 kV</code>）。単位の無いパラメータを電圧などの欄に書くと誤りになります（黙って V とはみなしません）。直すには、パラメータに単位を付けるか、欄に <code>Vn * 1 V</code> のように書きます。</li>
+<li>式を書いた欄には、下に評価した値（<code>= 10000 V</code>）が出ます。</li>
+</ul>
+<h3 id="56-選ぶ動かす消す">5.6 選ぶ・動かす・消す</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>クリック</td>
+<td>点・曲線・拘束の記号・寸法を 1 つ選びます。Ctrl で切り替え、Shift で追加</td>
+</tr>
+<tr>
+<td>空白から左 → 右へドラッグ</td>
+<td>枠に全体が入る要素を選びます</td>
+</tr>
+<tr>
+<td>空白から右 → 左へドラッグ</td>
+<td>枠に掛かる要素を選びます</td>
+</tr>
+<tr>
+<td>選んだ点・曲線をドラッグ</td>
+<td>拘束を保ったまま動かします</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>選んだ要素・拘束・寸法を消します</td>
+</tr>
+</tbody>
+</table>
+<p>「修正」のパネルには、移動・コピー・回転・トリム（T キー。交点までの余分を切る）・延長・分割・尺度・ストレッチ・オフセットがあります。「パターン」のパネルには、矩形状・円形状のパターンとミラーがあります。線を補助の線にするには、選んで「形式」の「構築線」を押します（もう一度押すと戻ります）。</p>
+<p>操作を間違えたときは「元に戻す」（Ctrl+Z）、やり直すときは Ctrl+Y です。</p>
+<h3 id="57-磁場の形状を描く">5.7 磁場の形状を描く</h3>
+<p>「場」を磁場にして、空気の箱（外周）とコイル・磁性体を描きます。</p>
+<ul>
+<li>空気の箱は、コイルや磁性体を十分に囲み、外周で磁場が小さくなる大きさにします。軸（r = 0）から描き始めてください。</li>
+<li>電場の形状は、灰色の破線で重ねて表示されます。電極の位置に合わせてコイルを置くときの目安になります。</li>
+<li>電子が飛ぶ範囲（電場の形状）が、磁場の形状の範囲に入っているようにしてください。</li>
+<li>寸法やパラメータを電場と共通にしておくと（例: コイルの位置を電極の位置のパラメータで決める）、片方を変えたときにもう片方も追従します。</li>
+</ul>
+<p><strong>描く場を間違えたとき（もう一方の場へ移す）</strong></p>
+<p>磁場の形のつもりで電場のスケッチに描いてしまった、というときは、描き直さずに移せます。</p>
+<ol>
+<li>移す曲線・点を選びます（ドラッグで囲むと、まとめて選べます）。</li>
+<li>スケッチのタブの「場」のパネルの「もう一方の場へ移す」を押します。選んだ形が、もう一方の場（電場なら磁場、磁場なら電場）のスケッチの<strong>同じ位置</strong>へ移ります。元を残したいときは「もう一方の場へコピー」を押します。</li>
+</ol>
+<ul>
+<li>拘束と寸法も一緒に移ります。原点や軸からの寸法、パラメータを使った式（<code>Rc1</code>・<code>W / 2</code> など）もそのままです。</li>
+<li>選んでいない曲線との間の拘束・寸法は外れます（外れた数がステータスバーに出ます）。ほかの寸法を参照している式は、そのときの値の数値になります。</li>
+<li>移した曲線に付けていた電極・境界条件の割り当ては外れます。移した先で、物理のタブで付け直してください。</li>
+<li>「元に戻す」（Ctrl+Z）の 1 回で、移す前に戻ります。</li>
+</ul>
+<blockquote class="tip"><p><strong>ヒント</strong>: 普通の切り取り・コピー・貼り付け（Ctrl+X・Ctrl+C・Ctrl+V）も、場を切り替えて使えます。ただし、こちらは原点・軸に付けた拘束と寸法が外れ、寸法の式は数値になります（別のモデルにも貼れるようにするためです）。</p>
+</blockquote>
+<hr />
+<h2 id="6-物理を指定する">6. 物理を指定する</h2>
+<p>物理のタブでは、<strong>閉領域に種別（真空・コイルなど）を</strong>、<strong>曲線に電極や境界条件を</strong>割り当てます。操作はリボンのボタン、値（電圧・電流など）は右のパネルの欄です。</p>
+<ul>
+<li><strong>閉領域を選ぶ</strong>: 閉領域の中の、曲線の無い所をクリック（右のパネルの領域の表の行のクリックでも選べます）。</li>
+<li><strong>曲線を選ぶ</strong>: 曲線をクリック（Ctrl か Shift を押しながらで複数）。</li>
+<li>物理のタブでは形状は動かせません。直すときはスケッチのタブに戻ります。</li>
+</ul>
+<h3 id="61-電場-領域の種別">6.1 電場: 領域の種別</h3>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_physics_e.png" alt="物理のタブ（電場）" /><figcaption>物理のタブ（電場）</figcaption></figure>
+<p>閉領域を選ぶと、リボンの「領域の種別」のボタンが押せるようになり、今の種別のボタンが押した状態になります。</p>
+<table>
+<thead>
+<tr>
+<th>種別</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>真空</td>
+<td>電子が飛ぶ範囲（εr = 1）。<strong>種別を付けていない閉領域は真空</strong>です（表では「真空（既定）」）</td>
+</tr>
+<tr>
+<td>誘電体</td>
+<td>絶縁物（碍子など）。比誘電率 εr を右のパネルで入れます</td>
+</tr>
+<tr>
+<td>電極の領域</td>
+<td>導体のかたまり（ウェネルトや電極の本体）。計算領域（メッシュ）から外れ、輪郭の曲線がその電極の境界になります。どの電極かは右のパネルで選びます（「＋ 新しい電極」で新しく作れます）</td>
+</tr>
+<tr>
+<td>計算しない</td>
+<td>計算領域から外します（電極でもない、使わない閉領域）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-電場-電極を決める">6.2 電場: 電極を決める</h3>
+<p>電極の決め方は 2 通りあります。組み合わせてもかまいません。</p>
+<ul>
+<li><strong>導体を閉じた形で描いたとき</strong>: その閉領域を「電極の領域」にします（6.1 節）。輪郭の全体がその電極になります。</li>
+<li><strong>計算領域の外周の一部を電極にするとき</strong>: 曲線を選んで、電極の境界にします（下の手順）。</li>
+</ul>
+<p><strong>曲線を電極の境界にする</strong></p>
+<ol>
+<li>電極にしたい曲線を選びます（例: カソード面の線）。</li>
+<li>リボンの「電極を追加」を押します。新しい電極ができ、選んだ曲線がその境界になります。既にある電極に足すときは、右の表でその電極の行を選んでから「境界にする」を押します。</li>
+<li>右のパネルの表の下の欄で、名前と電圧を入れます（数値または式。例 <code>10 kV</code>、<code>Va</code>、<code>Va / 2</code>）。</li>
+<li>電子を放出する電極は、表で選んで「カソード」を押します（右のパネルのチェックでも同じ）。</li>
+</ol>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/model_physics.png" alt="平板ダイオードに電極を割り当てたところ（アノードの電圧はパラメータ Va）" /><figcaption>平板ダイオードに電極を割り当てたところ（アノードの電圧はパラメータ Va）</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>ボタン</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>電極を追加</td>
+<td>電極を 1 つ足します。曲線を選んでいれば、それがその電極の境界になります</td>
+</tr>
+<tr>
+<td>境界にする</td>
+<td>選んだ曲線を、右の表で選んだ電極の境界にします（ほかの電極からは外れます）</td>
+</tr>
+<tr>
+<td>境界から外す</td>
+<td>選んだ曲線を、電極の境界でなくします</td>
+</tr>
+<tr>
+<td>カソード</td>
+<td>右の表で選んだ電極をカソードにします / やめます</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>カソードはちょうど 1 つ</strong>です。別の電極をカソードにすると、前のカソードは外れます。</li>
+<li>電極の表の「境界」の列に、その電極の境界（「領域 1、曲線 2 本」など）が出ます。図の中の曲線は、電極の色で描かれます。</li>
+<li>電極の領域の輪郭の一部だけを別の電極にすることもできます（例: カソード面）。曲線を直に割り当てた指定が優先されます。</li>
+<li>電極を消すには、表で選んで「電極「名前」を削除」を押します。</li>
+<li><strong>電極にしていない外周の曲線は、自然境界（∂V/∂n = 0）です</strong>。対称軸も同じです。</li>
+</ul>
+<figure><img loading="lazy" width="400" height="539" src="manual_images/physics_e_panel.png" alt="電場の右のパネル（領域・電極・検査）" /><figcaption>電場の右のパネル（領域・電極・検査）</figcaption></figure>
+<h3 id="63-磁場-磁場の与え方">6.3 磁場: 磁場の与え方</h3>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_physics_b.png" alt="物理のタブ（磁場）" /><figcaption>物理のタブ（磁場）</figcaption></figure>
+<p>右のパネルの一番上で、磁場をどう与えるかを選びます。</p>
+<table>
+<thead>
+<tr>
+<th>与え方</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FEM で解く</td>
+<td>磁場の形状に描いたコイル・磁性体から、磁場を計算します。下の「軌道計算に使う格子の点の数」は、電子の追跡に使う磁場マップの分割数（z × r）です</td>
+</tr>
+<tr>
+<td>磁場マップを取り込む</td>
+<td>取り込んだ磁場マップを使います（<a href="#103-磁場マップを取り込む">10.3 節</a>）</td>
+</tr>
+<tr>
+<td>なし</td>
+<td>磁場なしで計算します</td>
+</tr>
+</tbody>
+</table>
+<p>「磁場マップを取り込む」と「なし」のときは、磁場の形状（領域・境界条件）は計算に使いません。</p>
+<h3 id="64-磁場-コイル磁性体境界条件">6.4 磁場: コイル・磁性体・境界条件</h3>
+<p>閉領域を選んで、リボンの「領域の種別」のボタンを押し、右のパネルで値を入れます。</p>
+<table>
+<thead>
+<tr>
+<th>種別</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空気</td>
+<td>μr = 1、電流 0（<strong>種別を付けていない閉領域は空気</strong>です。表では「空気（既定）」）</td>
+</tr>
+<tr>
+<td>コイル</td>
+<td><strong>総電流 [A·turn]</strong>（巻数 × 電流）。式も使えます</td>
+</tr>
+<tr>
+<td>磁性体</td>
+<td>比透磁率 μr（一定）</td>
+</tr>
+<tr>
+<td>磁性体（飽和）</td>
+<td>飽和磁化 Js [T] と初期磁化率 χ0（<a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 節</a>）</td>
+</tr>
+<tr>
+<td>計算しない</td>
+<td>計算領域から外します</td>
+</tr>
+</tbody>
+</table>
+<p><strong>コイル OFF</strong>: コイルの電流を 0 にすると、そのコイルは磁場を作りません。<strong>すべてのコイルが 0 のときは磁場が 0</strong>
+（磁性体も磁化しない）なので、全計算は磁場なしで行います。右のパネルと実行の前の確認に、その旨が出ます。このとき「磁場のみ」の計算と磁場のメッシュは作りません（作る磁場がないため）。</p>
+<figure><img loading="lazy" width="400" height="668" src="manual_images/physics_b_panel.png" alt="磁場の右のパネル（与え方・領域・境界条件・検査）" /><figcaption>磁場の右のパネル（与え方・領域・境界条件・検査）</figcaption></figure>
+<p><strong>境界条件</strong>（曲線を選んで、リボンのボタンで）</p>
+<table>
+<thead>
+<tr>
+<th>ボタン</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A = 0</td>
+<td>磁束がその線を横切りません。空気の箱の外周に使います</td>
+</tr>
+<tr>
+<td>自然境界</td>
+<td>磁束がその線に垂直に出入りします（対称面など）</td>
+</tr>
+<tr>
+<td>既定に戻す</td>
+<td>指定を消します</td>
+</tr>
+</tbody>
+</table>
+<p>何も指定しなければ、<strong>軸の上を除く外周は A = 0</strong> です（図では破線）。ふつうは、境界条件を指定する必要はありません。</p>
+<h3 id="65-領域の表と検査">6.5 領域の表と検査</h3>
+<ul>
+<li><strong>並べ替え</strong>: 領域の表の行を選び、表の下の <strong>↑ ↓</strong> で上下に動かせます。コイルを並び順にそろえるときなどに使います。表示の順番だけで、計算には影響しません（実行の前の確認も同じ並びになります）。</li>
+<li><strong>名前</strong>: 領域を選ぶと、表の下の欄で名前を付けられます。</li>
+<li><strong>検査</strong>: 右のパネルの一番下に、今の場の形状と物理の指定の検査の結果がいつも出ています。問題が無ければ「問題はありません。」です。主な内容:
+<ul>
+<li>電場: カソードが無い・2 つ以上ある、電極の領域の電極が選ばれていない</li>
+<li>磁場: コイルの電流がすべて 0（全計算は磁場なし）</li>
+<li>共通: 計算領域が無い、形状が軸の下（r &lt; 0）にはみ出している、割り当てた閉領域が見つからない（形を変えた後。割り当て直してください）</li>
+</ul>
+</li>
+</ul>
+<h3 id="66-磁性体の飽和fröhlichkennelly-モデル">6.6 磁性体の飽和（Fröhlich–Kennelly モデル）</h3>
+<p>磁場の強い所では、磁性体（鉄など）の磁化が飽和して、透磁率が下がります。種別を「<strong>磁性体（飽和）</strong>」にした閉領域は、この飽和を <strong>Fröhlich–Kennelly（フレーリヒ・ケネリー）モデル</strong>で計算します。</p>
+<pre><code>M = χ0 H / (1 + χ0 H / Ms)        B = μ0 (H + M)        Js = μ0 Ms
+</code></pre>
+<ul>
+<li><strong>飽和磁化 Js [T]</strong>: 磁化がどこまで大きくなるか（強い磁場での μ0M の上限）。純鉄で約 2.15 T、パーメンジュール（FeCo）で約 2.35 T。</li>
+<li><strong>初期磁化率 χ0</strong>: 弱い磁場での磁化のしやすさ（原点での dM/dH）。初期比透磁率は 1 + χ0 です。</li>
+<li>H = Ms/χ0 で M はちょうど半分の飽和（M = Ms/2）になります。これが「膝」の目安です。強い磁場では
+B ≈ μ0 H + Js になり、それ以上は真空と同じ傾き μ0 でしか増えません。</li>
+</ul>
+<p><strong>値の入れ方</strong></p>
+<ol>
+<li>磁場で閉領域を選び、リボンの「磁性体（飽和）」を押します。</li>
+<li>右のパネルの「飽和磁化 Js」と「初期磁化率 χ0」に値を入れます（数値またはパラメータの式）。</li>
+<li>入れた値の B–H 曲線が下に出ます。赤い点が膝の目安、破線が Js です。H の軸は対数の目盛りです（「H の軸を対数で表示する」を外すとリニアの目盛り）。カタログや測定の B–H 曲線と見比べて、値が妥当か確かめてください。</li>
+</ol>
+<figure><img loading="lazy" width="400" height="935" src="manual_images/sat_panel.png" alt="磁場の右のパネル（磁性体（飽和）の値と B–H 曲線）" /><figcaption>磁場の右のパネル（磁性体（飽和）の値と B–H 曲線）</figcaption></figure>
+<p><strong>B–H 曲線から値を合わせる（Kennelly プロット）</strong></p>
+<p>このモデルでは H / M が H の 1 次式（H / M = 1/χ0 + H/Ms）になります。実測の B–H 曲線から
+M = B/μ0 − H を求め、横軸 H・縦軸 H/M のグラフに点を打って直線を引くと、</p>
+<ul>
+<li>直線の傾き = 1/Ms（Js = μ0 / 傾き）</li>
+<li>縦軸の切片 = 1/χ0</li>
+</ul>
+<p>が得られます。膝から飽和の範囲の点で合わせるのが実用的です。このモデルは膝が実際の鉄よりなだらかで、低い磁場での立ち上がり（初透磁率が最大透磁率より小さいこと）は表せません。χ0 は「モデルの原点の傾き」で、材料の初透磁率とは一致しないことがあります。</p>
+<p><strong>計算</strong></p>
+<p>磁性体（飽和）があると、磁場の計算は非線形の反復（ニュートン法）になります。ふつうは数回〜十数回で収束し、時間は数秒増えるだけです。ログに反復ごとの行（<code>[b-nl] k=1 res=… step=… dA=… sat_max=…</code>。res は残差、
+sat_max は最大の飽和度）と、最後に「非線形の磁場計算: N 回で収束しました」が出ます。収束しなかったときは警告を出し、最後の解で計算を続けます（結果の要約にも出ます。<a href="#12-困ったときは">12 章</a>）。</p>
+<p><strong>結果の見方</strong></p>
+<p>結果のタブの表示量に「<strong>飽和度 M/Ms</strong>」と「<strong>実効の比透磁率 μr</strong>」が加わります（磁性体（飽和）がある結果だけ）。どちらも要素ごとの値で、要素ごとに塗り分けます。飽和度は 0（飽和していない）〜1（完全に飽和）の色です。要約には「磁性体の飽和: 非線形の反復 N 回で収束（最大の飽和度 …）」が出ます。プローブ（ダブルクリック）では、磁性体の中の点の μr,eff・M/Ms・|H| も出ます。</p>
+<figure><img loading="lazy" width="1034" height="756" src="manual_images/sat_results.png" alt="飽和度 M/Ms（例題 solenoid_yoke。ヨークの付近を拡大）" /><figcaption>飽和度 M/Ms（例題 solenoid_yoke。ヨークの付近を拡大）</figcaption></figure>
+<p><strong>注意</strong></p>
+<ul>
+<li><strong>磁性体の周りのメッシュ</strong>: 磁性体の外側の、磁束を囲む磁場の無い所では、メッシュの粗さによる誤差が磁性体の比透磁率の分だけ大きく効きます（μr = 1000 の鉄心で、メッシュ 0.5 mm だと数 % の誤差）。磁性体を使うときは、磁場のメッシュの大きさを小さくして、結果が変わらないことを確かめてください。飽和すると実効の比透磁率が下がるので、この誤差も小さくなります。</li>
+<li>飽和は、ポールピースの先など局所的に起きます。そこが薄いときは、厚さに対してメッシュを十分細かくしてください。</li>
+<li>ヒステリシス（磁化の履歴）・残留磁化（永久磁石）・異方性は扱いません。</li>
+</ul>
+<p><strong>例題で試す</strong>（例題 <code>solenoid_yoke</code>。配布版では TGUN のフォルダの <code>examples\solenoid_yoke</code>）</p>
+<p>コイルを薄い磁性体のヨーク（外筒と、軸の近くまで伸びる両端の板）で囲んだ、磁場だけの例題です。</p>
+<ol>
+<li>「ファイル」→「開く」で <code>solenoid_yoke.tgun</code> を開き、作業用のフォルダに名前を付けて保存します（<a href="#42-名前を付けて保存する">4.2 節</a>と同じ）。</li>
+<li>物理のタブで「場」を磁場にしてヨークの閉領域を選ぶと、Js = 2.15 T・χ0 = 1000 と B–H 曲線が出ます。</li>
+<li>計算のタブの「磁場のみ」で計算します（数秒）。ログに非線形の反復の行が出て、8 回ほどで収束します。</li>
+<li>結果のタブで表示量を「飽和度 M/Ms」にすると、ヨークの両端の板と外筒が 0.6〜0.9 ほど飽和しているのが分かります。</li>
+</ol>
+<p>軸上の Bz の最大は約 0.431 T です。ヨークの種別を「磁性体」（μr 一定 = 1000）に変えて計算し直すと約 0.45 T になり、飽和を考えないと磁場を 5% ほど大きく見積もることが分かります。コイルの電流を 16000 から 4000 A に下げると、ヨークはほとんど飽和せず、磁場は電流にほぼ比例します。</p>
+<hr />
+<h2 id="7-メッシュを作る">7. メッシュを作る</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_mesh.png" alt="メッシュのタブ" /><figcaption>メッシュのタブ</figcaption></figure>
+<p>計算は、計算領域を細かい三角形（メッシュ）に分けて行います。メッシュのタブでは、計算の前にメッシュを作って、細かさと規模（要素の数）を確かめられます。設定は場（電場 / 磁場）ごとです。</p>
+<figure><img loading="lazy" width="400" height="241" src="manual_images/mesh_panel.png" alt="メッシュの右のパネル" /><figcaption>メッシュの右のパネル</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>大きさ</td>
+<td>三角形の辺のおよその長さ（例 <code>0.5 mm</code>）。数値または式。小さいほど精度は上がりますが、計算は遅くなります</td>
+</tr>
+<tr>
+<td>カソード近傍の大きさ（電場）</td>
+<td>カソードの曲線の近くだけ、この大きさまで細かくします（<code>0 mm</code> = 使わない）。放出電流の精度が大きく上がります（平板ダイオードで誤差 +2.4% → +1.4%）</td>
+</tr>
+<tr>
+<td>細分化の距離（電場）</td>
+<td>カソードからこの距離までを細かくします（<code>0 mm</code> = 自動で、カソード近傍の大きさの 10 倍）</td>
+</tr>
+</tbody>
+</table>
+<p>欄に書いた値は、Enter を押すか、別の欄に移ると反映されます。書いたままリボンの「生成」などのボタンを押しても、その値が反映されてから始まります。</p>
+<p>カソード近傍を細かくしたときの欄（DGUN の取り込みの例）:</p>
+<figure><img loading="lazy" width="400" height="241" src="manual_images/mesh_panel_refine.png" alt="カソード近傍の細分化" /><figcaption>カソード近傍の細分化</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>ボタン</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生成</td>
+<td>今の場のメッシュを作ります</td>
+</tr>
+<tr>
+<td>両方を生成</td>
+<td>電場と磁場を続けて作ります</td>
+</tr>
+<tr>
+<td>停止</td>
+<td>生成を止めます（生成中だけ押せます）</td>
+</tr>
+<tr>
+<td>メッシュを表示</td>
+<td>作ったメッシュを形状に重ねて表示します / 隠します</td>
+</tr>
+<tr>
+<td>ログ</td>
+<td>メッシュ生成のログを画面の下に出します</td>
+</tr>
+</tbody>
+</table>
+<p>一度も保存していないモデルでは、先に保存先を聞かれます（メッシュはモデルの隣のデータフォルダに置くためです）。</p>
+<p>右のパネルの「状態」に、メッシュの状態と統計（節点・要素の数、辺の長さの平均・最小・最大）が出ます。</p>
+<ul>
+<li>「今の設定のメッシュです。」: 今の形状と設定のメッシュです。計算はこれをそのまま使います（作り直さない）。</li>
+<li>形状・領域・境界・メッシュの設定を変えると、作り直しが要る旨が出ます（計算を始めると自動で作ります）。電極の電圧やコイルの電流を変えただけなら、作り直しは要りません。</li>
+<li>「コイルの電流がすべて 0 なので、磁場のメッシュは要りません。」: コイル OFF（<a href="#64-磁場-コイル磁性体境界条件">6.4 節</a>）。</li>
+<li>「磁場を FEM で解かない設定なので、磁場のメッシュは要りません。」: 磁場の与え方が「なし」か「磁場マップを取り込む」。</li>
+</ul>
+<blockquote class="tip"><p><strong>ヒント</strong>: 最初は粗いメッシュ（例 0.5 mm）で全体の様子を見て、必要に応じてカソード近傍を細かくするのが効率的です。メッシュを細かくしたら、計算の緩和係数 α も小さくします（<a href="#83-計算の設定">8.3 節</a>）。</p>
+</blockquote>
+<blockquote class="warn"><p><strong>注意</strong>: 磁性体（μr が大きい材料）の周りでは、磁場のメッシュの粗さによる誤差が大きく効きます。磁場のメッシュの大きさを小さくして、結果が変わらないことを確かめてください（<a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 節</a>の注意）。</p>
+</blockquote>
+<hr />
+<h2 id="8-計算する">8. 計算する</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_run.png" alt="計算のタブ" /><figcaption>計算のタブ</figcaption></figure>
+<h3 id="81-計算の種類">8.1 計算の種類</h3>
+<table>
+<thead>
+<tr>
+<th>ボタン</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>実行</td>
+<td>全計算。磁場 → 空間電荷の反復（放出・追跡）まで全部を計算します。ふつうはこれを使います</td>
+</tr>
+<tr>
+<td>電場のみ</td>
+<td>空間電荷なしの電場（ラプラス方程式）だけを解きます。電極の配置や電界の確認に</td>
+</tr>
+<tr>
+<td>磁場のみ</td>
+<td>磁場（コイル・磁性体）だけを解いて、磁場マップを作ります。コイルの配置や磁性体の飽和の確認に</td>
+</tr>
+<tr>
+<td>停止</td>
+<td>次の反復の区切りで止めます（計算中だけ押せます。結果は保存されません）</td>
+</tr>
+<tr>
+<td>強制停止</td>
+<td>計算の処理をすぐに終了します（結果は保存されません）</td>
+</tr>
+<tr>
+<td>ログ</td>
+<td>計算のログを画面の下に出します / 隠します</td>
+</tr>
+</tbody>
+</table>
+<p>計算のボタンを押すと、実行の前の確認（<a href="#46-計算する">4.6 節</a>）が出ます（一度も保存していないモデルでは、先に保存先を聞かれます）。確認には、パラメータの値・電極の電圧・コイルの電流・計算の設定・メッシュ（今あるものを使うか、作り直すか）・出力先とコマンドが並びます。「実行」を押すと、モデルを自動で保存してから計算が始まります。計算は別のプロセスで動くので、計算中も画面は固まらず、前の結果の表示などができます。</p>
+<p>物理の指定に誤りがあると、計算は始まらず、理由が出ます（<a href="#12-困ったときは">12 章</a>）。</p>
+<h3 id="82-計算中と計算の後">8.2 計算中と計算の後</h3>
+<p>右のパネルに、状態・収束グラフ・要約が出ます（見方は <a href="#46-計算する">4.6 節</a>）。計算が終わると、結果のタブの一覧に新しい結果が増えます。</p>
+<ul>
+<li>最大反復回数に達して収束しなかった結果は、要約に「未収束」と出ます。</li>
+<li>右のパネルの「結果フォルダ」で、結果のフォルダ（result.h5・log.txt など）を開けます。</li>
+<li>磁性体（飽和）があるときは、最初の磁場の計算で、ログに非線形の反復の行（<code>[b-nl] …</code>）が出ます（<a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 節</a>）。収束グラフは空間電荷の反復のものです。</li>
+</ul>
+<h3 id="83-計算の設定">8.3 計算の設定</h3>
+<p>右のパネルの下の方で、計算の設定を変えられます。空欄の欄は既定値（薄い字の「既定 …」）を使います。値を入れて Enter で反映、空にすると既定に戻ります。設定はモデルに保存されます。</p>
+<figure><img loading="lazy" width="400" height="1146" src="manual_images/run_panel.png" alt="計算の右のパネル（状態・収束グラフ・設定）" /><figcaption>計算の右のパネル（状態・収束グラフ・設定）</figcaption></figure>
+<p><strong>収束の設定（空間電荷の反復）</strong></p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>緩和係数 α</td>
+<td>空間電荷 ρ を毎回どれだけ新しい値に入れ替えるか（0 &lt; α ≤ 1）。小さいほど安定しますが、収束は遅くなります。<strong>メッシュが細かいほど小さく</strong>します</td>
+</tr>
+<tr>
+<td>目安 α ≈ … / 目安を使う</td>
+<td>メッシュの大きさ（カソード近傍を細かくしているならその大きさ）から求めた α の目安。「目安を使う」で α に入ります</td>
+</tr>
+<tr>
+<td>電流の緩和係数 α_J</td>
+<td>放出電流密度 J の緩和係数（空欄なら α と同じ）</td>
+</tr>
+<tr>
+<td>最大反復回数</td>
+<td>反復の上限（既定 300）。達すると、収束していなくても結果を保存します</td>
+</tr>
+<tr>
+<td>収束判定 tol_I / tol_J</td>
+<td>電流 I と放出電流密度 J の残差の大きさ（既定 0.001）</td>
+</tr>
+<tr>
+<td>収束判定 tol_ρ（空間電荷）</td>
+<td>空間電荷の残差の大きさ（既定 0.001）。I・J・ρ の残差がすべてしきい値より小さくなったら収束とします。0 で ρ を判定に使いません</td>
+</tr>
+</tbody>
+</table>
+<p>カソードの電流（I・J）は早く決まりますが、ドリフト管の中のビームはその後もしばらく変わります。
+tol_ρ はそれを見るための判定です。0 にすると I と J だけで止まるので反復は短くなりますが、ドリフト管の中のビームの形（脈動の波長など）は収束していないことがあります（このとき要約に「空間電荷の残差 …（大きい）」と出ます）。例: DGUN 例題 test3（ドリフト管 400 mm）では、tol_ρ = 0 だと 16〜29 回で止まり脈動の波長が 3〜17% ずれますが、
+tol_ρ = 0.001 では 39 回で収束し、波長は理論値と 0.3% 以内で合います。</p>
+<p>α の目安: メッシュ 0.5 mm → 0.4、0.25 mm → 0.2、0.1 mm → 0.1。</p>
+<p><strong>放出・追跡の設定</strong></p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自己磁場</td>
+<td>ビーム電流が作る方位角方向の磁場 Bθ を追跡に含めます（大電流の銃では入れます）</td>
+</tr>
+<tr>
+<td>自己磁場の格子 nz / nr</td>
+<td>自己磁場を集計する格子の分割数</td>
+</tr>
+<tr>
+<td>時間刻みの安全係数</td>
+<td>時間刻み = 係数 × メッシュの辺長 / 最大速度</td>
+</tr>
+<tr>
+<td>最大ステップ数</td>
+<td>粒子 1 本あたりの追跡のステップの上限</td>
+</tr>
+<tr>
+<td>軌跡の保存間隔</td>
+<td>軌跡を何ステップごとに保存するか（大きいほど結果のファイルが小さい）</td>
+</tr>
+<tr>
+<td>仮想カソード距離の係数・下限・上限</td>
+<td>空間電荷制限の放出に使う仮想カソードまでの距離 d（= カソードのメッシュの辺長 × 係数）</td>
+</tr>
+<tr>
+<td>粒子の初期位置（d 比）</td>
+<td>粒子を置く位置（カソード面から d × この値）</td>
+</tr>
+</tbody>
+</table>
+<p>パネルの一番下に、この計算を CLI で再現するコマンドと、検査の結果が出ます。</p>
+<hr />
+<h2 id="9-結果を見る">9. 結果を見る</h2>
+<figure><img loading="lazy" width="1440" height="122" src="manual_images/ribbon_results.png" alt="結果のタブ" /><figcaption>結果のタブ</figcaption></figure>
+<p>結果のタブを開くと、右上に結果の一覧、その下に表示の設定、中央に結果の図が出ます。一覧の行をクリックすると、その結果が表示されます。</p>
+<figure><img loading="lazy" width="400" height="1051" src="manual_images/results_panel.png" alt="結果の右のパネル（一覧・要約・表示量・重ね表示・プローブ・操作）" /><figcaption>結果の右のパネル（一覧・要約・表示量・重ね表示・プローブ・操作）</figcaption></figure>
+<h3 id="91-表示量">9.1 表示量</h3>
+<p>「表示量」で、色で表す量を選びます。</p>
+<table>
+<thead>
+<tr>
+<th>表示量</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>電位 V</td>
+<td>電位の分布</td>
+</tr>
+<tr>
+<td>電界の大きさ |E|</td>
+<td>電界の強さ（放電の目安に）</td>
+</tr>
+<tr>
+<td>空間電荷密度 ρ</td>
+<td>ビームの電荷の分布。0 を中心に青（負 = 電子）〜白〜赤で表します</td>
+</tr>
+<tr>
+<td>磁場 Bz / Br / 磁場の大きさ |B|</td>
+<td>磁場の成分と大きさ（磁場のある結果だけ）</td>
+</tr>
+<tr>
+<td>実効の比透磁率 μr（磁性体）</td>
+<td>磁性体の B / (μ0 H)。飽和すると初期比透磁率より下がります（磁性体（飽和）がある結果だけ。要素ごとの値）</td>
+</tr>
+<tr>
+<td>飽和度 M/Ms（磁性体（飽和））</td>
+<td>0（飽和していない）〜1（完全に飽和）。どこが飽和しているかが分かります（同上。<a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 節</a>）</td>
+</tr>
+<tr>
+<td>表示なし</td>
+<td>形状と重ね表示だけ</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>色を対数で表示</strong>: 小さい値まで色が付きます。ρ では、ビームの外側や下流の薄い所まで見えるようになります。</li>
+<li><strong>z と r の縮尺をそろえる</strong>: 外すと、図を表示の枠いっぱいに広げます。細長い形状のときに便利です（<a href="#47-結果を見る">4.7 節</a>の図と同じ結果を、縮尺をそろえずに表示したのが下の図です）。</li>
+</ul>
+<figure><img loading="lazy" width="1034" height="756" src="manual_images/results_v_wide.png" alt="縮尺をそろえずに表示" /><figcaption>縮尺をそろえずに表示</figcaption></figure>
+<p>空間電荷密度 ρ（対数表示、軌跡は黒）:</p>
+<figure><img loading="lazy" width="1034" height="756" src="manual_images/results_rho.png" alt="空間電荷密度 ρ" /><figcaption>空間電荷密度 ρ</figcaption></figure>
+<p>磁場の大きさ |B| に、磁力線と軸上の Bz（下段）を重ねたところ:</p>
+<figure><img loading="lazy" width="1034" height="756" src="manual_images/results_b.png" alt="磁場と磁力線・軸上 Bz" /><figcaption>磁場と磁力線・軸上 Bz</figcaption></figure>
+<p>電界の大きさ |E| に、メッシュを重ねたところ:</p>
+<figure><img loading="lazy" width="1034" height="756" src="manual_images/results_e_mesh.png" alt="電界とメッシュ" /><figcaption>電界とメッシュ</figcaption></figure>
+<h3 id="92-重ね表示">9.2 重ね表示</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>軌跡</td>
+<td>電子の軌跡。「色」で青・赤・緑・紫・黒・白・粒子ごとに色分け を選べます（ρ の図では黒や赤が見やすい）</td>
+</tr>
+<tr>
+<td>電極・コイルの形状</td>
+<td>電極・コイルの輪郭</td>
+</tr>
+<tr>
+<td>メッシュ</td>
+<td>計算に使ったメッシュ</td>
+</tr>
+<tr>
+<td>磁力線</td>
+<td>磁力線（等間隔の線の間を同じ磁束が通ります）。本数を変えられます（FEM の磁場だけ）</td>
+</tr>
+<tr>
+<td>磁場ベクトル</td>
+<td>磁場の向きを格子の矢印で表します。格子の数と、矢印の長さの方式を選べます</td>
+</tr>
+<tr>
+<td>軸上 Bz（下段）</td>
+<td>対称軸の上の Bz(z) を、図の下に別のグラフで出します</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-拡大移動">9.3 拡大・移動</h3>
+<p>図の下のツールバーで、拡大（虫眼鏡）・移動（十字の矢印）ができます。拡大した後で表示量や重ね表示を切り替えても、表示範囲はそのままです。家のアイコン（または表示のタブの「全体表示」・F キー）で、全体表示に戻ります。</p>
+<h3 id="94-プローブ点の値を読む">9.4 プローブ（点の値を読む）</h3>
+<p>図を<strong>ダブルクリック</strong>すると、その点に赤い ＋ が付き、右のパネルの「プローブ」に、その点の V・Ez・Er・|E|・ρ・
+Bz・Br・|B| が出ます（ステータスバーにも出ます）。磁性体（飽和）がある結果では、磁場の領域の中の点の実効の比透磁率 μr,eff・飽和度 M/Ms・|H| [A/m] も出ます。領域の外では「計算領域の外です」と出ます。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/results_probe.png" alt="プローブ" /><figcaption>プローブ</figcaption></figure>
+<h3 id="95-図と場の書き出し">9.5 図と場の書き出し</h3>
+<p>リボンの「出力」のパネルで、図と場の値を書き出せます。</p>
+<table>
+<thead>
+<tr>
+<th>ボタン</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PNG を保存</td>
+<td>表示中の図を画像で保存します</td>
+</tr>
+<tr>
+<td>軸上の場 ▼</td>
+<td>場の値を数値のファイルに書き出します。▼ で「軸上の場」（r = 0）・「線上の場」（2 点の間）・「面の場」（z × r の格子）を選べます</td>
+</tr>
+</tbody>
+</table>
+<p>場の書き出しでは、ダイアログで範囲（mm）・点数・書き出す場（V・Ez・Er・|E|・ρ・Bz・Br・|B|）・形式（TXT / HDF5）を選びます。既定の出力先は、データフォルダの <code>exports\</code> です。ファイルの中の座標は SI（m）です。</p>
+<figure><img loading="lazy" width="500" height="268" src="manual_images/export_axis.png" alt="場の書き出し（軸上）" /><figcaption>場の書き出し（軸上）</figcaption></figure>
+<h3 id="96-ビーム診断">9.6 ビーム診断</h3>
+<p>リボンの「ビーム診断」で、ビームの性質を調べるウィンドウが開きます（全計算の結果だけ）。左上で見るものを選びます。</p>
+<table>
+<thead>
+<tr>
+<th>表示</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>エンベロープ</td>
+<td>z ごとのビームの外縁の半径 r_edge と、rms 半径 r_rms</td>
+</tr>
+<tr>
+<td>位相空間（z 断面）</td>
+<td>「断面の z」を通る電子の位置 r と傾き r'（題名に rms エミッタンス）</td>
+</tr>
+<tr>
+<td>カソード電流密度 J(r)</td>
+<td>カソード面での放出電流密度の分布</td>
+</tr>
+<tr>
+<td>要約</td>
+<td>電流・パービアンス・粒子の数・出口の半径とエネルギー</td>
+</tr>
+</tbody>
+</table>
+<p>それぞれ「PNG 保存…」で図を、「TXT 書き出し…」で数値を保存できます。</p>
+<figure><img loading="lazy" width="900" height="640" src="manual_images/beam_envelope.png" alt="エンベロープ" /><figcaption>エンベロープ</figcaption></figure>
+<p>位相空間の例（<a href="#102-dgun-の入力を取り込む">10.2 節</a>の DGUN test3 の z = 500 mm の断面）:</p>
+<figure><img loading="lazy" width="900" height="640" src="manual_images/dgun_beam_phase.png" alt="位相空間" /><figcaption>位相空間</figcaption></figure>
+<p>要約:</p>
+<figure><img loading="lazy" width="900" height="640" src="manual_images/beam_summary.png" alt="要約" /><figcaption>要約</figcaption></figure>
+<h3 id="97-結果の管理">9.7 結果の管理</h3>
+<p>右のパネルの一番下の「操作」で、表示中の結果を扱います。</p>
+<ul>
+<li><strong>名前を変更…</strong>: 結果に分かりやすい名前を付けます（一覧と図の題名に出ます）。</li>
+<li><strong>削除…</strong>: 結果のフォルダごと消します（元に戻せません）。</li>
+<li><strong>フォルダを開く</strong>: 結果のフォルダ（result.h5・log.txt など）を開きます。</li>
+</ul>
+<p>一覧の行にマウスを乗せると、その結果を計算したときのパラメータの値が出ます。パラメータを変えながら計算したときに、どの結果がどの値のものかを確かめられます。</p>
+<hr />
+<h2 id="10-取り込みと書き出し">10. 取り込みと書き出し</h2>
+<figure><img loading="lazy" width="254" height="224" src="manual_images/menu_file.png" alt="ファイルのメニュー" /><figcaption>ファイルのメニュー</figcaption></figure>
+<h3 id="101-version-2--1-のプロジェクトを取り込む">10.1 Version 2 / 1 のプロジェクトを取り込む</h3>
+<p>「ファイル」→「取り込み」→「TGUN v2 / v1 のプロジェクト…」で、Version 2 / 1 のプロジェクト（<code>.tgunproj</code>）から新しいモデルを作れます。</p>
+<ul>
+<li>移すもの: 電場・磁場の形状、拘束と寸法、パラメータ（Version 1 の変数も）、領域の種別と値、電極、境界条件、メッシュの設定、計算の設定、磁場の与え方と取り込んだ磁場マップ。</li>
+<li>移さないもの: メッシュと計算の結果（計算し直してください）。</li>
+<li>パラメータの単位は、使われ方から決めます（寸法に使っていれば mm、電圧に使っていれば V）。</li>
+<li>拘束は「足しても形が動かない」ことを確かめてから移します。移すと形が変わってしまう拘束は外し、その旨を知らせます。</li>
+<li>終わると、移したものの数と、知らせること（「詳細を表示」。ログにも出ます）が出ます。</li>
+</ul>
+<p>取り込んだモデルは、まだ保存されていません。「名前を付けて保存…」で保存先を決めてください。元のプロジェクトは変わりません。</p>
+<h3 id="102-dgun-の入力を取り込む">10.2 DGUN の入力を取り込む</h3>
+<p>DGUN の入力ファイル（<code>geom.cod</code>・<code>dginput.dat</code>・<code>mag.dat</code>）から、新しいモデルを作れます。</p>
+<ol>
+<li>「ファイル」→「取り込み」→「DGUN の入力…」を選びます。</li>
+<li>「geom.cod」の「参照…」でファイルを選びます。同じフォルダの dginput.dat・mag.dat、保存先、メッシュサイズ（DGUN の格子の刻み）が自動で入り、下にタイトル・格子・電位・放出面・磁場の扱いが表示されます。</li>
+<li>必要なら「カソード近傍」の「細かくする」を入れます（精度が上がります。例 0.15 mm）。</li>
+<li>「取り込む」を押すと、新しいモデルが作られ、保存先に保存されて開きます。</li>
+</ol>
+<figure><img loading="lazy" width="760" height="408" src="manual_images/import_dgun.png" alt="DGUN の入力の取り込み" /><figcaption>DGUN の入力の取り込み</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>欄</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>geom.cod / dginput.dat</td>
+<td>DGUN の形状と計算条件（必須）</td>
+</tr>
+<tr>
+<td>mag.dat（任意）</td>
+<td>軸上の磁場。軸上 Bz を 2 次のパラキシャル展開で 2 次元の磁場マップにして使います</td>
+</tr>
+<tr>
+<td>磁場を取り込まない</td>
+<td>磁場なしで取り込みます</td>
+</tr>
+<tr>
+<td>保存先</td>
+<td>作るモデルファイル（既にある名前は使えません）</td>
+</tr>
+<tr>
+<td>メッシュサイズ / カソード近傍</td>
+<td>メッシュの設定（長さは mm）</td>
+</tr>
+<tr>
+<td>B マップ</td>
+<td>磁場マップを作る範囲（r の最大）と点数</td>
+</tr>
+</tbody>
+</table>
+<p>取り込むと、DGUN の電極 1 の放出面が <strong>cathode</strong>、電極 1 の残りが <strong>focus</strong>（同じ電位）、2 つ目の電極が <strong>anode</strong>
+（3 つ目以降は elec3 …）になります。磁場は「磁場マップを取り込む」（データフォルダの <code>inputs\</code> に置いた磁場マップ）になり、緩和係数 α はメッシュに合わせた目安に設定されます。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/dgun_project.png" alt="取り込んだ DGUN test3 の電場（物理のタブ）" /><figcaption>取り込んだ DGUN test3 の電場（物理のタブ）</figcaption></figure>
+<p>そのまま全計算できます（カソード近傍を細かくすると α が小さくなるので 150〜200 回ほどかかります）。下の図は DGUN test3 を計算した結果（空間電荷密度 ρ、対数表示）です。ビーム電流は 55.703 A
+（DGUN は 55.30 A。差 +0.7%。176 回で収束）でした。</p>
+<figure><img loading="lazy" width="1440" height="900" src="manual_images/dgun_results.png" alt="DGUN test3 の計算結果" /><figcaption>DGUN test3 の計算結果</figcaption></figure>
+<blockquote class="tip"><p><strong>ヒント</strong>: DGUN の出力と比べるには、<code>examples\dgun_test3\compare_beam.py --result &lt;結果の result.h5&gt;</code> を使います。ビーム電流・等電位線・表面の電界・エンベロープ・断面を DGUN の出力と比べられます（詳しくは <code>examples\dgun_test3\README.md</code>）。</p>
+</blockquote>
+<h3 id="103-磁場マップを取り込む">10.3 磁場マップを取り込む</h3>
+<p>外部の磁場のデータを、磁場として使えます。物理のタブで「場」を磁場にして、リボンの「マップ取り込み」を押します。取り込んだファイルはデータフォルダに保存するので、先にモデルを保存しておいてください。</p>
+<figure><img loading="lazy" width="680" height="453" src="manual_images/import_bmap.png" alt="磁場マップの取り込み" /><figcaption>磁場マップの取り込み</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>形式</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TGUN の B マップ・結果（h5 の /bmap）</td>
+<td>TGUN の磁場マップ、または別のモデルの「磁場のみ」の結果</td>
+</tr>
+<tr>
+<td>4 列テキスト（z r Bz Br、SI）</td>
+<td>格子の上の磁場</td>
+</tr>
+<tr>
+<td>軸上 Bz の 2 列テキスト（z Bz）</td>
+<td>軸上の磁場。列の単位を選びます。2 次のパラキシャル展開で 2 次元にします</td>
+</tr>
+<tr>
+<td>DGUN の mag.dat</td>
+<td>DGUN の軸上の磁場（z [mm]、b [G]）</td>
+</tr>
+</tbody>
+</table>
+<p>元のファイルを選ぶと、形式が自動で選ばれ、軸上 Bz のグラフが出ます。軸上の磁場から作るときは、「展開する範囲」（r の最大と点数）を決めます（r が磁場の変化の長さより十分小さい範囲で有効です）。「取り込む」を押すと、磁場マップがデータフォルダの <code>inputs\</code> に保存され、磁場の与え方が「磁場マップを取り込む」になります。</p>
+<h3 id="104-emrm-cad-へ書き出す">10.4 EMRM-CAD へ書き出す</h3>
+<p>「ファイル」→「書き出し」→「EMRM-CAD のファイル（.mcad）…」で、形状を 3D CAD の EMRM-CAD で開けるファイルに書き出せます（回転体の 3D モデルや図面を作るときに使います）。</p>
+<figure><img loading="lazy" width="520" height="284" src="manual_images/export_mcad.png" alt="EMRM-CAD のファイルの書き出し" /><figcaption>EMRM-CAD のファイルの書き出し</figcaption></figure>
+<ul>
+<li>書き出すのは、スケッチ・拘束と寸法・パラメータです。TGUN の設定（領域・電極・境界条件・メッシュ・計算）は入りません。</li>
+<li>スケッチを置く平面（XY・XZ・YZ）と、対称軸（z）を合わせる軸を選べます。</li>
+<li>EMRM-CAD で直したファイルを TGUN に戻すことはできません（TGUN のモデルは <code>.tgun</code> で、EMRM-CAD のファイルとは別のものです）。</li>
+</ul>
+<h3 id="105-cli-用の入力を書き出す">10.5 CLI 用の入力を書き出す</h3>
+<p>「ファイル」→「書き出し」→「CLI 用の入力（.tgunproj）…」で、今のモデルをコマンドラインの <code>tgun</code> で計算できる形式に書き出せます（<a href="#付録-b-コマンドラインcli">付録 B</a>）。全計算の入力が作れないとき（たとえば磁場の指定が足りない）は、作れる分（電場だけ・磁場だけ）を書いて知らせます。</p>
+<p>同じことは、GUI を開かずにコマンド <code>tgun convert</code> でもできます。こちらは、パラメータを書き換えた入力も作れます（<a href="#b3-モデルから入力を作る-params-と-convert">付録 B.3</a>）。</p>
+<hr />
+<h2 id="11-保存とフォルダの構成">11. 保存とフォルダの構成</h2>
+<p>TGUN のモデルは、<strong>モデルファイル</strong>と、<strong>同じ名前のデータフォルダ</strong>の 2 つで 1 組です。</p>
+<pre><code>gun_tutorial.tgun                  モデルファイル（形状・パラメータ・物理・設定）。開くのはこれ
+gun_tutorial.tgun.data\            データフォルダ
+    command.log                    計算・書き出しのコマンドの記録
+    mesh\e\&lt;日時&gt;\, mesh\b\&lt;日時&gt;\    メッシュのタブで作ったメッシュ
+    results\0001-run\              計算 1 回分の結果（履歴として全部残ります）
+        result.h5                  結果（場・軌跡など）
+        log.txt                    計算のログ
+        model.tgunproj             この計算に使った入力（CLI の形式）
+        result.json                結果の名前・状態・要約・計算したときのパラメータ
+    exports\                       書き出したファイル（場の値・PNG など）の既定の置き場所
+    inputs\                        取り込んだ磁場マップなど
+</code></pre>
+<ul>
+<li><strong>自動保存</strong>: メッシュ生成と計算の前に、モデルは自動で保存されます。結果と、それを計算したときの形状・設定が必ず対になります。</li>
+<li><strong>名前を付けて保存</strong>: 別の名前で保存すると、データフォルダ（メッシュ・結果）ごと複製されます。</li>
+<li><strong>モデルを移すとき</strong>: <code>.tgun</code> と <code>.tgun.data</code> を一緒に移してください。取り込んだ磁場マップはデータフォルダの中から参照しているので、移しても切れません。</li>
+<li><strong>最近使ったドキュメント</strong>: 「ファイル」→「最近使ったドキュメント」に、開いた・保存したモデルが新しい順に並びます。</li>
+<li>開いている間は、モデルの隣に <code>名前.tgun.lock</code> ができます（同じモデルを 2 か所で開かないための印。閉じると消えます）。</li>
+<li>一度に開けるモデルは 1 つです。計算中は、ほかのモデルを開いたり新規作成したりできません。</li>
+<li>OneDrive の中でも使えます。</li>
+</ul>
+<hr />
+<h2 id="12-困ったときは">12. 困ったときは</h2>
+<h3 id="閉領域が塗られない">閉領域が塗られない</h3>
+<p>輪郭が閉じていません。線の端点が離れている所がないか確かめます（つながっていない端点は、橙の大きな点です）。点を別の点にドラッグして重ねるか、2 点を選んで「一致」の拘束を付けます。</p>
+<h3 id="計算のボタンが押せない計算を始められませんと出る">計算のボタンが押せない・「計算を始められません」と出る</h3>
+<p>物理の指定が足りません。物理のタブの右のパネルの一番下の「検査」で内容を確かめてください。よくあるのは:</p>
+<ul>
+<li><strong>カソードが無い</strong>（「is_cathode=True の電極がちょうど 1 必要です」）: 電極の表でカソードにする電極を選び、リボンの「カソード」を押します。</li>
+<li><strong>電極が無い・電極に境界が無い</strong>: 曲線を選んで「電極を追加」か「境界にする」。</li>
+<li><strong>磁場の与え方が「FEM で解く」なのに磁場の形状が無い</strong>: 磁場を使わないなら「磁場の与え方」を「なし」に。</li>
+</ul>
+<h3 id="割り当てた閉領域が見つかりませんと出る">「割り当てた閉領域が見つかりません」と出る</h3>
+<p>種別を割り当てた後で形状を大きく変えたため、どの閉領域のことか分からなくなっています。物理のタブで、その閉領域を選び直して種別を割り当て直すか、表の「見つからない」の行を消します。「閉領域を代表点で見つけ直しました」は警告です。割り当てが思ったとおりか、図の色で確かめてください。</p>
+<h3 id="値の欄で単位の誤りが出る">値の欄で「単位」の誤りが出る</h3>
+<p>単位の無いパラメータを、電圧・電流などの欄に書いています。パラメータに単位を付ける（<code>Va = 10 kV</code>）か、欄に <code>Vn * 1 V</code> のように書きます（<a href="#55-パラメータと式">5.5 節</a>）。</p>
+<h3 id="計算が収束しない未収束になる">計算が収束しない（「未収束」になる）</h3>
+<p>緩和係数 α を小さくする（「目安を使う」）、最大反復回数を増やす（既定 300 回）、を試します。計算が発散しかけると、
+α は自動で小さくなります（ログの「発散傾向を検知」、収束グラフの縦の破線）。メッシュを細かくしたときは、
+α も小さくします。ログの「満たしていない判定」に、最後に残った量（dI・dJ・空間電荷の残差）が出ます。</p>
+<h3 id="ビーム電流の精度を上げたい">ビーム電流の精度を上げたい</h3>
+<p>メッシュのタブの「カソード近傍の大きさ」が効果的です（全体を細かくするより、ずっと少ない要素数で精度が上がります）。細かくしたら α を目安に合わせます。</p>
+<h3 id="非線形の磁場計算が-n-回で収束しませんでしたと出る">「非線形の磁場計算が N 回で収束しませんでした」と出る</h3>
+<p>磁性体（飽和）のある磁場の計算が、反復の上限までに収束しなかったという警告です。計算は最後の解で続きますが、磁場に誤差があります。Js・χ0 が極端な値でないか、磁場のメッシュが粗すぎないかを確かめてください。</p>
+<h3 id="磁性体を使った磁場の精度が気になる">磁性体を使った磁場の精度が気になる</h3>
+<p>磁性体の周りは、メッシュの粗さによる誤差が大きく効きます。磁場のメッシュの大きさを小さくして計算し直し、軸上の Bz などが変わらないことを確かめてください（<a href="#66-磁性体の飽和fröhlichkennelly-モデル">6.6 節</a>の注意）。</p>
+<h3 id="計算を途中で止めたい">計算を途中で止めたい</h3>
+<p>計算のタブの「停止」（次の反復の区切りで止まる）か「強制停止」。どちらも結果は保存されません。</p>
+<h3 id="結果を削除できない">結果を削除できない</h3>
+<p>結果のファイル（result.h5）をほかのプログラム（HDF ビューアー、Python など）で開いていると消せません。閉じてから、もう一度削除してください。</p>
+<h3 id="モデルを開けないほかで開いていますと出る">モデルを開けない（「ほかで開いています」と出る）</h3>
+<p>同じモデルを、別の TGUN の窓で開いています。そちらを閉じてください。どこでも開いていないのに出るときは（異常終了の後など）、モデルと同じフォルダの <code>名前.tgun.lock</code> を消してから開きます。</p>
+<h3 id="スケッチのタブの線が動かない点が選べない">スケッチのタブの線が動かない・点が選べない</h3>
+<p>物理・メッシュ・計算のタブでは、形状は動かせません（選ぶだけです）。スケッチのタブに戻ってください。スケッチのタブでは、今の「場」（電場 / 磁場）の形状だけを編集できます。灰色の破線はもう一方の場の形状です。</p>
+<h3 id="操作を間違えた">操作を間違えた</h3>
+<p>「元に戻す」（Ctrl+Z）で、形状・パラメータ・物理・メッシュと計算の設定の変更を 1 つずつ戻せます。「やり直し」は Ctrl+Y です。</p>
+<hr />
+<h2 id="13-キーボードとマウスの操作一覧">13. キーボードとマウスの操作一覧</h2>
+<p><strong>ファイル・全体</strong></p>
+<table>
+<thead>
+<tr>
+<th>キー</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ctrl+N</td>
+<td>新規</td>
+</tr>
+<tr>
+<td>Ctrl+O</td>
+<td>開く</td>
+</tr>
+<tr>
+<td>Ctrl+S / Ctrl+Shift+S</td>
+<td>保存 / 名前を付けて保存</td>
+</tr>
+<tr>
+<td>Ctrl+Z / Ctrl+Y</td>
+<td>元に戻す / やり直し</td>
+</tr>
+<tr>
+<td>F</td>
+<td>全体表示</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>マニュアル</td>
+</tr>
+<tr>
+<td>Ctrl+F1</td>
+<td>リボンの最小化</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>全画面表示</td>
+</tr>
+<tr>
+<td>Ctrl+Q</td>
+<td>終了</td>
+</tr>
+</tbody>
+</table>
+<p><strong>スケッチ（中央の画面）</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L / D / T</td>
+<td>線 / 寸法 / トリム</td>
+</tr>
+<tr>
+<td>Tab / Enter（入力ウィンドウ）</td>
+<td>次の欄へ / 確定</td>
+</tr>
+<tr>
+<td>Enter・ダブルクリック</td>
+<td>連続線を終える</td>
+</tr>
+<tr>
+<td>Esc</td>
+<td>描きかけを捨てる → ツールを終える</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>選んだ物を削除</td>
+</tr>
+<tr>
+<td>クリック / Ctrl+クリック / Shift+クリック</td>
+<td>選択 / 切り替え / 追加</td>
+</tr>
+<tr>
+<td>空白からドラッグ</td>
+<td>枠で選択（左 → 右: 全体が入る要素、右 → 左: 掛かる要素）</td>
+</tr>
+<tr>
+<td>ドラッグ（点・曲線）</td>
+<td>拘束を保ったまま移動</td>
+</tr>
+<tr>
+<td>ダブルクリック（寸法の値）</td>
+<td>寸法の値（式）を変える</td>
+</tr>
+<tr>
+<td>Ctrl+クリック（作図中）</td>
+<td>そのクリックでは自動の拘束を付けない</td>
+</tr>
+<tr>
+<td>マウスホイール / 中ボタンのドラッグ</td>
+<td>拡大・縮小 / 表示の移動</td>
+</tr>
+</tbody>
+</table>
+<p><strong>物理（中央の画面）</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>クリック</td>
+<td>閉領域か曲線を選ぶ</td>
+</tr>
+<tr>
+<td>Ctrl+クリック / Shift+クリック</td>
+<td>曲線を選択に足す</td>
+</tr>
+</tbody>
+</table>
+<p><strong>結果の図</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ダブルクリック</td>
+<td>プローブ（その点の値を表示）</td>
+</tr>
+<tr>
+<td>図の下のツールバー</td>
+<td>拡大・移動・ホーム（全体表示）・図の保存</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="付録-a-用語">付録 A 用語</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>軸対称</td>
+<td>z 軸のまわりに回転させた形。r ≥ 0 の半面だけを計算します</td>
+</tr>
+<tr>
+<td>場（電場 / 磁場）</td>
+<td>電場の形状（電極・真空）と磁場の形状（コイル・磁性体・空気）の、それぞれの計算の対象</td>
+</tr>
+<tr>
+<td>モデル</td>
+<td>TGUN のファイル（<code>名前.tgun</code>）。形状・パラメータ・物理・設定が入ります</td>
+</tr>
+<tr>
+<td>スケッチ</td>
+<td>形状を描いた図。電場用と磁場用の 2 枚があります</td>
+</tr>
+<tr>
+<td>閉領域</td>
+<td>線で囲まれた領域。種別を割り当てる単位です</td>
+</tr>
+<tr>
+<td>計算領域</td>
+<td>メッシュを切って場を解く範囲（真空・誘電体・空気・コイル・磁性体の閉領域）</td>
+</tr>
+<tr>
+<td>拘束 / 寸法</td>
+<td>図形どうしの関係（水平・一致…）/ 長さ・角度などの値。形を決めます</td>
+</tr>
+<tr>
+<td>パラメータ</td>
+<td>名前を付けた値。寸法や電圧などの式で使えます</td>
+</tr>
+<tr>
+<td>境界条件</td>
+<td>計算領域の縁の曲線に与える条件。電極（電圧を固定）・自然境界・A = 0 など</td>
+</tr>
+<tr>
+<td>カソード</td>
+<td>電子を放出する電極。モデルにちょうど 1 つ</td>
+</tr>
+<tr>
+<td>電極の領域</td>
+<td>導体のかたまり。メッシュを切らず、輪郭がその電極の電位になります</td>
+</tr>
+<tr>
+<td>A = 0</td>
+<td>磁場の境界条件 A_θ = 0。磁束がその線を横切りません</td>
+</tr>
+<tr>
+<td>総電流 [A·turn]</td>
+<td>コイルの巻数 × 電流</td>
+</tr>
+<tr>
+<td>磁性体 / 磁性体（飽和）</td>
+<td>磁化して磁場を強める材料（鉄など）。比透磁率 μr 一定で扱うか、飽和を考えるか</td>
+</tr>
+<tr>
+<td>飽和磁化 Js</td>
+<td>強い磁場で磁化が近づく上限（μ0Ms [T]）。純鉄で約 2.15 T</td>
+</tr>
+<tr>
+<td>初期磁化率 χ0</td>
+<td>弱い磁場での磁化のしやすさ。初期比透磁率は 1 + χ0</td>
+</tr>
+<tr>
+<td>飽和度 M/Ms</td>
+<td>磁化 M の飽和磁化に対する割合。0 〜 1</td>
+</tr>
+<tr>
+<td>実効の比透磁率 μr,eff</td>
+<td>飽和を含めた B / (μ0 H)。飽和すると下がります</td>
+</tr>
+<tr>
+<td>メッシュ</td>
+<td>計算領域を分けた三角形</td>
+</tr>
+<tr>
+<td>空間電荷 ρ</td>
+<td>ビームの電子が作る電荷の分布。電場を弱め、電流を制限します</td>
+</tr>
+<tr>
+<td>反復・緩和係数 α</td>
+<td>空間電荷と軌道を交互に計算し直してつり合わせる手順 / そのときの更新の割合</td>
+</tr>
+<tr>
+<td>収束</td>
+<td>反復しても電流などがもう変わらなくなった状態</td>
+</tr>
+<tr>
+<td>パービアンス</td>
+<td>I / V^1.5（μP = 10⁻⁶ A/V^1.5）。電子銃の性能を表す量</td>
+</tr>
+<tr>
+<td>エンベロープ</td>
+<td>z ごとのビームの外縁の半径</td>
+</tr>
+<tr>
+<td>エミッタンス</td>
+<td>位相空間（r と r'）でのビームの広がり。ビームの質の指標</td>
+</tr>
+<tr>
+<td>磁場マップ</td>
+<td>格子の上の磁場の値（Bz, Br）。追跡に使います</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="付録-b-コマンドラインcli">付録 B コマンドライン（CLI）</h2>
+<p>TGUN の計算は、画面を開かずにコマンドラインからも実行できます。GUI の計算も、内部では同じ計算を別のプロセスで実行しているので、結果は同じです。コマンドラインは、次のようなときに使います。</p>
+<ul>
+<li>パラメータ（電圧・寸法・コイルの電流など）を変えながら、同じ計算を何度も繰り返す（スイープ）</li>
+<li>計算を他のプログラム（Python・PowerShell のスクリプトなど）から呼ぶ</li>
+<li>結果の数値（軸上の場・ビームの包絡線など）をテキストで取り出す</li>
+<li>GUI で行った計算を、後からそのまま再現する</li>
+</ul>
+<h3 id="b1-コマンドの名前と基本">B.1 コマンドの名前と基本</h3>
+<table>
+<thead>
+<tr>
+<th>使う環境</th>
+<th>コマンド</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>配布版</td>
+<td><code>TGUN.exe</code></td>
+<td><code>TGUN.exe run -p gun.tgunproj</code></td>
+</tr>
+<tr>
+<td>開発環境（<code>pip install -e</code> 済み）</td>
+<td><code>tgun</code> または <code>python -m tgun</code></td>
+<td><code>tgun run -p gun.tgunproj</code></td>
+</tr>
+</tbody>
+</table>
+<p>この付録では <code>tgun</code> と書きます。配布版では <code>TGUN.exe</code> に読み替えてください（コマンドプロンプトや PowerShell で
+TGUN のフォルダに移るか、<code>TGUN.exe</code> をフルパスで書きます）。</p>
+<ul>
+<li>何も付けずに実行すると、GUI が開きます。<code>tgun 名前.tgun</code> は、そのモデルを GUI で開きます。</li>
+<li><code>tgun -h</code> でコマンドの一覧、<code>tgun &lt;コマンド&gt; -h</code> でそのコマンドの引数が出ます。</li>
+<li><code>-p</code>・<code>-i</code>・<code>-o</code> は、<code>--project</code>（入力）・<code>--input</code>（結果）・<code>--output</code>（出力）と書くこともできます。</li>
+<li>長さの引数は、どのコマンドも <strong>SI 単位（m）</strong> です（GUI の mm ではありません）。例外は DGUN の取り込み（mm）だけです。</li>
+</ul>
+<p><strong>まず試す</strong>（例題のモデルから入力を作って計算する。15 秒ほど）:</p>
+<pre><code class="language-bash">tgun convert examples\gun_with_solenoid\gun_with_solenoid.tgun -o work\gun.tgunproj
+tgun run -p work\gun.tgunproj -o work\gun.h5
+tgun beam -i work\gun.h5 --what summary
+</code></pre>
+<p>29 回の反復で収束し、最後に <code>I_total = 7.686871e+01 A (converged)</code> と出ます（GUI のチュートリアルと同じ値です）。</p>
+<p>コマンドの一覧:</p>
+<table>
+<thead>
+<tr>
+<th>コマンド</th>
+<th>すること</th>
+<th>入力</th>
+<th>出力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>params</code></td>
+<td>モデルのパラメータの一覧を出す</td>
+<td><code>.tgun</code></td>
+<td>画面</td>
+</tr>
+<tr>
+<td><code>convert</code></td>
+<td>モデルから CLI 用の入力を作る</td>
+<td><code>.tgun</code></td>
+<td><code>.tgunproj</code></td>
+</tr>
+<tr>
+<td><code>run</code></td>
+<td>全計算（磁場 → 空間電荷の収束）</td>
+<td><code>.tgunproj</code></td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>solve-e</code></td>
+<td>電場のみ（空間電荷なし）</td>
+<td><code>.tgunproj</code></td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>solve-b</code></td>
+<td>磁場のみ</td>
+<td><code>.tgunproj</code></td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>mesh</code></td>
+<td>メッシュだけを作る</td>
+<td><code>.tgunproj</code></td>
+<td><code>.msh</code></td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>結果のファイルの中身の一覧</td>
+<td><code>.h5</code></td>
+<td>画面</td>
+</tr>
+<tr>
+<td><code>plot</code></td>
+<td>結果の図</td>
+<td><code>.h5</code></td>
+<td><code>.png</code></td>
+</tr>
+<tr>
+<td><code>export</code></td>
+<td>場の数値の書き出し（軸上・線上・面）</td>
+<td><code>.h5</code></td>
+<td><code>.txt</code>・<code>.h5</code></td>
+</tr>
+<tr>
+<td><code>beam</code></td>
+<td>ビーム診断（要約・包絡線・断面）</td>
+<td><code>.h5</code></td>
+<td>画面・<code>.txt</code>・<code>.png</code></td>
+</tr>
+<tr>
+<td><code>import-dgun</code></td>
+<td>DGUN の入力を CLI 用の入力に変える</td>
+<td><code>geom.cod</code> ほか</td>
+<td><code>.tgunproj</code></td>
+</tr>
+<tr>
+<td><code>import-b</code></td>
+<td>磁場マップ（テキスト）を <code>.h5</code> に変える</td>
+<td>テキスト</td>
+<td><code>.h5</code></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>版と構成を出す</td>
+<td>—</td>
+<td>画面</td>
+</tr>
+<tr>
+<td><code>selftest</code></td>
+<td>小さな計算を流して動作を確かめる</td>
+<td>—</td>
+<td>画面</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b2-2-種類のファイル-モデルファイルtgunと-cli-用の入力tgunproj">B.2 2 種類のファイル: モデルファイル（.tgun）と CLI 用の入力（.tgunproj）</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>モデルファイル <code>名前.tgun</code></th>
+<th>CLI 用の入力 <code>名前.tgunproj</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>作るもの・読むもの</td>
+<td>GUI</td>
+<td>計算のコマンド（<code>run</code>・<code>solve-e</code>・<code>solve-b</code>・<code>mesh</code>）</td>
+</tr>
+<tr>
+<td>中身</td>
+<td>スケッチ・拘束と寸法・パラメータと式・物理の指定・設定</td>
+<td>計算に要るものだけ（点の座標・境界の名前・領域の値・電極の電圧・設定）</td>
+</tr>
+<tr>
+<td>パラメータ</td>
+<td>式のまま持つ</td>
+<td><strong>評価した後の数値</strong>（式は入らない）</td>
+</tr>
+<tr>
+<td>形式</td>
+<td>TGUN のモデルの形式</td>
+<td>JSON（テキスト。エディタで読める）</td>
+</tr>
+</tbody>
+</table>
+<p>計算のコマンドは <code>.tgunproj</code> を読みます。<code>.tgunproj</code> を手に入れる方法は 4 つあります。</p>
+<ol>
+<li><strong><code>tgun convert</code> でモデルから作る</strong>（<a href="#b3-モデルから入力を作る-params-と-convert">B.3 節</a>）。GUI を開かずに作れ、パラメータも書き換えられます。</li>
+<li>GUI の「ファイル」→「書き出し」→「CLI 用の入力（.tgunproj）…」（<a href="#105-cli-用の入力を書き出す">10.5 節</a>）。</li>
+<li>GUI で計算した結果のフォルダにある <code>model.tgunproj</code>（その計算に使った入力そのもの。<a href="#b7-gui-の計算を再現する">B.7 節</a>）。</li>
+<li><code>tgun import-dgun</code> で DGUN の入力から作る（<a href="#b6-取り込み-import-dgun-と-import-b">B.6 節</a>）。</li>
+</ol>
+<blockquote class="warn"><p><strong>注意</strong>: <code>.tgunproj</code> を GUI に読み込むときは「開く」ではなく「取り込み」（<a href="#101-version-2--1-のプロジェクトを取り込む">10.1 節</a>）です。<code>.tgunproj</code> には式やパラメータが無いので、取り込んだモデルの形は座標だけになります。形や値を変えていく元は、モデルファイル（<code>.tgun</code>）の側に置いてください。</p>
+</blockquote>
+<h3 id="b3-モデルから入力を作る-params-と-convert">B.3 モデルから入力を作る: params と convert</h3>
+<p><strong>パラメータを見る</strong></p>
+<pre><code class="language-bash">tgun params gun.tgun
+</code></pre>
+<pre><code>gap = 10.0 mm   -&gt; 10.00 mm
+R   = 5.0 mm    -&gt; 5.00 mm
+Va  = 10 kV     -&gt; 10000.00 V
+</code></pre>
+<p>左から、名前・書いてある式・評価した値です。</p>
+<p><strong>入力を作る</strong></p>
+<pre><code class="language-bash">tgun convert gun.tgun -o work\gun.tgunproj
+</code></pre>
+<pre><code>書き出しました: work\gun.tgunproj（全計算の入力）
+計算: tgun run -p &quot;work\gun.tgunproj&quot; -o 結果.h5
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>引数</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>モデル</code></td>
+<td>モデルファイル（<code>名前.tgun</code>）</td>
+</tr>
+<tr>
+<td><code>-o 出力</code></td>
+<td>出力のファイル。省くと、モデルの隣の <code>名前_cli.tgunproj</code>。フォルダが無ければ作ります</td>
+</tr>
+<tr>
+<td><code>--set 名前=式</code></td>
+<td>パラメータを書き換えてから作ります（何度でも書けます）</td>
+</tr>
+<tr>
+<td><code>--scope</code></td>
+<td>作る入力。<code>run</code> = 全計算、<code>e</code> = 電場だけ、<code>b</code> = 磁場だけ、<code>auto</code> = 作れるもの（既定）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>モデルは変わりません</strong>。<code>--set</code> の書き換えは、作った <code>.tgunproj</code> にだけ効きます。</li>
+<li>GUI でそのモデルを開いている最中でも実行できます（読むのは、最後に保存した内容です）。</li>
+<li><code>--scope auto</code> は、全計算 → 電場だけ → 磁場だけの順に、作れるものを作ります（電場の形状の無いモデルからは、磁場だけの入力ができます）。何の入力ができたかと、その入力で使うコマンドが画面に出ます。</li>
+<li>取り込んだ磁場マップを使うモデルでは、マップのファイルの場所（モデルのデータフォルダの中）がフルパスで入ります。</li>
+</ul>
+<p><strong>パラメータを書き換える（<code>--set</code>）</strong></p>
+<pre><code class="language-bash">tgun convert gun.tgun -o work\v12.tgunproj --set &quot;Va=12 kV&quot; --set &quot;gap=8 mm&quot;
+</code></pre>
+<pre><code>パラメータ: Va = 12 kV（モデルでは 10 kV）
+パラメータ: gap = 8 mm（モデルでは 10.0 mm）
+書き出しました: work\v12.tgunproj（全計算の入力）
+</code></pre>
+<ul>
+<li>式の書き方は、GUI のパラメータの表と同じです（<a href="#55-パラメータと式">5.5 節</a>）。単位を付けて書けます（<code>12 kV</code>・<code>8 mm</code>）。数だけを書くと、そのパラメータの単位が付きます（<code>--set gap=8</code> は 8 mm）。</li>
+<li>他のパラメータを使った式も書けます（<code>--set &quot;gap=R + 3 mm&quot;</code>）。</li>
+<li>空白を含む式は、全体を <code>&quot;</code> で囲みます（<code>--set &quot;Va=12 kV&quot;</code>）。</li>
+<li>書き換えると、寸法にそのパラメータを使っているスケッチの形も、GUI で値を変えたときと同じように変わります。</li>
+<li>書き換えた結果を計算の前に確かめるには、<code>tgun params gun.tgun --set &quot;gap=R + 3 mm&quot;</code> とします（書き換えた後の一覧が出ます。モデルは変わりません）。</li>
+</ul>
+<p>無いパラメータの名前を書いたとき、式が誤っているとき、書き換えた値では形が作れないときは、理由を表示して終了コード 1 で終わります（ファイルは作りません）。</p>
+<h3 id="b4-計算する-runsolve-esolve-bmesh">B.4 計算する: run・solve-e・solve-b・mesh</h3>
+<pre><code class="language-bash">tgun run     -p gun.tgunproj -o gun.h5        # 全計算（磁場 → 電場と軌道の反復）
+tgun solve-e -p gun.tgunproj -o gun_e.h5      # 電場のみ（空間電荷なし = ラプラス方程式）
+tgun solve-b -p coil.tgunproj -o coil.h5      # 磁場のみ
+tgun mesh    -p gun.tgunproj --domain e       # 電場のメッシュだけを作る（--domain b で磁場）
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>引数</th>
+<th>コマンド</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-p 入力</code></td>
+<td>すべて</td>
+<td>CLI 用の入力（<code>.tgunproj</code>）</td>
+</tr>
+<tr>
+<td><code>-o 出力</code></td>
+<td>すべて</td>
+<td>出力のファイル。省くと、入力の隣の <code>名前_result.h5</code>（<code>mesh</code> は <code>名前_e.msh</code>・<code>名前_b.msh</code>）</td>
+</tr>
+<tr>
+<td><code>--reuse-mesh</code></td>
+<td><code>run</code>・<code>solve-e</code></td>
+<td>入力の隣に前に作ったメッシュ（<code>名前_e.msh</code>・<code>名前_b.msh</code>）があれば、作り直さずに使います</td>
+</tr>
+<tr>
+<td><code>--max-iter 回数</code></td>
+<td><code>run</code></td>
+<td>反復の回数の上限を、入力に書いてある値の代わりに使います</td>
+</tr>
+<tr>
+<td><code>--alpha 値</code></td>
+<td><code>run</code></td>
+<td>緩和係数 α を、入力に書いてある値の代わりに使います</td>
+</tr>
+<tr>
+<td><code>--domain e</code>/<code>b</code></td>
+<td><code>mesh</code></td>
+<td>メッシュを作る場（電場・磁場）</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="warn"><p><strong>注意</strong>: <code>-o</code> を省いたときの名前は、<code>run</code>・<code>solve-e</code>・<code>solve-b</code> のどれも <code>名前_result.h5</code> です。同じ入力で続けて実行すると上書きされるので、<code>-o</code> で名前を付けることを勧めます。</p>
+</blockquote>
+<p><code>-p</code> にモデルファイル（<code>.tgun</code>）をそのまま渡すと、<code>convert</code> で入力を作るように案内して終わります（計算のコマンドが読むのは
+<code>.tgunproj</code> だけです）。</p>
+<p>入力の隣には、メッシュのファイル（<code>名前_e.msh</code>・<code>名前_b.msh</code> と、それぞれの <code>.domain.json</code>）もできます。形状やメッシュの設定を変えたときは、<code>--reuse-mesh</code> を付けないでください（付けると古いメッシュのまま計算します）。</p>
+<p><code>run</code> の画面の出力:</p>
+<pre><code>mesh written: gun_b.msh
+coil 'coil_0': I = 5000 A, mesh area = 0.009 m^2, J_theta = 555556 A/m^2
+magnetic material 'iron_sat_1': Frohlich-Kennelly (Js = 1.9 T, chi0 = 1000)
+solving nonlinear magnetostatics (A_theta, Newton)...
+ ...
+非線形の磁場計算: 3 回で収束しました（残差 1.67e-14）
+B map sampled on 201x101 grid
+cathode refine: size = 1 mm, dist = 10 mm
+mesh written: gun_e.msh
+dt = 2.630e-12 s, electrodes = {'Cathode': -200000.0, 'Wehnelt': -200000.0, 'Anode': 0.0}, cathode = 'Cathode'
+[iter] k=1 I_total=1.555862e+02 dI=inf dJ=inf drho=1.000e+00 res=1.000e+00
+[iter] k=2 I_total=1.612142e+02 dI=8.293e-02 dJ=1.898e-01 drho=6.280e-01 res=8.483e-01
+ ...
+[iter] k=29 I_total=7.686871e+01 dI=5.137e-05 dJ=6.014e-05 drho=2.716e-04 res=6.791e-04
+[iter] converged at k=29
+result written: gun.h5
+I_total = 7.686871e+01 A (converged)
+</code></pre>
+<p><code>[iter]</code> の行は反復ごとの値で、GUI の収束グラフと同じものです（<a href="#82-計算中と計算の後">8.2 節</a>）。<code>k</code> は反復の番号、
+<code>I_total</code> は放出電流 [A]、<code>dI</code>・<code>dJ</code> は電流と電流密度の前の回からの変化（相対値）、<code>drho</code> は空間電荷の変化、
+<code>res</code> は空間電荷の残差です。最後の行が結果で、<code>(converged)</code> なら収束、<code>(NOT converged)</code> なら反復の上限で打ち切りです。</p>
+<p><strong>終了コード</strong>（スクリプトで結果を判定するのに使います）:</p>
+<table>
+<thead>
+<tr>
+<th>終了コード</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>正常に終わった（<code>run</code> は収束した）</td>
+</tr>
+<tr>
+<td>1</td>
+<td>誤り（入力の検証の誤り・ファイルが無いなど。理由を表示します）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>引数の誤り</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>run</code> が収束しなかった（<strong>結果のファイルは書かれます</strong>。途中の状態として見られます）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>試用期間が終わっている（配布版）</td>
+</tr>
+</tbody>
+</table>
+<p>計算の設定（α・許容値・反復の上限・軌道の時間刻みなど）は、入力の中に書いてあります。モデルの計算の設定（<a href="#83-計算の設定">8.3 節</a>）が、<code>convert</code> のときにそのまま入ります。<code>--max-iter</code>・<code>--alpha</code> 以外の設定を変えるときは、
+GUI の計算のタブでモデルの設定を変えて保存し、<code>convert</code> し直します。</p>
+<h3 id="b5-結果を見る-infoplotexportbeam">B.5 結果を見る: info・plot・export・beam</h3>
+<p>どのコマンドも、<code>-i</code> に結果のファイル（<code>.h5</code>）を渡します。コマンドラインで計算した結果だけでなく、<strong>GUI で計算した結果</strong>（モデルのデータフォルダの <code>results\0001-run\result.h5</code> など。<a href="#11-保存とフォルダの構成">11 章</a>）にも使えます。</p>
+<p><strong>info — 中身の一覧</strong></p>
+<pre><code class="language-bash">tgun info -i gun.h5
+</code></pre>
+<p>結果のファイルに入っているデータの名前と大きさが出ます。主なものは次のとおりです（値はすべて SI 単位）。</p>
+<table>
+<thead>
+<tr>
+<th>グループ</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/emesh</code>・<code>/bmesh</code></td>
+<td>電場・磁場のメッシュ（節点の座標・三角形・境界と領域）</td>
+</tr>
+<tr>
+<td><code>/electrostatics</code></td>
+<td>節点の電位 <code>V</code>、電界 <code>E_nodal</code>、空間電荷 <code>rho_nodal</code></td>
+</tr>
+<tr>
+<td><code>/magnetostatics</code></td>
+<td>節点のベクトルポテンシャル <code>A_theta</code>、磁束密度 <code>B_nodal</code>（飽和の材料があれば、要素ごとの実効の μr・飽和度も）</td>
+</tr>
+<tr>
+<td><code>/bmap</code></td>
+<td>軌道の計算に使った磁場のマップ（<code>z</code>・<code>r</code>・<code>Bz</code>・<code>Br</code>）</td>
+</tr>
+<tr>
+<td><code>/emission</code></td>
+<td>カソードの面ごとの電流密度 <code>J</code> と電流 <code>I</code></td>
+</tr>
+<tr>
+<td><code>/particles</code></td>
+<td>軌跡（位置と運動量）、粒子ごとの電流、行き先</td>
+</tr>
+<tr>
+<td><code>/convergence</code></td>
+<td>反復ごとの <code>I_total</code>・<code>dI_rel</code>・<code>dJ_rel</code>・<code>drho_rel</code>・<code>alpha</code>・<code>rho_res</code></td>
+</tr>
+<tr>
+<td><code>/parameters</code></td>
+<td>属性に、収束した電流 <code>I_total</code>、収束したか <code>converged</code>、計算に使った入力 <code>project_json</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>plot — 図</strong></p>
+<pre><code class="language-bash">tgun plot -i gun.h5 --what traj -o traj.png
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>--what</code></th>
+<th>図</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>V</code></td>
+<td>電位（等電位線）</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>電界の大きさ</td>
+</tr>
+<tr>
+<td><code>rho</code></td>
+<td>空間電荷の密度</td>
+</tr>
+<tr>
+<td><code>traj</code></td>
+<td>軌跡</td>
+</tr>
+<tr>
+<td><code>J</code></td>
+<td>カソードの電流密度の分布</td>
+</tr>
+<tr>
+<td><code>conv</code></td>
+<td>収束の履歴</td>
+</tr>
+<tr>
+<td><code>B</code></td>
+<td>磁束密度の大きさ・磁力線・矢印、軸上の Bz</td>
+</tr>
+</tbody>
+</table>
+<p><code>-o</code> を省くと、結果の隣の <code>名前_&lt;what&gt;.png</code> に書きます。<code>--dpi</code> で解像度（既定 150）を変えられます。
+<code>--what B</code> では、<code>--b-levels 本数</code>（磁力線の本数。既定 20、0 で描かない）、<code>--b-vectors NZ,NR</code>（矢印の格子。既定 24,12、0 で描かない）、<code>--b-vec-scale unit</code>/<code>mag</code>（矢印の長さを揃える / 大きさに比例させる）が使えます。</p>
+<p><strong>export — 場の数値</strong></p>
+<pre><code class="language-bash">tgun export -i gun.h5 -o axis --shape axis --fields V,Ez,Bz --format txt
+tgun export -i gun.h5 -o line --shape line --p1 0.0,0.001 --p2 0.04,0.001 --npts 200
+tgun export -i gun.h5 -o area --shape area --z-range 0,0.04 --r-range 0,0.005 --nz 200 --nr 50
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>引数</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-o 名前</code></td>
+<td>出力の名前（拡張子は付けません。<code>名前.txt</code>・<code>名前.h5</code> ができます）</td>
+</tr>
+<tr>
+<td><code>--shape</code></td>
+<td><code>axis</code> = 軸上（既定）、<code>line</code> = 2 点を結ぶ線の上、<code>area</code> = 長方形の範囲の格子</td>
+</tr>
+<tr>
+<td><code>--fields</code></td>
+<td>書き出す量。<code>V,Ez,Er,Emag,rho,Bz,Br,Bmag</code> からカンマで区切って選びます（省くと、結果にあるものすべて）</td>
+</tr>
+<tr>
+<td><code>--z-range zmin,zmax</code></td>
+<td>z の範囲 [m]（<code>axis</code>・<code>area</code>。省くと全体）</td>
+</tr>
+<tr>
+<td><code>--r-range rmin,rmax</code></td>
+<td>r の範囲 [m]（<code>area</code>）</td>
+</tr>
+<tr>
+<td><code>--p1 z,r</code>・<code>--p2 z,r</code></td>
+<td>線の始点・終点 [m]（<code>line</code>）</td>
+</tr>
+<tr>
+<td><code>--npts</code></td>
+<td>点の数（<code>axis</code>・<code>line</code>。既定 500）</td>
+</tr>
+<tr>
+<td><code>--nz</code>・<code>--nr</code></td>
+<td>格子の分割数（<code>area</code>。既定 200・100）</td>
+</tr>
+<tr>
+<td><code>--format</code></td>
+<td><code>txt</code>・<code>h5</code>・<code>both</code>（既定）</td>
+</tr>
+</tbody>
+</table>
+<p>テキストの出力（<code>--shape axis</code>）:</p>
+<pre><code># TGUN field export (shape=axis, SI units)
+# source_file = gun.h5
+# fields = V Ez Bz
+# units = SI (z,r[m] V[V] E[V/m] rho[C/m^3] B[T])
+# Columns: s distance z r V Ez Bz mask
+0.000000000e+00 0.000000000e+00 0.000000000e+00 0.000000000e+00 0.000000e+00 -3.514372e+05 2.779186e-03 1
+2.500000000e-01 1.000000000e-02 1.000000000e-02 0.000000000e+00 8.982020e+03 -6.582072e+05 9.952325e-03 1
+</code></pre>
+<p><code>#</code> で始まる行は説明で、<code>Columns:</code> の行が列の名前です。<code>s</code> は線の上の位置（0〜1）、<code>distance</code> は始点からの距離 [m]、<code>mask</code> は、その点が電場の計算領域の中なら 1・外（電極の中など）なら 0 です。</p>
+<p><strong>beam — ビーム診断</strong></p>
+<pre><code class="language-bash">tgun beam -i gun.h5 --what summary
+tgun beam -i gun.h5 --what envelope --z-planes 0.011,0.04,100 -o envelope.txt --plot envelope.png
+tgun beam -i gun.h5 --what cut --cut 0.03 -o cut.txt --plot phase.png
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>--what</code></th>
+<th>出すもの</th>
+<th>引数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>summary</code></td>
+<td>要約を画面に出す（<code>-o</code> でファイルにも）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>envelope</code></td>
+<td>z の面ごとのビームの半径</td>
+<td><code>--z-planes zmin,zmax,面の数</code> [m]（省くと全体を 200 面）</td>
+</tr>
+<tr>
+<td><code>cut</code></td>
+<td>1 つの z の面を通る粒子の一覧（位相空間）</td>
+<td><code>--cut z</code> [m]（必須）</td>
+</tr>
+</tbody>
+</table>
+<p><code>-o</code> を省くと、結果の隣の <code>名前_envelope.txt</code>・<code>名前_cut.txt</code> に書きます。<code>--plot</code> を付けると図（<code>.png</code>）も作ります。</p>
+<p><code>summary</code> の出力:</p>
+<pre><code>I_total      = 76.8687 A (converged=True)
+dV           = 200000 V (V_cathode=-200000 V)
+perveance    = 8.5942e-07 A/V^1.5 (0.8594 microperv)
+particles    = 32 (exited 32, max_steps 0)
+exit r mean  = 0.00609325 m / max 0.00935684 m
+exit Ekin    = 194909 eV (mean)
+</code></pre>
+<p><code>envelope</code> の列は <code>z</code>・<code>r_edge</code>（最も外の粒子の半径）・<code>r_rms</code>（電流で重みを付けた rms 半径）・<code>I_pass</code>（その面を通る電流 [A]）・<code>n_rays</code>（通る粒子の数）です。<code>cut</code> の列は <code>pid</code>（粒子の番号）・<code>r</code>・<code>rp</code>（傾き dr/dz）・<code>I</code>（粒子の電流 [A]）・<code>ekin_eV</code>（運動エネルギー [eV]）で、画面に rms エミッタンスも出ます。GUI の「ビーム診断」（<a href="#96-ビーム診断">9.6 節</a>）と同じ値です。</p>
+<h3 id="b6-取り込み-import-dgun-と-import-b">B.6 取り込み: import-dgun と import-b</h3>
+<p><strong>DGUN の入力から CLI 用の入力を作る</strong></p>
+<pre><code class="language-bash">tgun import-dgun --geom geom.cod --dginput dginput.dat --mag mag.dat -o test3.tgunproj --cathode-mesh-size 0.25
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>引数</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--geom</code>・<code>--dginput</code></td>
+<td>DGUN の形状（<code>geom.cod</code>）と入力（<code>dginput.dat</code>）。必須</td>
+</tr>
+<tr>
+<td><code>--mag</code></td>
+<td>軸上の磁場（<code>mag.dat</code>）。省くと <code>dginput.dat</code> の中の磁場を使います</td>
+</tr>
+<tr>
+<td><code>--no-b</code></td>
+<td>磁場を取り込みません</td>
+</tr>
+<tr>
+<td><code>-o</code></td>
+<td>出力（<code>.tgunproj</code>）。必須</td>
+</tr>
+<tr>
+<td><code>--mesh-size</code></td>
+<td>メッシュの大きさ <strong>[mm]</strong>（既定 1.0）</td>
+</tr>
+<tr>
+<td><code>--cathode-mesh-size</code></td>
+<td>カソード近傍のメッシュの大きさ [mm]（省くと細かくしません）</td>
+</tr>
+<tr>
+<td><code>--refine-dist</code></td>
+<td>細かくする距離 [mm]（省くと、カソード近傍の大きさの 10 倍）</td>
+</tr>
+<tr>
+<td><code>--rmax</code>・<code>--nr</code></td>
+<td>磁場のマップの r の上限 [mm]（既定 35）と分割数（既定 71）</td>
+</tr>
+</tbody>
+</table>
+<p>できた <code>.tgunproj</code> は、そのまま <code>tgun run -p</code> で計算できます。GUI で形や設定を見るには、GUI の「ファイル」→「取り込み」→「DGUN の入力…」（<a href="#102-dgun-の入力を取り込む">10.2 節</a>）を使ってください（同じ変換をして、モデルとして保存します）。</p>
+<p><strong>磁場マップを .h5 に変える</strong></p>
+<pre><code class="language-bash">tgun import-b --file bmap.txt -o bmap.h5
+</code></pre>
+<p>テキストの磁場マップを、TGUN の磁場マップの形式（<code>.h5</code>）に変えます。GUI の「マップ取り込み」（<a href="#103-磁場マップを取り込む">10.3 節</a>）は、これと同じことをしてモデルに登録します。</p>
+<h3 id="b7-gui-の計算を再現する">B.7 GUI の計算を再現する</h3>
+<p>GUI で計算すると、結果のフォルダ（モデルのデータフォルダの <code>results\0001-run\</code> など）に、その計算に使った入力
+<code>model.tgunproj</code> が置かれます。データフォルダの <code>command.log</code> には、同じ計算のコマンド（例 <code>tgun run -p model.tgunproj -o result.h5</code>）が記録されます。結果のフォルダでそのコマンドを実行すると、同じ計算を再現できます（結果を上書きしないように、<code>-o</code> は別の名前にしてください）。</p>
+<pre><code class="language-bash">cd gun.tgun.data\results\0001-run
+tgun run -p model.tgunproj -o again.h5
+</code></pre>
+<p><code>model.tgunproj</code> には、そのときのパラメータを評価した後の数値が入っています。モデルをその後で変えても、前の計算の入力は残ります。磁性体（飽和）の領域は、<code>&quot;b_model&quot;: &quot;fk&quot;</code>・<code>&quot;fk_js&quot;</code>（Js [T]）・<code>&quot;fk_chi0&quot;</code>（χ0）と書かれます。</p>
+<h3 id="b8-スクリプトの例-パラメータを振る">B.8 スクリプトの例: パラメータを振る</h3>
+<p>アノードの電圧 <code>Va</code> を 8・10・12・15 kV に変えて、放出電流を並べる例です。モデル <code>gun.tgun</code> は変わりません。</p>
+<p>PowerShell:</p>
+<pre><code class="language-powershell">foreach ($v in 8, 10, 12, 15) {
+    tgun convert gun.tgun -o &quot;sweep\v$v.tgunproj&quot; --set &quot;Va=$v kV&quot; | Out-Null
+    tgun run -p &quot;sweep\v$v.tgunproj&quot; -o &quot;sweep\v$v.h5&quot; | Select-String &quot;I_total = &quot;
+}
+</code></pre>
+<p><code>Select-String &quot;I_total = &quot;</code> は、最後の結果の行（<code>I_total = 1.336526e+00 A (converged)</code> など）だけを取り出します。配布版では <code>tgun</code> を <code>TGUN.exe</code> のフルパスにしてください（例 <code>&amp; &quot;C:\TGUN\TGUN.exe&quot; convert …</code>）。</p>
+<p>Python（終了コードで収束を確かめ、結果のファイルから電流を読む）:</p>
+<pre><code class="language-python">import subprocess
+import h5py                      # pip install h5py
+
+TGUN = &quot;tgun&quot;                    # 配布版では r&quot;C:\TGUN\TGUN.exe&quot;
+
+for va in (8, 10, 12, 15):
+    proj, h5 = f&quot;sweep/v{va}.tgunproj&quot;, f&quot;sweep/v{va}.h5&quot;
+    subprocess.run([TGUN, &quot;convert&quot;, &quot;gun.tgun&quot;, &quot;-o&quot;, proj, &quot;--set&quot;, f&quot;Va={va} kV&quot;], check=True)
+    code = subprocess.run([TGUN, &quot;run&quot;, &quot;-p&quot;, proj, &quot;-o&quot;, h5]).returncode     # 0 = 収束、3 = 収束せず
+    with h5py.File(h5, &quot;r&quot;) as f:
+        current = f[&quot;parameters&quot;].attrs[&quot;I_total&quot;]
+    print(f&quot;Va = {va} kV: I = {current:.4f} A&quot; + (&quot;&quot; if code == 0 else &quot;（収束せず）&quot;))
+</code></pre>
+<p>平板のダイオード（間隔 10 mm・半径 5 mm）のモデルでの出力:</p>
+<pre><code>Va = 8 kV: I = 1.3365 A
+Va = 10 kV: I = 1.8662 A
+Va = 12 kV: I = 2.4533 A
+Va = 15 kV: I = 3.4264 A
+</code></pre>
+<p>空間電荷制限の電子銃では、電流は電圧の 1.5 乗に比例します（パービアンスが一定）。上の出力でも、15 kV と 8 kV の電流の比 2.564 が、電圧の比の 1.5 乗（2.567）とよく合っています。</p>
+<blockquote class="tip"><p><strong>ヒント</strong>: 2 つ以上のパラメータを振るときは、<code>--set</code> を並べます（<code>--set &quot;Va=12 kV&quot; --set &quot;gap=8 mm&quot;</code>）。コイルの電流や電極の電圧も、モデルでパラメータにしておけば（欄に <code>Va</code>・<code>I_coil</code> のように名前を書く。例題 gun_with_solenoid はそうなっています）、同じように振れます。</p>
+</blockquote>
+<h3 id="b9-スクリプトの例-目標に合わせるパービアンスの自動調整">B.9 スクリプトの例: 目標に合わせる（パービアンスの自動調整）</h3>
+<p>パラメータを動かして、結果を目標の値に合わせることもできます。例題 gun_with_solenoid のフォルダの
+<code>tune_perveance.py</code> は、アノードの位置 <code>d_an</code> を動かして、パービアンスを 1 µP に合わせます。</p>
+<pre><code class="language-bash">cd examples\gun_with_solenoid
+python tune_perveance.py
+</code></pre>
+<pre><code>目標 1 uP（許す差 0.5%）。d_an を動かします（今 70 mm）
+  d_an =  70.0000 mm  -&gt;  0.8594 uP（-14.06%）
+  d_an =  63.0000 mm  -&gt;  1.0342 uP（+3.42%）
+  d_an =  64.2715 mm  -&gt;  0.9960 uP（-0.40%）
+合いました: d_an = 64.27 mm
+この値の入力（コイルあり）: work\tuned.tgunproj
+モデルに反映するには、GUI のパラメータの表で d_an を 64.27 mm にします
+</code></pre>
+<p>計算 3 回（約 50 秒）で合います。スクリプトがしているのは、次の 3 つのコマンドの繰り返しです（Python の標準ライブラリだけで動きます。モデルは変わりません）。</p>
+<pre><code class="language-bash">tgun convert gun_with_solenoid.tgun -o work\case.tgunproj --set &quot;d_an=63 mm&quot; --set &quot;I_coil=0&quot;
+tgun run     -p work\case.tgunproj -o work\case.h5
+tgun beam    -i work\case.h5 --what summary
+</code></pre>
+<ul>
+<li><code>tgun beam --what summary</code> の出力の <code>perveance = …</code> の行を読んで、パービアンスを得ます。</li>
+<li>パービアンスは磁場に依らないので、調整の間は <code>--set &quot;I_coil=0&quot;</code> でコイルを切り、磁場の計算を省いています。</li>
+<li>次に試す値は、セカント法（2 点を結ぶ直線が目標と交わる所）で決めます。パービアンスはおよそ距離の −2 乗で変わるので、対数で直線を引くと数回で合います。</li>
+<li>最後に、合った値でコイルを入れた入力 <code>work\tuned.tgunproj</code> を作ります。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>引数</th>
+<th>意味（既定）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--target 値</code></td>
+<td>目標のパービアンス [µP]（1.0）</td>
+</tr>
+<tr>
+<td><code>--param 名前</code></td>
+<td>動かすパラメータ（<code>d_an</code>）。例: <code>--param Rc2</code></td>
+</tr>
+<tr>
+<td><code>--tol 値</code></td>
+<td>許す相対の差（0.005 = 0.5%）</td>
+</tr>
+<tr>
+<td><code>--step 値</code></td>
+<td>2 点目 = 今の値 × これ（0.9）</td>
+</tr>
+<tr>
+<td><code>--max-evals 回数</code></td>
+<td>計算の回数の上限（8）</td>
+</tr>
+<tr>
+<td><code>--tgun コマンド</code></td>
+<td>TGUN のコマンド。配布版では <code>--tgun &quot;C:\TGUN\TGUN.exe&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p>自分のモデルで使うときは、モデルのパスを最初の引数に書きます（<code>python tune_perveance.py my_gun.tgun --param gap</code>）。目標にする量を変えるとき（出口のビームの半径など）は、スクリプトの <code>perveance</code> の関数を、<code>tgun beam</code> の別の行を読むように書き換えます。</p>
+<h3 id="b10-その他のコマンド">B.10 その他のコマンド</h3>
+<pre><code class="language-bash">tgun version      # 版と構成（Python・使っているライブラリ・メッシュ生成のプログラム）
+tgun selftest     # 小さな計算（平板ダイオードのメッシュと全計算）を流して「結果: OK」と出れば正常
+</code></pre>
+<ul>
+<li>うまく動かないときは、<code>tgun version</code> と <code>tgun selftest</code> の出力を添えて知らせてください。</li>
+<li><code>tgun job …</code> は、GUI が計算のために自分で起動するコマンドです（手で実行するものではありません）。</li>
+<li>ファイルが無い・引数の値が誤っているなどのときは、<code>エラー:</code> で始まる 1 行の理由を表示して終了コード 1 で終わります。不具合の報告のために Python のエラーの表示が要るときは、環境変数 <code>TGUN_TRACEBACK</code> に 1 を入れて実行します。</li>
+<li>配布版の <code>TGUN.exe</code> は、試用期間が終わるとコマンドラインの計算も実行できません（<code>version</code> と <code>-h</code> は動きます）。</li>
+</ul>
+<hr />
+<h2 id="付録-c-version-2-から移る人へ">付録 C Version 2 から移る人へ</h2>
+<p>Version 3 では、形状を描く仕組みを 3D CAD の EMRM-CAD のスケッチに入れ替えました。計算の中身（場の計算・放出・追跡・収束判定）は Version 2 と同じです。</p>
+<p><strong>変わった点</strong></p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>Version 2</th>
+<th>Version 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>モデル</td>
+<td><code>名前.tgunproj</code> と <code>名前.tgunproj.data\</code></td>
+<td><code>名前.tgun</code> と <code>名前.tgun.data\</code></td>
+</tr>
+<tr>
+<td>形状の作図</td>
+<td>TGUN 独自の作図</td>
+<td>EMRM-CAD と同じスケッチ（入力ウィンドウ・自動の拘束・多くの作図と修正のツール）</td>
+</tr>
+<tr>
+<td>線の交差</td>
+<td>交差した所で曲線を自動で分割</td>
+<td>曲線は切らない。交差で分かれた領域を閉領域として求める（拘束が外れにくい）</td>
+</tr>
+<tr>
+<td>パラメータ</td>
+<td>数だけ（単位なし）</td>
+<td>単位付き（<code>10 mm</code>・<code>10 kV</code>）。三角関数は度</td>
+</tr>
+<tr>
+<td>値の欄</td>
+<td>数値か式</td>
+<td>数値・単位付きの数・式（数だけならその欄の単位）</td>
+</tr>
+<tr>
+<td>電場 / 磁場の切り替え</td>
+<td>画面の右上</td>
+<td>リボンの左端の「場」</td>
+</tr>
+<tr>
+<td>結果の一覧</td>
+<td>左のブラウザ</td>
+<td>結果のタブの右上</td>
+</tr>
+<tr>
+<td>長さの単位</td>
+<td>mm・cm・m・inch から選ぶ</td>
+<td>mm（式では <code>1 in</code>・<code>2 cm</code> のように単位を書けます）</td>
+</tr>
+<tr>
+<td>画面の言語</td>
+<td>日本語 / 英語</td>
+<td>日本語</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Version 2 のプロジェクトを使うには</strong>: 「ファイル」→「取り込み」→「TGUN v2 / v1 のプロジェクト…」で取り込み、
+<code>.tgun</code> として保存します（<a href="#101-version-2--1-のプロジェクトを取り込む">10.1 節</a>）。元のプロジェクトは変わりません。メッシュと計算の結果は移らないので、計算し直してください。</p>
+<p><strong>Version 3 に無いもの</strong>: プロジェクトの外の結果ファイル（CLI で計算した <code>.h5</code>）を開いて表示する機能は、まだありません。</p>
+<footer>TGUN 3.0.0b2 のユーザーマニュアル（2026-11-28 に作成）</footer>
+</article></main>
+<button id="top" type="button" title="先頭へ">↑</button>
+<div id="zoom"><img alt=""></div>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var byId = {};
+  links.forEach(function (a) { byId[decodeURIComponent(a.getAttribute('href').slice(1))] = a; });
+  var heads = Array.prototype.slice.call(document.querySelectorAll('article h2, article h3'));
+  function mark() {
+    var current = heads[0];
+    for (var i = 0; i < heads.length; i++) {
+      if (heads[i].getBoundingClientRect().top <= 90) { current = heads[i]; } else { break; }
+    }
+    var a = current ? byId[current.id] : null;
+    links.forEach(function (x) { x.classList.toggle('current', x === a); });
+    var chapter = a ? a.parentNode.getAttribute('data-chapter') : '';
+    document.querySelectorAll('#toc li.h3').forEach(function (li) {
+      li.classList.toggle('open', li.getAttribute('data-chapter') === chapter);
+    });
+    if (a && a.scrollIntoView) { a.scrollIntoView({ block: 'nearest' }); }
+    document.getElementById('top').classList.toggle('show', window.scrollY > 600);
+  }
+  var waiting = false;
+  window.addEventListener('scroll', function () {
+    if (!waiting) { waiting = true; setTimeout(function () { waiting = false; mark(); }, 60); }
+  });
+  mark();
+  document.getElementById('top').addEventListener('click', function () { window.scrollTo({ top: 0 }); });
+  document.getElementById('menu').addEventListener('click', function () { document.body.classList.toggle('menu'); });
+  links.forEach(function (a) { a.addEventListener('click', function () { document.body.classList.remove('menu'); }); });
+  var zoom = document.getElementById('zoom'), big = zoom.querySelector('img');
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('click', function () { big.src = img.src; big.alt = img.alt; zoom.classList.add('show'); });
+  });
+  zoom.addEventListener('click', function () { zoom.classList.remove('show'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { zoom.classList.remove('show'); } });
+})();
+</script>
+</body>
+</html>

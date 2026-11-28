@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TGUN マニュアル / Manual</title>
+<style>
+  :root { --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --card: #f6f8fa; --line: #d1d9e0; --link: #0969da; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --card: #151b23; --line: #3d444d; --link: #4493f8; }
+  }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font-family: "Segoe UI", "Yu Gothic UI", "Meiryo", system-ui, sans-serif; line-height: 1.6; }
+  main { max-width: 720px; margin: 0 auto; padding: 48px 16px; }
+  h1 { font-size: 1.8rem; margin: 0 0 4px; }
+  p.lead { color: var(--muted); margin: 0 0 32px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  a.card { display: block; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--card);
+           color: var(--fg); text-decoration: none; }
+  a.card:hover { border-color: var(--link); }
+  a.card strong { display: block; font-size: 1.15rem; color: var(--link); margin-bottom: 4px; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 0.9rem; }
+  footer a { color: var(--link); }
+</style>
+</head>
+<body>
+<main>
+  <h1>TGUN</h1>
+  <p class="lead">軸対称熱電子銃シミュレーション — ユーザーマニュアル<br>Axisymmetric thermionic electron gun simulation — User manual</p>
+  <div class="cards">
+    <a class="card" href="manual/"><strong>日本語のマニュアル</strong>画面の使い方・チュートリアル・コマンドライン</a>
+    <a class="card" href="manual_en/"><strong>User manual (English)</strong>Screens, tutorial and command line</a>
+  </div>
+  <footer>
+    <a href="https://github.com/TakuyaNatsui/TGUN">GitHub</a> ·
+    <a href="https://github.com/TakuyaNatsui/TGUN/releases">Releases（ダウンロード / Download）</a><br>
+    Copyright (C) 2026 Takuya Natsui
+  </footer>
+</main>
+</body>
+</html>

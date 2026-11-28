@@ -9,10 +9,23 @@ TGUN は、軸対称の熱電子銃を設計するための Windows 用のシミ
 - 磁性体の飽和（Fröhlich–Kennelly モデル。飽和磁化と初期磁化率で指定し、非線形の磁場計算）
 - Child-Langmuir 則によるエミッション、相対論的な軌道計算、空間電荷とビーム自身の磁場
 - DGUN の入力の取り込みと比較（ビーム電流の差 +0.75%）
-- コマンドライン（文書のパラメータを書き換えて計算を回す・結果の書き出し。スクリプトからのパラメータの調整）
+- コマンドライン（モデルのパラメータを書き換えて計算を回す・結果の書き出し。スクリプトからのパラメータの調整）
 - 表示は日本語 / English（「ファイル」→「言語（Language）…」）。The user interface and the manual are available in Japanese and English.
 
 <!-- 下書きの元: TGUN_ver2/packaging/github/README.md（公開用のリポジトリにはこのまま README.md として置ける） -->
+
+## ユーザーマニュアル（ブラウザで読めます）
+
+- [日本語のマニュアル](https://takuyanatsui.github.io/TGUN/manual/)
+- [User manual (English)](https://takuyanatsui.github.io/TGUN/manual_en/)
+
+最新の版のマニュアルです。zip の中にも同じもの（`manual\index.html`・`manual_en\index.html`）が入っています。
+
+## 解説動画（YouTube）
+
+| [![軸対称熱電子銃設計コード TGUN](https://i.ytimg.com/vi/ahkcsdb27ns/mqdefault.jpg)](https://youtu.be/ahkcsdb27ns) | [![TGUNによる軸対称静電場の計算](https://i.ytimg.com/vi/SG0HCmDNwCw/mqdefault.jpg)](https://youtu.be/SG0HCmDNwCw) | [![TGUNによる軸対称静磁場の計算](https://i.ytimg.com/vi/LFm4__Qnnf4/mqdefault.jpg)](https://youtu.be/LFm4__Qnnf4) |
+|:---:|:---:|:---:|
+| [軸対称熱電子銃設計コード TGUN](https://youtu.be/ahkcsdb27ns) | [TGUNによる軸対称静電場の計算](https://youtu.be/SG0HCmDNwCw) | [TGUNによる軸対称静磁場の計算](https://youtu.be/LFm4__Qnnf4) |
 
 ## ダウンロード
 
@@ -22,7 +35,8 @@ TGUN は、軸対称の熱電子銃を設計するための Windows 用のシミ
 - zip を展開して `TGUN.exe` をダブルクリックすると起動します。
 - 初めての起動で「Windows によって PC が保護されました」と出たときは、「詳細情報」→「実行」を押してください
   （まだ電子署名を付けていないためです）。展開の前に zip のプロパティで「許可する」にチェックすると出にくくなります。
-- 使い方は、zip の中の `manual\index.html`（English: `manual_en\index.html`。TGUN の右上の「?」→「マニュアル」、F1 キー）を見てください。
+- 使い方は、zip の中の `manual\index.html`（English: `manual_en\index.html`。TGUN の右上の「?」→「マニュアル」、F1 キー）か、
+  上の「ユーザーマニュアル」のリンクを見てください。
 - Version 2 のプロジェクト（`.tgunproj`）は、「ファイル」→「取り込み」で読めます。
 
 ## 試用版について
